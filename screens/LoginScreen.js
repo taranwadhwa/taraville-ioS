@@ -27,18 +27,24 @@ class LoginScreen extends React.Component{
     const{email,password} = this.state;
     if(email && password)
     {
-      this.setState({loading:true})
-      axios.post('',{
-
+      this.setState({loading:true})      
+      alert(configData.SERVER_URL+'users/login.php')
+      axios.post(configData.SERVER_URL+'users/login.php',{
+        email:this.state.email,
+        password:this.state.password   
       })
-      .then(res=>{
+      .then(res=>{      
+        console.warn(res.data.response)
         alert(res.data.response);
-      })  
+      })
+      .catch(error => {
+        alert(error)
+        throw error;
+    })  
 
     }
     else{
-      alert(configData.SERVER_URL)  
-      this.setState({validation_status:false})
+        this.setState({validation_status:false})
         alert("Please enter email and password.")
     }
   }
@@ -59,7 +65,7 @@ class LoginScreen extends React.Component{
             backgroundColor:loading ? "#CCC":"#32DD87"
             
             }} onPress={()=>this.doLogin()} disabled={loading}>
-              <Text style={styles.btnText}>{loading ? "Loading...":"Sign in"}</Text>
+              <Text style={styles.btnText}>{loading ? "Loading...":"Sign In"}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.passwordContainer}>  
