@@ -18,8 +18,7 @@ class InsightScreen extends React.Component{
   export default InsightScreen;
   const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#fff',
+        flex: 1,        
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor:'#271933',
