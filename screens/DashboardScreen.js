@@ -10,7 +10,7 @@ class DashboardScreen extends React.Component{
   render(){
       return(
         <View style={styles.container}>
-        <Text onPress={this.props.navigation.navigate('Status')}>This is dashboard screen</Text>
+        <Text onPress={this.props.navigation.navigate('Status')}>This is dadshboard screen</Text>
         <StatusBar style="auto" />
       </View>
       )

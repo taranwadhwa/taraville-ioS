@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View,StatusBar,  } from 'react-native';
 
 
 class StatusScreen extends React.Component{
@@ -10,6 +9,7 @@ class StatusScreen extends React.Component{
   render(){ 
       return(
         <View style={styles.container}>
+        <StatusBar backgroundColor="#271933" barStyle="light-content"/>      
         <Text onPress={()=>this.props.navigation.navigate('Dashboard')}>This is status screen</Text>
         <StatusBar style="auto" />
       </View>
@@ -23,5 +23,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor:'#271933',
   },
 });

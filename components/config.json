@@ -1,4 +1,4 @@
 {
-    "SERVER_URL": "https://iosapi.taraville.com/api/v1/"
+    "SERVER_URL": "http://192.168.225.86/projects/tara/api/v1/"
     
   }

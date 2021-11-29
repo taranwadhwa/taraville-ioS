@@ -6,7 +6,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import StatusScreen from '../screens/StatusScreen';
+import MessageScreen from '../screens/MessageScreen';
+import InsightScreen from '../screens/InsightScreen';
 import {Dimensions} from 'react-native'
+import IonicIcon from 'react-native-vector-icons/Ionicons'
 
 const fullScreenWidth = Dimensions.get('window').width;
 
@@ -41,15 +44,40 @@ export default function Route(props)
 {
   return(    
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Login" screenOptions={{
+    <Stack.Navigator initialRouteName="Status" screenOptions={{
         headerShown: false
       }}>
         <Stack.Screen name="Dashboard">{()=>(
-          <Tab.Navigator screenOptions={{
-            headerShown: false
-          }}>           
-            <Tab.Screen name="Dashboard" component={DashboardScreen} />
-            <Tab.Screen name="Status" component={StatusScreen} />
+          <Tab.Navigator screenOptions={({route})=>({
+              headerTitle:()=><Text>Header</Text>,
+              tabBarIcon:({focused,color,size,padding}) => {
+                  let iconName;
+                    if(route.name =='Status'){
+                      iconName = focused ? 'status' : 'status-outline';
+                    }
+                    else if(route.name == 'Profile'){
+                      iconName = focused ? 'person' : 'person-outline';
+                    }
+
+                    return(
+                      <IonicIcon name={iconName} size={size} color={color} style={{paddingBottom:padding}}/>
+                    )
+
+              }
+
+          })}
+            tabBarOptions={{
+              activeTintColor:'lightseagreen',
+              inactiveTintColor:'grey',
+              labelStyle:{fontSize:14},
+              style:{width:fullScreenWidth}
+            }}
+          >           
+             <Tab.Screen name="Status" component={StatusScreen} />            
+             <Tab.Screen name="Profile" component={DashboardScreen} />
+             <Tab.Screen name="Messages" component={MessageScreen} />
+             <Tab.Screen name="Insights" component={InsightScreen} />
+           
           </Tab.Navigator>  
         )
       }

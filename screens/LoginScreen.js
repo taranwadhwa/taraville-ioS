@@ -11,6 +11,7 @@ import {
   from 'react-native';
   import axios  from 'axios';
   import configData from "../components/config.json";
+  
 
 class LoginScreen extends React.Component{
   constructor(props) {
@@ -27,15 +28,21 @@ class LoginScreen extends React.Component{
     const{email,password} = this.state;
     if(email && password)
     {
-      this.setState({loading:true})      
-      alert(configData.SERVER_URL+'users/login.php')
+      this.setState({loading:true})            
       axios.post(configData.SERVER_URL+'users/login.php',{
         email:this.state.email,
         password:this.state.password   
       })
       .then(res=>{      
-        console.warn(res.data.response)
-        alert(res.data.response);
+        alert(res.data.status)
+        if(res.data.status=="OK"){
+          console.log();
+          this.props.navigation.navigate('Dashboard');
+        }
+        else{
+          alert(res.data.status)
+          
+        }
       })
       .catch(error => {
         alert(error)
@@ -53,10 +60,9 @@ class LoginScreen extends React.Component{
       return(
         <View style={styles.container}>
           <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
-          <Text style={styles.logo}>
-          <Image source = {require("../assets/logo.png")}/>
-
-          </Text>
+          <View style={styles.logo}>
+            <Image source = {require("../assets/logo.png")}/>
+          </View>
           <TextInput style={[styles.half_width, { borderColor: this.state.validation_status ? '#C1C1C1' : 'white' }]} placeholder="Email-address:" onChangeText={(email)=>this.setState({email:email})}/>
           <TextInput style={[styles.half_width, { borderColor: this.state.validation_status ? '#C1C1C1' : 'white' }]} placeholder="Password:" onChangeText={(password)=>this.setState({password:password})} secureTextEntry={true}/>
           
@@ -92,6 +98,7 @@ const styles = StyleSheet.create({
     fontSize:20,
     margin:10,
     color:'white'
+    
   },
   input:{
     width:"90%",
