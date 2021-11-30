@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { 
+  Platform,
   StyleSheet, 
   Text, 
   View,
@@ -90,7 +91,7 @@ class DashboardScreen extends React.Component{
               <Text style={styles.btnText}>{loading ? "Loading...":"UPDATE"}</Text>
             </TouchableOpacity>          
         </View>
-        <View style={{marginTop:20}}>
+        <View style={styles.blank_view}>
              <Text style={styles.input}></Text> 
         </View>
 
@@ -136,9 +137,9 @@ const styles = StyleSheet.create({
     backgroundColor:'#32DD87',
     height:45,
     padding:10,
-    width:'90%',
+    width:'95%',
     margin:10,       
-    borderRadius:150,
+    borderRadius:50,
   },
   btnText:{
     fontSize:18,
@@ -231,8 +232,10 @@ button:{
   paddingTop: 15,
   marginTop:10,
   fontWeight:'bold'
-  
-  
+   
+},
+blank_view:{
+  marginTop: Platform.OS === 'ios' ? 20 : 30
 }
  
 });
