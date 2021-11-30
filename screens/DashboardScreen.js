@@ -13,7 +13,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
-
+import IonicIcon from 'react-native-vector-icons/Ionicons'
 
 class DashboardScreen extends React.Component{
   constructor(props) {
@@ -33,6 +33,8 @@ class DashboardScreen extends React.Component{
   }
   render(){
     const{loading} = this.state
+    let iconName='add-outline';
+    let iconFaq = 'add-outline'
     return(
      
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
@@ -40,9 +42,25 @@ class DashboardScreen extends React.Component{
         <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
         <View style={styles.logo}>
           <Image source = {require("../assets/logo.png")} style={{resizeMode:'contain',marginTop:10,width:170,height:55}}/>
-        </View>
-        
-        <ScrollView style={{marginTop:2,margin:2,flex: 1,height:'100%',}}>            
+        </View>            
+
+        <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>
+
+
+        <View style={styles.staff_container}>  
+          <Text style={{borderWidth:0, width:'60%'}}>         
+          	<TouchableOpacity>
+				<Text style={styles.button}><IonicIcon name={iconName} size={20} style={{paddingBottom:3}} /> NEW STAFF</Text>
+			</TouchableOpacity>
+          </Text>     
+          <Text style={{borderWidth:0, width:'60%'}}>         
+          	<TouchableOpacity>
+				<Text style={styles.button}><IonicIcon name={iconName} size={20} style={{paddingBottom:3}} /> CREATE FAQ</Text>
+			</TouchableOpacity>
+          </Text>       
+        </View>   
+
+
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            
           <TextInput style={styles.input} placeholder="First name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
@@ -114,7 +132,20 @@ const styles = StyleSheet.create({
     backgroundColor:'#271933',
     flexDirection:'column'
   },
- 
+  staff_container:{
+    flex: 1,
+    flexDirection:'row',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    width: '100%',     
+    marginVertical: 5,    
+  },
+  faq:{
+    fontSize:18,
+            
+  },
   logo:{                
     marginTop:20,
     backgroundColor:'#271933',    
@@ -236,6 +267,14 @@ button:{
 },
 blank_view:{
   marginTop: Platform.OS === 'ios' ? 20 : 30
-}
+},
+button:{
+  backgroundColor:'#1BB467',
+  width:130,
+  borderRadius:10,
+  color:'white',
+  alignItems: "center",
+  padding:8  
+},
  
 });
