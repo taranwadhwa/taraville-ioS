@@ -26,18 +26,22 @@ class DashboardScreen extends React.Component{
       loading:false,
       validation_status:true,
       expmonth:'', 
-      exp_year:''               
+      exp_year:'', 
+      cvv:'',     
   }
   }
   render(){
+    const{loading} = this.state
     return(
-      <View style={styles.container}>
+     
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
+        style={styles.container}>          
         <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
         <View style={styles.logo}>
           <Image source = {require("../assets/logo.png")} style={{resizeMode:'contain',marginTop:10,width:170,height:55}}/>
         </View>
-        <KeyboardAvoidingView behavior="height" enabled>
-        <ScrollView style={{marginTop:2}}>            
+        
+        <ScrollView style={{marginTop:2,margin:2,flex: 1,height:'100%',}}>            
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            
           <TextInput style={styles.input} placeholder="First name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
@@ -58,33 +62,42 @@ class DashboardScreen extends React.Component{
           <TextInput style={styles.input} placeholder="Plan name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
           <TextInput style={styles.input} placeholder="Hours of operations:" onChangeText={(lname)=>this.setState({lname:lname})}/>                   
         </View> 
-
+        
+        
         <View style={[styles.inputCard, styles.elevation]}>
           <Text style={styles.heading}>Credit Card Information</Text>            
           <TextInput keyboardAppearance="light" keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
           
-        <View style={styles.text_container}>
-        <TextInput keyboardAppearance="light" keyboardType="numeric" 
-          style={[styles.half_input, { borderColor: this.state.validation_status ? '#C1C1C1' : 'red' }]}
-          label="Expiry month" mode="flat"
-          placeholder="Expiry month e.g. 05" maxLength={2} ref="exp_month" 
-          onChangeText={(expmonth)=>this.setState({expiryMonth:expmonth})}
-          />
+          <View style={styles.text_container}>
+            <TextInput keyboardAppearance="light" keyboardType="numeric" 
+              style={[styles.half_input, { borderColor: this.state.validation_status ? '#C1C1C1' : 'red' }]}
+              label="Expiry month" mode="flat"
+              placeholder="Expiry month e.g. 05" maxLength={2} ref="exp_month" 
+              onChangeText={(expmonth)=>this.setState({expiryMonth:expmonth})}
+              />
 
-        <TextInput keyboardAppearance="light" keyboardType="numeric" 
-          style={[styles.half_input, { borderColor: this.state.validation_status ? '#C1C1C1' : 'red' }]}
-          label="Expiry year" mode="flat"
-          placeholder="Expiry year e.g. 25" maxLength={2}
-          onChangeText={(exp_year)=>this.setState({expiryYear:exp_year})}
-          />
+            <TextInput keyboardAppearance="light" keyboardType="numeric" 
+              style={[styles.half_input, { borderColor: this.state.validation_status ? '#C1C1C1' : 'red' }]}
+              label="Expiry year" mode="flat"
+              placeholder="Expiry year e.g. 25" maxLength={2}
+              onChangeText={(exp_year)=>this.setState({expiryYear:exp_year})}
+              />
+          </View>
+         <TextInput secureTextEntry={true} keyboardAppearance="light" keyboardType="numeric" maxLength={4} style={styles.input} placeholder="CVV:" onChangeText={(cvv)=>this.setState({cvv:cvv})}/>                                 
+        </View>
+        <View>                     
+          <TouchableOpacity style={styles.btnTouch} onPress={()=>this.doLogin()} disabled={loading}>
+              <Text style={styles.btnText}>{loading ? "Loading...":"UPDATE"}</Text>
+            </TouchableOpacity>          
+        </View>
+        <View style={{marginTop:20}}>
+             <Text style={styles.input}></Text> 
         </View>
 
-          <TextInput style={styles.input} placeholder="CVV:" onChangeText={(lname)=>this.setState({lname:lname})}/>                   
-
-        </View> 
         </ScrollView>
-        </KeyboardAvoidingView>
-      </View>
+        
+        </KeyboardAvoidingView>                      
+     
     ) 
 
 
@@ -98,7 +111,9 @@ const styles = StyleSheet.create({
     alignItems:'stretch',
     justifyContent: 'center',
     backgroundColor:'#271933',
+    flexDirection:'column'
   },
+ 
   logo:{                
     marginTop:20,
     backgroundColor:'#271933',    
@@ -111,41 +126,30 @@ const styles = StyleSheet.create({
     width:"95%",    
     borderColor:'#271833',
     padding:10,
-    margin:10,
+    margin:8,
     borderRadius:5,
     fontSize:18,
     borderWidth:1
     
   },
-  userBtn:{
-      padding:15,
-      width:'45%',
-      backgroundColor:'#32DD87',
-      width:"90%",
-      borderRadius:3
-  },
-  btnContainer:{
-    flexDirection:"row",
-    justifyContent:"space-between",
-    paddingTop:3,    
+  btnTouch:{
+    backgroundColor:'#32DD87',
+    height:45,
+    padding:10,
+    width:'90%',
+    margin:10,       
+    borderRadius:150,
   },
   btnText:{
     fontSize:18,
     textAlign:"center",
     fontWeight:"bold",
-    color:'#FFF'
+    color:'#32DD87',    
   },
   passwordContainer:{
     flexDirection:"row-reverse",
     paddingTop:25,
     width:'90%'
-    
-  },
-  forgot_button:{
-    fontSize:14,
-    textAlign:'right',
-    fontWeight:"normal",
-    color:'#fff',
     
   },
   businessContainer:{
@@ -159,15 +163,25 @@ const styles = StyleSheet.create({
     width: '100%',
     marginVertical: 2,
     paddingLeft:10,
-    fontSize:16
+    fontSize:16,
+    fontWeight:'bold'
   },
   inputCard:{
     backgroundColor: 'white',
     borderRadius: 8,
-    paddingVertical: 20,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    width: '100%',     
+    marginVertical: 5,        
+  },
+  inputCreditCard:{
+    backgroundColor: '#271933',
+    borderRadius: 8,
+    paddingVertical: 10,
     paddingHorizontal: 10,
-    width: '100%',
-    marginVertical: 5,
+    width: '100%', 
+    height:'22%',
+    marginVertical: 2,        
   },
   elevation: {
     elevation: 20,
@@ -185,6 +199,40 @@ half_input:{
   borderRadius:5,
   fontSize:18,
   borderWidth:1
+},
+userBtn:{
+  padding:8,  
+  backgroundColor:'#32DD87',
+  width:"100%",
+  borderRadius:3,
+  margin:5,
+  
+},
+btnContainer:{
+  flexDirection:"row",
+  justifyContent:"space-between",
+  paddingTop:3,    
+},
+btnText:{
+  fontSize:18,
+  textAlign:"center",
+  fontWeight:"bold",
+  color:'#FFF'
+},
+button:{
+  backgroundColor:'#32DD87',
+  borderColor:'#00AAE7',
+  width:250,
+  height:50,
+  borderRadius:120,
+  color:'white',
+  fontWeight:'bold',
+  alignItems: "center",
+  paddingTop: 15,
+  marginTop:10,
+  fontWeight:'bold'
+  
+  
 }
  
 });
