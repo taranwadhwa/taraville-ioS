@@ -45,7 +45,7 @@ export default function Route(props)
   return(
 
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Login" screenOptions={{
+    <Stack.Navigator initialRouteName="Status" screenOptions={{
         headerShown: false,        
       }}>
         <Stack.Screen name="Dashboard">{()=>(
