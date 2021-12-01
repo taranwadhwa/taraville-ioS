@@ -51,7 +51,7 @@ export default function Route(props)
         <Stack.Screen name="Dashboard">{()=>(
           <Tab.Navigator screenOptions={({route})=>({
             headerShown:false,
-            tabBarStyle: { position: 'absolute',padding:6,height:78,elevation:0,width:fullScreenWidth},              
+            tabBarStyle: { position: 'absolute',padding:6,height:78,elevation:0,width:fullScreenWidth,activeTintColor:'#32DD87',inactiveTintColor:'grey'},              
               tabBarIcon:({focused,color,size,padding}) => {
                   let iconName;
                     if(route.name =='Status'){
@@ -73,14 +73,7 @@ export default function Route(props)
 
               },            
 
-          })}
-           
-          tabBarOptions={{              
-            activeTintColor:'#32DD87',
-            inactiveTintColor:'grey',
-            labelStyle:{fontSize:15,paddingBottom:20},                        
-          }} 
-
+          })}                   
           >           
              <Tab.Screen name="Status" component={StatusScreen}  />            
              <Tab.Screen name="Profile" component={DashboardScreen} screenOptions={{headerShown:'none'}} />

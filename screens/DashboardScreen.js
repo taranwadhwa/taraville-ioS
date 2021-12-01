@@ -12,9 +12,11 @@ import {
   ScrollView,
   Keyboard,
   KeyboardAvoidingView,
+  Alert, 
+  Modal,
+  Pressable
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
-
 class DashboardScreen extends React.Component{
   constructor(props) {
     super(props); 
@@ -28,38 +30,37 @@ class DashboardScreen extends React.Component{
       validation_status:true,
       expmonth:'', 
       exp_year:'', 
-      cvv:'',     
+      cvv:'', 
+      modalVisible: false    
+      
   }
   }
-  render(){
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  }
+
+
+   render(){
     const{loading} = this.state
     let iconName='add-outline';
-    let iconFaq = 'add-outline'
-    return(
-     
+    let iconColor = '#271833'   
+    let staffIconName='person-add-outline';
+    const { modalVisible } = this.state; 
+    return(    
+         
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
-        style={styles.container}>          
+        style={styles.container}>                                   
         <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
         <View style={styles.logo}>
           <Image source = {require("../assets/logo.png")} style={{resizeMode:'contain',marginTop:10,width:170,height:55}}/>
         </View>            
 
-        <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>
-
-
-        <View style={styles.staff_container}>  
-          <Text style={{borderWidth:0, width:'60%'}}>         
-          	<TouchableOpacity>
-				<Text style={styles.button}><IonicIcon name={iconName} size={20} style={{paddingBottom:3}} /> NEW STAFF</Text>
-			</TouchableOpacity>
-          </Text>     
-          <Text style={{borderWidth:0, width:'60%'}}>         
-          	<TouchableOpacity>
-				<Text style={styles.button}><IonicIcon name={iconName} size={20} style={{paddingBottom:3}} /> CREATE FAQ</Text>
-			</TouchableOpacity>
-          </Text>       
-        </View>   
-
+        <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>               
+        <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+          <View style={styles.staff_container}>   
+				    <IonicIcon name={iconName} color={iconColor} size={45} style={{paddingBottom:3}} />
+          </View>  
+        </TouchableOpacity>         
 
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            
@@ -113,10 +114,37 @@ class DashboardScreen extends React.Component{
              <Text style={styles.input}></Text> 
         </View>
 
-        </ScrollView>
-        
+        </ScrollView>                      
+        <View style={styles.centeredView}>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            this.setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={{marginTop:2}}></Text>
+              <Text style={styles.modalText}><IonicIcon name={staffIconName} color={'black'} size={17} style={{paddingBottom:2}} /> Add Additional Staff</Text>              
+              <Text style={styles.modalText}><IonicIcon name={'options-outline'} color={'black'} size={17} style={{paddingBottom:2}} /> Create FAQ's</Text>
+              <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
+              <Pressable
+                style={styles.buttonClose}
+                onPress={() => this.setModalVisible(!modalVisible)}
+              >
+                <Text style={{color:'white',fontWeight:'bold'}}>CLOSE</Text>
+              </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>        
+      </View>
+
         </KeyboardAvoidingView>                      
-     
+  
     ) 
 
 
@@ -131,20 +159,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor:'#271933',
     flexDirection:'column'
+  },  
+  centeredView: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 28
+  },
+  modalView: {
+    margin: 5,
+    backgroundColor: "white",
+    borderRadius: 15,
+    padding: 10,    
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width:'80%',
+    height:'52%'
   },
   staff_container:{
     flex: 1,
-    flexDirection:'row',
-    backgroundColor: 'white',
-    borderRadius: 8,
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    width: '100%',     
-    marginVertical: 5,    
+    backgroundColor: '#FFF',
+    borderRadius: 8,    
+    width: '100%',         
+    alignItems:'center'    
   },
   faq:{
-    fontSize:18,
-            
+    fontSize:18,            
   },
   logo:{                
     marginTop:20,
@@ -276,5 +321,21 @@ button:{
   alignItems: "center",
   padding:8  
 },
- 
+modalText: {
+  margin: 7,  
+  fontSize:18,    
+  padding:10
+},
+textStyle: {
+  color: "white",
+  fontWeight: "bold",
+  textAlign:'right',
+  borderRadius:5
+},
+buttonClose: {
+  backgroundColor: "#1BB467",  
+  padding:18,
+  borderRadius:5,    
+},
+
 });
