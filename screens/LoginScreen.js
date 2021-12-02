@@ -28,6 +28,7 @@ class LoginScreen extends React.Component{
     const{email,password} = this.state;
     if(email && password)
     {
+      this.props.navigation.navigate('Dashboard');
       this.setState({loading:true})            
       axios.post(configData.SERVER_URL+'users/login.php',{
         email:this.state.email,
@@ -45,7 +46,7 @@ class LoginScreen extends React.Component{
         }
       })
       .catch(error => {
-        alert(error)
+      
         throw error;
     })  
 

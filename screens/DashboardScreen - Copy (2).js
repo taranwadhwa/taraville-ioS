@@ -11,17 +11,16 @@ import {
   StatusBar, 
   ScrollView,
   Keyboard,
-  KeyboardAvoidingView,     
-  Button,
-  Pressable,  
-  useIsFocused  
+  KeyboardAvoidingView,
+  Alert, 
+  Modal,
+  Pressable,
+  Button,  
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 
-
 class DashboardScreen extends React.Component{
   constructor(props) {
-    
     super(props); 
     this.state = {
       fname:'',
@@ -37,23 +36,24 @@ class DashboardScreen extends React.Component{
       modalVisible: false,
       staffVisible:false,              
   }
-  this.loadNewStaff = this.loadNewStaff.bind(this);
-    
   }
-   
-  loadNewStaff()
-  {     
-    this.setState({staffVisible:true})    
+  
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  }
+  triggerStaffModal()
+  {   
+    this.setState({ staffVisible:true });
+    alert("ddfd")
   }
 
-   render(){    
+   render(){
     const{loading} = this.state
     let iconName='add-outline';
     let iconColor = '#271833'   
     let staffIconName='person-add-outline';
-    const { modalVisible,staffVisible } = this.state; 
-   
-   {
+    const { modalVisible } = this.state; 
+
     if(!this.state.staffVisible){
     return(                  
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
@@ -64,23 +64,13 @@ class DashboardScreen extends React.Component{
         </View>            
 
         <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>  
-        
-          <View style={styles.staff_container}>           
 
-            <Pressable style={{width:'50%'}} onPress={this.loadNewStaff} > 
-              <Text  style={{fontSize:14,borderWidth:2,backgroundColor:'#1BB467',color:'white',margin:5,padding:8,borderRadius:7}}>
-              <IonicIcon name={iconName} color={'white'} size={25}/>
-              CREATE NEW STAFF
-              </Text>
-            </Pressable>  
-            <TouchableOpacity style={{width:'50%'}}> 
-              <Text style={{fontSize:16,borderWidth:2, backgroundColor:'#1BB467',color:'white',margin:5,padding:8,borderRadius:7}}>
-                <IonicIcon name={iconName} color={'white'} size={25}  />
-                CREATE FAQ'S
-              </Text>
-            </TouchableOpacity>  
+
+        <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+          <View style={styles.staff_container}>   
+				    <IonicIcon name={iconName} color={iconColor} size={45} style={{paddingBottom:3}} />
           </View>  
-               
+        </TouchableOpacity>         
 
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            
@@ -131,38 +121,63 @@ class DashboardScreen extends React.Component{
              <Text style={styles.input}></Text> 
         </View>
 
-        </ScrollView>                 
+        </ScrollView>
+        {
+           this.state.modalVisible? 
+        
+        <View style={styles.centeredView}>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}               
+          onClickOutside={this.onClickOutside}                  
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={{marginTop:2}}></Text>
+
+              <TouchableOpacity style={styles.btnFaq}>
+              <Button 
+                onPress = {this.triggerStaffModal}
+                title = "CREATE ADDITIONAL STAFF" 
+                textAlign="left"               
+                color = "#FFF">
+              </Button>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btnFaq}>
+              <Button                    
+                onPress = {this.triggerFAQModal}
+                title = "CREATE FAQ'S"
+                textAlign="left"
+                titleStyle="left"                 
+               color = "#FFF">
+              </Button>  
+              </TouchableOpacity>                          
+              <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
+              <Pressable
+                style={styles.buttonClose}
+                onPress={() => this.setModalVisible(!modalVisible)}
+              >
+                <Text style={{color:'white',fontWeight:'bold'}}>CLOSE</Text>
+              </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>        
+      </View>
+    :
+    null
+        } 
+         
         </KeyboardAvoidingView>                                
 
-    )     
-    }
-    else{
-      return(      
-        <View style={styles.container}>
-            <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
-            <View style={styles.logo}>
-                <Image source = {require("../assets/logo.png")} style={{resizeMode:'contain',marginTop:10,width:170,height:55}}/>
-            </View>               
-            <View style={[styles.inputCard, styles.elevation]}> 
-            <Text style={styles.heading}>Staff Information</Text>            
-                <TextInput style={styles.input} placeholder="Full name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
-                <TextInput style={styles.input} placeholder="Position:" onChangeText={(position)=>this.setState({position:position})}/>          
-                <TextInput style={styles.input} placeholder="E-mail:" onChangeText={(email)=>this.setState({email:email})}/>
-                <TextInput style={styles.input} placeholder="Phone #:" onChangeText={(phone)=>this.setState({phone:phone})}/>          
-             </View>
+    ) 
+      }
+      else{
+        return(<View><Text>dfdfdfddfd</Text></View>)
+      }
 
-             <View>                     
-            <TouchableOpacity style={styles.btnTouch}>
-                <Text style={styles.btnText}>SUBMIT</Text>
-                <Text style={styles.btnText}>BACK</Text>
-            </TouchableOpacity>          
-            </View>            
-            
-            </View>
-      
-        )
-    }
-   } 
+
   }
 }
 export default DashboardScreen;
@@ -174,7 +189,11 @@ const styles = StyleSheet.create({
     backgroundColor:'#271933',
     flexDirection:'column'
   },  
-
+  centeredView: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 28
+  },
   modalView: {
     margin: 3,
     backgroundColor: "white",
@@ -193,11 +212,11 @@ const styles = StyleSheet.create({
 
   },
   staff_container:{
-    flex: 1,    
+    flex: 1,
+    backgroundColor: '#FFF',
     borderRadius: 8,    
-    width: '99%',         
-    alignItems:'center',
-    flexDirection:'row',    
+    width: '100%',         
+    alignItems:'center'    
   },
   faq:{
     fontSize:18,            

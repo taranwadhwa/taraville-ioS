@@ -8,6 +8,7 @@ import DashboardScreen from '../screens/DashboardScreen';
 import StatusScreen from '../screens/StatusScreen';
 import MessageScreen from '../screens/MessageScreen';
 import InsightScreen from '../screens/InsightScreen';
+import StaffScreen  from '../screens/StaffScreen';
 import {Dimensions} from 'react-native'
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 
@@ -39,19 +40,31 @@ function statusStackScreen(){
     </Stack.Navigator>
   );
 }
+function staffStackScreen(){
+  return(
+    <Stack.Navigator>
+      <Stack.Screen name="Staff" component={StaffScreen} />
+    </Stack.Navigator>
+  );
+}
 
 export default function Route(props)
 {
   return(
 
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Status" screenOptions={{
+    
+    <Stack.Navigator initialRouteName="Login" screenOptions={{
         headerShown: false,        
       }}>
-        <Stack.Screen name="Dashboard">{()=>(
+        
+        
+        <Stack.Screen name="Dashboard">{()=>(          
+          
           <Tab.Navigator screenOptions={({route})=>({
+            
             headerShown:false,
-            tabBarStyle: { position: 'absolute',padding:6,height:78,elevation:0,width:fullScreenWidth,activeTintColor:'#32DD87',inactiveTintColor:'grey'},              
+            tabBarStyle: { position: 'absolute',paddingBottom:10,paddingTop:5,height:58,elevation:0,width:fullScreenWidth,activeTintColor:'#32DD87',inactiveTintColor:'grey'},              
               tabBarIcon:({focused,color,size,padding}) => {
                   let iconName;
                     if(route.name =='Status'){
@@ -76,17 +89,18 @@ export default function Route(props)
           })}                   
           >           
              <Tab.Screen name="Status" component={StatusScreen}  />            
-             <Tab.Screen name="Profile" component={DashboardScreen} screenOptions={{headerShown:'none'}} />
-             <Tab.Screen name="Messages" component={MessageScreen} />
-             <Tab.Screen name="Insights" component={InsightScreen} />
-           
+             <Tab.Screen name="Messages" component={MessageScreen} />             
+             <Tab.Screen name="Insights" component={InsightScreen} />             
+             <Tab.Screen name="Profile" component={DashboardScreen} screenOptions={{headerShown:'none'}} />                                                                                                                 
           </Tab.Navigator>  
+          
         )
+        
       }
+     
       </Stack.Screen>
-      <Stack.Screen name="Login" component={LoginScreen}/>
-     </Stack.Navigator>
-      
+      <Stack.Screen name="Login" component={LoginScreen}/>      
+     </Stack.Navigator>              
     </NavigationContainer>
        
   );
