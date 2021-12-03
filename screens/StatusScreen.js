@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View,StatusBar,  } from 'react-native';
-
+import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 
 class StatusScreen extends React.Component{
   constructor(props) {
@@ -10,8 +10,8 @@ class StatusScreen extends React.Component{
       return(
         <View style={styles.container}>
         <StatusBar backgroundColor="#271933" barStyle="light-content"/>      
-        <Text onPress={()=>this.props.navigation.navigate('Dashboard')}>This is status screen</Text>
-        <StatusBar style="auto" />
+        <Text>This is status sdcreen</Text>
+        <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route}/>            
       </View>
       )
   }
@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor:'#271933',
+    justifyContent: 'center',    
   },
 });

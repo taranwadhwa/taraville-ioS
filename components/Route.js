@@ -51,62 +51,20 @@ function staffStackScreen(){
 export default function Route(props)
 {
   return(
-
-    <NavigationContainer>
-    
-    <Stack.Navigator initialRouteName="Login" screenOptions={{
+    <NavigationContainer>    
+    <Stack.Navigator initialRouteName="Message" screenOptions={{
         headerShown: false,        
-      }}>
-        
-        
-        <Stack.Screen name="Dashboard">{()=>(          
-          
-          <Tab.Navigator screenOptions={({route})=>({
-            
-            headerShown:false,
-            tabBarStyle: { position: 'absolute',paddingBottom:10,paddingTop:5,height:58,elevation:0,width:fullScreenWidth,activeTintColor:'#32DD87',inactiveTintColor:'grey'},              
-              tabBarIcon:({focused,color,size,padding}) => {
-                  let iconName;
-                    if(route.name =='Status'){
-                      iconName = focused ? 'ellipsis-horizontal-circle' : 'ellipsis-horizontal-circle-outline';
-                    }
-                    else if(route.name == 'Profile'){
-                      iconName = focused ? 'person' : 'person-outline';
-                    }
-                    else if(route.name == 'Messages'){
-                      iconName = focused ? 'ios-mail' : 'ios-mail-outline';
-                    }
-                    else{
-                      iconName = focused ? 'reorder-three' : 'reorder-three-outline';
-                    }
-
-                    return(
-                      <IonicIcon name={iconName} size={size} color={color} style={{paddingBottom:padding}}/>
-                    )
-
-              },            
-
-          })}                   
-          >           
-             <Tab.Screen name="Status" component={StatusScreen}  />            
-             <Tab.Screen name="Messages" component={MessageScreen} />             
-             <Tab.Screen name="Insights" component={InsightScreen} />             
-             <Tab.Screen name="Profile" component={DashboardScreen} screenOptions={{headerShown:'none'}} />                                                                                                                 
-          </Tab.Navigator>  
-          
-        )
-        
-      }
-     
-      </Stack.Screen>
-      <Stack.Screen name="Login" component={LoginScreen}/>      
+      }}>        
+        <Stack.Screen name="Message" component={MessageScreen}/>
+        <Stack.Screen name="Status" component={StatusScreen}/>        
+        <Stack.Screen name="Insight" component={InsightScreen}/>
+        <Stack.Screen name="Dashboard" component={DashboardScreen}/>      
+        <Stack.Screen name="Login" component={LoginScreen}/>          
      </Stack.Navigator>              
     </NavigationContainer>
        
   );
 }
-
-  
 const styles = StyleSheet.create({
   container: {
     flex: 1,

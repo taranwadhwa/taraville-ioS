@@ -17,7 +17,7 @@ import {
   useIsFocused  
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
-
+import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 
 class DashboardScreen extends React.Component{
   constructor(props) {
@@ -131,7 +131,8 @@ class DashboardScreen extends React.Component{
              <Text style={styles.input}></Text> 
         </View>
 
-        </ScrollView>                 
+        </ScrollView>     
+        <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route}/>            
         </KeyboardAvoidingView>                                
 
     )     
