@@ -6,13 +6,13 @@ import {
   Image,
   ScrollView,
   StatusBar, 
+  Modal,
+  Pressable
 } from 'react-native';
 
 
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import IonicIcon from 'react-native-vector-icons/Ionicons'
-import { DatePickerDialog } from 'react-native-datepicker-dialog'
-import moment from 'moment';
 
 class MessageScreen extends React.Component {
   constructor(props) {
@@ -20,38 +20,22 @@ class MessageScreen extends React.Component {
     this.state = {
       dobText: '',
       dobDate: null,
-      journeyText: '',
-      journeyDate: null,
+      modalVisible: false,
     }  
   }
   
-  onDOBPress = () => {
-    let dobDate = this.state.dobDate;
-
-    if(!dobDate || dobDate == null){
-      dobDate = new Date();
-      this.setState({
-        dobDate: dobDate
-      });      
-    }
-    
-    this.refs.dobDialog.open({
-      date: dobDate,
-      maxDate: new Date() //To restirct future date
-    });
-
-  }
- onDOBDatePicked = (date) => {
-  this.setState({
-    dobDate: date,
-    dobText: moment(date).format('YYYY-MMM-DD')
-  });
 
 }
+setModalVisible = (visible) => {
+  this.setState({ modalVisible: visible });
+}
+unlockCode(){
+  alert("Unlock mycode.")
+}
 
-render() {       
+render() {     
+  const { modalVisible } = this.state;   
     return (
-
       <View style={styles.container}>
         <StatusBar backgroundColor="#271933" barStyle="light-content" />
         <View style={styles.logo}>
@@ -60,7 +44,7 @@ render() {
        
         <View style={[styles.calendarCard, styles.elevation]}>        
           
-        <TouchableOpacity style={{width:'46%'}} onPress={this.onDOBPress.bind(this)} >
+        <TouchableOpacity style={{width:'46%'}} >
           <Text style={{ borderWidth: 0, width: '46%' }}>
             <IonicIcon name={'calendar-outline'} size={23} color={'#1BB467'} style={{ paddingBottom: 2 }} />
           </Text>
@@ -123,7 +107,7 @@ render() {
                 </View>
               </Text>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setModalVisible(true)}>
                 <Text style={{ width: '100%', borderWidth: 0 }}>
                   <View style={styles.dateRow}>
                     <Text style={styles.innerText}>
@@ -265,7 +249,38 @@ render() {
              <Text style={styles.input}></Text> 
         </View>
         </ScrollView>
-        <DatePickerDialog ref="dobDialog" onDatePicked={this.onDOBDatePicked.bind(this)} />        
+
+
+       
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}               
+          onClickOutside={this.onClickOutside}                  
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.innerModalText}>Please enter 6 digit code to unlock this message.</Text>              
+              <TextInput style={styles.input} placeholder="Enter code:"/>
+
+
+              <View>                     
+                <TouchableOpacity onPress={this.unlockCode} style={styles.buttonClose}>
+                    <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
+                  </TouchableOpacity>          
+              </View>
+
+              <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
+              <Pressable
+                style={styles.buttonClose}
+                onPress={() => this.setModalVisible(!modalVisible)}
+              >
+                <Text style={{color:'white',padding:5}}>CLOSE</Text>
+              </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>                    
         <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
       </View>
     )
@@ -273,85 +288,130 @@ render() {
 }
 export default MessageScreen;
 const styles = StyleSheet.create
-  ({
-    container: {
-      flex: 1,
-      alignItems: 'stretch',
-      backgroundColor: '#271933',
-      flexDirection: 'column'
-    },
-    logo: {
-      marginTop: 20,
-      backgroundColor: '#271933',
-      borderRadius: 8,
-      height: 65,
-      margin: 7,
+({
+  container: {
+    flex: 1,
+    alignItems: 'stretch',
+    backgroundColor: '#271933',
+    flexDirection: 'column'
+  },
 
-    },
-    calendarCard: {
-      backgroundColor: 'white',
-      borderRadius: 8,
-      paddingVertical: 15,
-      paddingHorizontal: 15,
-      width: '100%',
-      marginVertical: 5,
-      flexDirection: 'row'
-    },
-    elevation: {
-      elevation: 20,
-      shadowColor: '#FFF',
-    },
-    heading: {
-      backgroundColor: 'white',
-      width: '100%',
-      fontSize: 14,
-      fontWeight: 'bold',
-      textAlign: 'left'
-    },
-    messagesCard: {
-      backgroundColor: '#f1f1f1',
-      borderRadius: 8,
-      paddingVertical: 10,
-      paddingHorizontal: 10,
-      width: '100%',
-      marginVertical: 2,
-      shadowOpacity:1,
-      shadowRadius:3,
-      shadowOffset:{
-        height:0,
-        width:0
-      },
-      
-    },
-    dateRow: {
-      borderWidth: 0,
-      padding: 1
-    },
-    dateColumn: {
-      width: '50%',
+  centeredView: {    
+    justifyContent: "center",
+    alignItems: "center",    
+    backgroundColor:'#F1F1F1',
+    flex:1
+  },
 
-    },
-    innerText: {
-      fontSize: 17,
-      padding: 1,
-    },
-    btnTouch: {
-      backgroundColor: '#1BB467',
-      width: '35%',
-      padding: 1,
-      borderRadius: 5,
-      color: 'white',
-      borderWidth: 0,
-      alignSelf: 'flex-end'
+  innerModalText:
+  {
+    color:'black',
+    fontSize:16
+  },
+  input:{
+    width:"95%",    
+    borderColor:'#271833',
+    padding:10,
+    margin:8,
+    borderRadius:5,
+    fontSize:18,
+    borderWidth:1
+  },
+  buttonClose: {
+    backgroundColor: "#1BB467",  
+    padding:16,
+    borderRadius:5,
+    color:'white'    
+  },
+  logo: {
+    marginTop: 20,
+    backgroundColor: '#271933',
+    borderRadius: 8,
+    height: 65,
+    margin: 7,
+  },
+  calendarCard: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    width: '100%',
+    marginVertical: 5,
+    flexDirection: 'row'
+  },
+  elevation: {
+    elevation: 20,
+    shadowColor: '#FFF',
+  },
+  heading: {
+    backgroundColor: 'white',
+    width: '100%',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'left'
+  },
+  messagesCard: {
+    backgroundColor: '#f1f1f1',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    width: '100%',
+    marginVertical: 2,
+    shadowOpacity:1,
+    shadowRadius:3,
+    shadowOffset:{
+    height:0,
+    width:0
+  },
 
+  },
+  dateRow: {
+    borderWidth: 0,
+    padding: 1
+  },
+  dateColumn: {
+  width: '50%',
+
+  },
+  innerText: {
+  fontSize: 17,
+  padding: 1,
+  },
+  btnTouch: {
+  backgroundColor: '#1BB467',
+  width: '35%',
+  padding: 1,
+  borderRadius: 5,
+  color: 'white',
+  borderWidth: 0,
+  alignSelf: 'flex-end'
+
+  },
+  long_text: {
+  padding: 2,
+  lineHeight: 20,
+  fontSize: 15
+  },
+
+  modalView: {
+    margin: 3,
+    backgroundColor: "#f1f1f1",
+    borderRadius: 15,
+    padding: 10,    
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
     },
-    long_text: {
-      padding: 2,
-      lineHeight: 20,
-      fontSize: 15
-    },
-    
-blank_view:{
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width:'80%',
+    height: Platform.OS === 'ios' ? '60%' : '52%'
+
+  },
+
+  blank_view:{
   marginTop: Platform.OS === 'ios' ? 20 : 70
-},
-  });
+  },
+});
