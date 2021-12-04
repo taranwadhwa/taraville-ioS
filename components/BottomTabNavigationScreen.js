@@ -17,48 +17,48 @@ class StatusScreen extends React.Component{
           <View style={styles.NavigationContainer}>
             <View style={styles.NavigationInnerContainer}>
                 <Text style={styles.NavigationText}>
-                <Pressable onPress={()=>this.props.navigation.replace('Status')}>
+                <Pressable onPress={()=>this.props.navigation.navigate('Status')}>
                 <View style={styles.icon}>
                 {
                     this.state.croute=='Status'
                     ?
-                    <><IonicIcon name={'options-outline'} size={20} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
+                    <><IonicIcon name={'options'} size={20} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
                       <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Status</Text></>
                     :
-                    <><IonicIcon name={'options-outline'} size={20} color={'#6E6865'} style={{ paddingBottom: 2 }} />
-                    <Text style={{ paddingLeft:8,color:'#6E6865'}}>Status</Text></>
+                    <><IonicIcon name={'options-outline'} size={20} color={'#9E9E9E'} style={{ paddingBottom: 2 }} />
+                    <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Status</Text></>
                 }
                 </View>
                 </Pressable>
                 </Text>
 
                 <Text style={styles.NavigationText}>
-                <Pressable onPress={()=>this.props.navigation.replace('Message')}>
+                <Pressable onPress={()=>this.props.navigation.navigate('Message')}>
                 <View style={styles.icon}>
                 {
                     this.state.croute=='Message'
                     ?
-                    <><IonicIcon name={'ios-mail-outline'} size={20} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
+                    <><IonicIcon name={'ios-mail'} size={22} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
                       <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Message</Text></>
                     :
-                    <><IonicIcon name={'ios-mail-outline'} size={20} color={'#6E6865'} style={{ paddingBottom: 2 }} />
-                    <Text style={{ paddingLeft:8,color:'#6E6865'}}>Message</Text></>
+                    <><IonicIcon name={'ios-mail-outline'} size={22} backgroundColor={'#9E9E9E'} color={'#6E6865'} style={{ paddingBottom: 2 }} />
+                    <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Message</Text></>
                 }
                 </View>
                 </Pressable>
                 </Text>  
 
                 <Text style={styles.NavigationText}>
-                <Pressable onPress={()=>this.props.navigation.replace('Insight')}>
+                <Pressable onPress={()=>this.props.navigation.navigate('Insight')}>
                 <View style={styles.icon}>
                 {
                     this.state.croute=='Insight'
                     ?
-                    <><IonicIcon name={'analytics-outline'} size={20} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
+                    <><IonicIcon name={'analytics'} size={22} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
                       <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Insight</Text></>
                     :
-                    <><IonicIcon name={'analytics-outline'} size={20} color={'#6E6865'} style={{ paddingBottom: 2 }} />
-                    <Text style={{ paddingLeft:8,color:'#6E6865'}}>Insight</Text></>
+                    <><IonicIcon name={'analytics-outline'} size={22} color={'#9E9E9E'} style={{ paddingBottom: 2 }} />
+                    <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Insight</Text></>
                 }
                 </View>
                 </Pressable>
@@ -67,16 +67,16 @@ class StatusScreen extends React.Component{
 
 
                 <Text style={styles.NavigationText}>
-                <Pressable onPress={()=>this.props.navigation.replace('Dashboard')}>
+                <Pressable onPress={()=>this.props.navigation.navigate('Dashboard')}>
                 <View style={styles.icon}>
                 {
                     this.state.croute=='Dashboard'
                     ?
-                    <><IonicIcon name={'person-outline'} size={20} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
+                    <><IonicIcon name={'person'} size={20} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
                       <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Profile</Text></>
                     :
-                    <><IonicIcon name={'person-outline'} size={20} color={'#6E6865'} style={{ paddingBottom: 2 }} />
-                    <Text style={{ paddingLeft:8,color:'#6E6865'}}>Profile</Text></>
+                    <><IonicIcon name={'person-outline'} size={20} color={'#9E9E9E'} style={{ paddingBottom: 2 }} />
+                    <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Profile</Text></>
                 }
                 </View>
                 </Pressable>
@@ -94,7 +94,7 @@ export default StatusScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#c1c1c1',
+    backgroundColor: '#FFF',
     alignItems:'center',
     justifyContent: 'center',    
     flexDirection:'column',    
@@ -102,26 +102,27 @@ const styles = StyleSheet.create({
     bottom:2,
     height:'9%',
     borderRadius:5,            
-    alignSelf:'center'  
+    alignSelf:'center',
+    margin:5  
   },
   
   NavigationContainer:{ 
     justifyContent:'center',
     textAlign:'center',    
     width:'100%',
-    backgroundColor:'#C0C0C0',        
+    backgroundColor:'#FFF',        
     flexDirection:'row',
     margin:1,    
     borderRadius:13,    
   },
   NavigationInnerContainer:{
     borderWidth:1,
-    borderColor:'#c1c1c1',
+    borderColor:'#FFF',
     borderRadius:13,
     flexDirection:'row',
     width:'100%',
     borderRadius:10,
-    shadowOpacity:0.3,
+    shadowOpacity:0.1,
     shadowRadius:3,
     shadowOffset:{
       height:0,
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     padding:8,
     margin:13,    
     fontSize:17,
-    shadowOpacity:0.3,
+    shadowOpacity:0.1,
     shadowRadius:3,
     shadowOffset:{
       height:0,

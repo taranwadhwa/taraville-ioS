@@ -14,6 +14,7 @@ import {
   KeyboardAvoidingView,     
   Button,
   Pressable,  
+  Modal,
   useIsFocused  
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
@@ -45,6 +46,15 @@ class DashboardScreen extends React.Component{
   {     
     this.setState({staffVisible:true})    
   }
+  triggerStaffModal()
+  {   
+    this.props.navigation.navigate('Staff')
+    this.setState({ modalVisible: false });
+  }
+
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  }
 
    render(){    
     const{loading} = this.state
@@ -65,22 +75,11 @@ class DashboardScreen extends React.Component{
 
         <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>  
         
-          <View style={styles.staff_container}>           
-
-            <Pressable style={{width:'50%'}} onPress={this.loadNewStaff} > 
-              <Text  style={{fontSize:14,borderWidth:2,backgroundColor:'#1BB467',color:'white',margin:5,padding:8,borderRadius:7}}>
-              <IonicIcon name={iconName} color={'white'} size={25}/>
-              CREATE NEW STAFF
-              </Text>
-            </Pressable>  
-            <TouchableOpacity style={{width:'50%'}}> 
-              <Text style={{fontSize:16,borderWidth:2, backgroundColor:'#1BB467',color:'white',margin:5,padding:8,borderRadius:7}}>
-                <IonicIcon name={iconName} color={'white'} size={25}  />
-                CREATE FAQ'S
-              </Text>
-            </TouchableOpacity>  
+        <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+          <View style={styles.staff_container}>   
+				    <IonicIcon name={'add-outline'} color={'black'} size={45} style={{paddingBottom:3}} />
           </View>  
-               
+        </TouchableOpacity> 
 
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            
@@ -132,6 +131,47 @@ class DashboardScreen extends React.Component{
         </View>
 
         </ScrollView>     
+
+        <View style={styles.centeredView}>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}               
+          onClickOutside={this.onClickOutside}                  
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={{marginTop:2}}></Text>
+
+              <TouchableOpacity style={styles.btnFaq}>
+              <Button 
+                onPress = {this.triggerStaffModal.bind(this)}
+                title = "CREATE ADDITIONAL STAFF" 
+                textAlign="left"               
+                color = "#FFF">
+              </Button>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btnFaq}>
+              <Button                    
+                onPress = {this.triggerFAQModal}
+                title = "CREATE FAQ'S"
+                textAlign="left"
+                titleStyle="left"                 
+               color = "#FFF">
+              </Button>  
+              </TouchableOpacity>                          
+              <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
+              <Pressable
+                style={styles.buttonClose}
+                onPress={() => this.setModalVisible(!modalVisible)}
+              >
+                <Text style={{color:'white',fontWeight:'bold'}}>CLOSE</Text>
+              </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>        
+      </View>
         <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route}/>            
         </KeyboardAvoidingView>                                
 
@@ -176,9 +216,15 @@ const styles = StyleSheet.create({
     flexDirection:'column'
   },  
 
+  centeredView: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 28
+  },
+
   modalView: {
     margin: 3,
-    backgroundColor: "white",
+    backgroundColor: "#f1f1f1",
     borderRadius: 15,
     padding: 10,    
     shadowColor: "#000",
@@ -198,7 +244,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,    
     width: '99%',         
     alignItems:'center',
-    flexDirection:'row',    
+    flexDirection:'row', 
+    backgroundColor:'#F1F1F1',
+    alignSelf:'center'   
   },
   faq:{
     fontSize:18,            

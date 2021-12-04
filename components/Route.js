@@ -59,7 +59,8 @@ export default function Route(props)
         <Stack.Screen name="Status" component={StatusScreen}/>        
         <Stack.Screen name="Insight" component={InsightScreen}/>
         <Stack.Screen name="Dashboard" component={DashboardScreen}/>      
-        <Stack.Screen name="Login" component={LoginScreen}/>          
+        <Stack.Screen name="Login" component={LoginScreen}/>
+        <Stack.Screen name="Staff" component={StaffScreen}/>          
      </Stack.Navigator>              
     </NavigationContainer>
        
