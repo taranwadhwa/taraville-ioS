@@ -11,7 +11,8 @@ import {
   from 'react-native';
   import axios  from 'axios';
   import configData from "../components/config.json";
-  
+  import { signIn } from '../components/User';
+  import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class LoginScreen extends React.Component{
   constructor(props) {
@@ -20,36 +21,47 @@ class LoginScreen extends React.Component{
         email:'',
         password:'',
         loading:false,
-        validation_status:true                
+        validation_status:true,
+        loading:false                
     }
   }
-  doLogin(){         
+  doLogin = async ()=>{         
     Keyboard.dismiss()
-    const{email,password} = this.state;
-    if(email && password)
-    {
-      this.props.navigation.navigate('Dashboard');
-      this.setState({loading:true})            
-      axios.post(configData.SERVER_URL+'users/login.php',{
-        email:this.state.email,
-        password:this.state.password   
-      })
-      .then(res=>{      
-        alert(res.data.status)
-        if(res.data.status=="OK"){
-          console.log();
-          this.props.navigation.navigate('Dashboard');
-        }
-        else{
-          alert(res.data.status)
-          
-        }
-      })
-      .catch(error => {
-      
-        throw error;
-    })  
+    const{email,password} = this.state;  
+    
+    if(email && password){ 
+      // start //
+     
+      try {
 
+          const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/login.php", {
+          email,
+          password
+        })
+        .then(res => {
+          if (res.data.status == "OK") {
+            this.setState({loading:true})  
+            const token = res.data.rem_token;                      
+            AsyncStorage.setItem("id", res.data.id);
+            this.props.navigation.navigate('Message')  
+          }
+          else {
+            alert(res.data.status)
+          }
+        })
+        .catch(error => {
+          alert(error)
+          throw error;
+        })
+
+      }
+      catch (error) {
+        console.log("error inside sign in" + error)
+      }
+
+
+      // end //
+         //const res = await signIn(email,password)      
     }
     else{
         this.setState({validation_status:false})
@@ -57,14 +69,16 @@ class LoginScreen extends React.Component{
     }
   }
   render(){ 
-      const{loading} = this.state
+    const{loading} = this.state 
+    //const { signIn } = React.useContext(AuthContext);
+    
       return(
         <View style={styles.container}>
           <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
           <View style={styles.logo}>
             <Image source = {require("../assets/logo.png")}/>
           </View>
-          <TextInput style={[styles.half_width, { borderColor: this.state.validation_status ? '#C1C1C1' : 'white' }]} placeholder="Email-address:" onChangeText={(email)=>this.setState({email:email})}/>
+          <TextInput autoCapitalize="none" style={[styles.half_width, { borderColor: this.state.validation_status ? '#C1C1C1' : 'white' }]} placeholder="Email-address:" onChangeText={(email)=>this.setState({email:email})}/>
           <TextInput style={[styles.half_width, { borderColor: this.state.validation_status ? '#C1C1C1' : 'white' }]} placeholder="Password:" onChangeText={(password)=>this.setState({password:password})} secureTextEntry={true}/>
           
           <View style={styles.btnContainer}>            

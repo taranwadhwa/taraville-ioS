@@ -7,12 +7,15 @@ import {
   ScrollView,
   StatusBar, 
   Modal,
-  Pressable
+  Pressable,
+  Platform,
+  Alert,
+  Picker
 } from 'react-native';
-
-
-import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
-import IonicIcon from 'react-native-vector-icons/Ionicons'
+import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
+import IonicIcon from 'react-native-vector-icons/Ionicons';
+import { render } from 'react-dom';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class MessageScreen extends React.Component {
   constructor(props) {
@@ -21,270 +24,497 @@ class MessageScreen extends React.Component {
       dobText: '',
       dobDate: null,
       modalVisible: false,
+      callModalVisible:false,
+      notesModalVisible:false,
+      reminderVisible:false,
+                
     }  
+    //this.searchMessages = this.searchMessages.bind(this);
+    this.selectedIndex = this.selectedIndex.bind(this);
   }
   
+  searchMessages = async ()=>{            
+    const user_id =  AsyncStorage.getItem("id");            
+  }
+  setModalVisible = (visible) => {  
+    this.setState({ modalVisible: visible })
+    this.setState({ notesModalVisible: false })
+    this.setState({ callModalVisible: false })
+    this.setState({reminderVisible:false})
+  }
 
-}
-setModalVisible = (visible) => {
-  this.setState({ modalVisible: visible });
-}
-unlockCode(){
-  alert("Unlock mycode.")
+
+setCallModalVisible = (visible) => {
+  this.setState({ callModalVisible: visible })
+  this.setState({ modalVisible: false })
+  this.setState({ notesModalVisible: false })
+  this.setState({reminderVisible:false})
 }
 
-render() {     
-  const { modalVisible } = this.state;   
-    return (
-      <View style={styles.container}>
-        <StatusBar backgroundColor="#271933" barStyle="light-content" />
-        <View style={styles.logo}>
-          <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-        </View>
-       
-        <View style={[styles.calendarCard, styles.elevation]}>        
-          
-        <TouchableOpacity style={{width:'46%'}} >
-          <Text style={{ borderWidth: 0, width: '46%' }}>
-            <IonicIcon name={'calendar-outline'} size={23} color={'#1BB467'} style={{ paddingBottom: 2 }} />
-          </Text>
-         </TouchableOpacity> 
+setNotesModalVisible = (visible) => {
+  this.setState({ notesModalVisible: visible })
+  this.setState({ modalVisible: false })
+  this.setState({ callModalVisible: false })
+  this.setState({reminderVisible:false})
+}
+setReminderVisible = (visible)=>{  
+  this.setState({reminderVisible:visible})
+  this.setState({ notesModalVisible: false })
+  this.setState({ modalVisible: false })
+  this.setState({ callModalVisible: false })
+  
+}
+selectedIndex(index){
+  alert(index)
+}
+render(){
 
-          <Text style={styles.heading}>You have 2 new message(s)</Text>
-        </View>
+  let data = [{
+    value: 'Banana',
+  }, {
+    value: 'Mango',
+  }, {
+    value: 'Pear',
+  }];
+
+  const { modalVisible,callModalVisible,notesModalVisible,reminderVisible } = this.state;   
+  return (
+    <View style={styles.container}>
+      <StatusBar backgroundColor="#271933" barStyle="light-content" />
+      <View style={styles.logo}>
+        <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
+      </View>
+     
+      {/* <View style={[styles.calendarCard, styles.elevation]}>        
+        
+      <TouchableOpacity style={{width:'46%'}} >
+        <Text style={{ borderWidth: 0, width: '46%' }}>
+          <IonicIcon name={'calendar-outline'} size={23} color={'#1BB467'} style={{ paddingBottom: 2 }} />
+        </Text>
+       </TouchableOpacity> 
+
+        <Text style={styles.heading}>You have 2 new message(s)</Text>
+      </View> */}
+      <View style={[styles.messagesCard, styles.elevation]}>                  
+            <View style={{flexDirection:'row'}}>             
+                <TextInput style={styles.input} placeholder="Search:"/>                       
+              <Text>
+                  <TouchableOpacity onPress={this.searchMessages}>
+                    <IonicIcon name={'search-outline'} color={'black'} size={25}  style={{paddingTop:18}} />
+                 </TouchableOpacity> 
+               </Text>  
+            </View>                  
+      </View>
+      <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
         <View style={[styles.messagesCard, styles.elevation]}>
-          <TouchableOpacity style={styles.btnTouch}>
-            <Text>
-              <View>
-                <Text style={{ padding: 10, color: 'white' }}>
-                  <IonicIcon style={{ paddingBottom: 2 }} name={'add-outline'} color={'white'} size={20} />
-                  COMPOSE
-                </Text>
+
+          <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
+            <Text style={{ width: '50%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Date: Nov.21,2021</Text>
               </View>
             </Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
-          <View style={[styles.messagesCard, styles.elevation]}>
 
-            <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
-              <Text style={{ width: '45%' }}>
+            <TouchableOpacity onPress={() => this.setCallModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Date: Nov.21,2021</Text>
-                </View>
-              </Text>             
-            </View>
-
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '40%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Time: 9.10 am</Text>
+                  <Text style={styles.innerText}>
+                    <IonicIcon name={'call-outline'} color={'black'} size={20} /></Text>
                 </View>
               </Text>
-            </View>
+            </TouchableOpacity>
 
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '70%' }}>
+            <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Customer name: Taranjit Singh</Text>                  
+                  <Text style={styles.innerText}>
+                    <IonicIcon name={'lock-closed-outline'} color={'red'} size={20} /></Text>
                 </View>
               </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
-              <Text style={styles.long_text}>
-                Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem
-              </Text>
-            </View>
-
-            <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
+            </TouchableOpacity>
 
 
-            <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
-              <Text style={{ width: '45%' }}>
+            <TouchableOpacity onPress={() => this.setNotesModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Date: Nov.21,2021</Text>
+                  <Text style={styles.innerText}>
+                    <IonicIcon name={'musical-notes-outline'} color={'black'} size={20} /></Text>
                 </View>
               </Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => this.setModalVisible(true)}>
-                <Text style={{ width: '100%', borderWidth: 0 }}>
-                  <View style={styles.dateRow}>
-                    <Text style={styles.innerText}>
-                      <IonicIcon name={'lock-closed-outline'} color={'black'} size={20} /></Text>
-                  </View>
-                </Text>
-              </TouchableOpacity>
 
-            </View>
-
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
+            <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Time: 9.10 am</Text>
+                  <Text style={styles.innerText}>
+                    <IonicIcon name={'archive-outline'} color={'black'} size={20} /></Text>
                 </View>
               </Text>
-            </View>
+            </TouchableOpacity>
 
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
+            <TouchableOpacity onPress={() => this.setReminderVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Customer name: Taranjit Singh</Text>
+                  <Text style={styles.innerText}>
+                    
+                  <Image source={require("../assets/bell_icon.png")} style={{ resizeMode: 'contain', paddingTop: 0, width: 22, height: 20 }} />
+                    </Text>
                 </View>
               </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
-              <Text style={styles.long_text}>
-                This message is private, please enter 6 digit code to unlock it.
-              </Text>
-            </View>
-
-
-            <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
-
-
-            <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Date: Nov.21,2021</Text>
-                </View>
-              </Text>
-
-            </View>
-
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Time: 9.10 am</Text>
-                </View>
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Customer name: Taranjit Singh Wadhwa</Text>
-                </View>
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
-              <Text style={styles.long_text}>
-                Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem
-              </Text>
-            </View>
-
-            <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
-
-            <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Date: Nov.21,2021</Text>
-                </View>
-              </Text>
-
-            </View>
-
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Time: 9.10 am</Text>
-                </View>
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Customer name: Taranjit Singh Wadhwa</Text>
-                </View>
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
-              <Text style={styles.long_text}>
-                Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem
-              </Text>
-            </View>
-
-            <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
-
-
-            <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Date: Nov.21,2021</Text>
-                </View>
-              </Text>
-
-            </View>
-
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Time: 9.10 am</Text>
-                </View>
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-              <Text style={{ width: '100%' }}>
-                <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>Customer name: Taranjit Singh Wadhwa</Text>
-                </View>
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
-              <Text style={styles.long_text}>
-                Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem
-              </Text>
-            </View>
+            </TouchableOpacity>
 
 
           </View>
 
-          <View style={styles.blank_view}>
-             <Text style={styles.input}></Text> 
-        </View>
-        </ScrollView>
-
-
-       
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}               
-          onClickOutside={this.onClickOutside}                  
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.innerModalText}>Please enter 6 digit code to unlock this message.</Text>              
-              <TextInput style={styles.input} placeholder="Enter code:"/>
-
-
-              <View>                     
-                <TouchableOpacity onPress={this.unlockCode} style={styles.buttonClose}>
-                    <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
-                  </TouchableOpacity>          
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '40%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Time: 9.10 am</Text>
               </View>
-
-              <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
-              <Pressable
-                style={styles.buttonClose}
-                onPress={() => this.setModalVisible(!modalVisible)}
-              >
-                <Text style={{color:'white',padding:5}}>CLOSE</Text>
-              </Pressable>
-              </View>
-            </View>
+            </Text>
           </View>
-        </Modal>                    
-        <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '70%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Customer name: Taranjit Singh</Text>                  
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
+            <Text style={styles.long_text}>
+              Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem
+            </Text>
+          </View>
+
+          <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
+
+
+          <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
+            <Text style={{ width: '50%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Date: Nov.21,2021</Text>
+              </View>
+            </Text>
+
+            <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
+                <View style={styles.dateRow}>
+                  <Text style={styles.innerText}>
+                    <IonicIcon name={'call-outline'} color={'black'} size={20} /></Text>
+                </View>
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
+                <View style={styles.dateRow}>
+                  <Text style={styles.innerText}>
+                    <IonicIcon name={'lock-closed-outline'} color={'red'} size={20} /></Text>
+                </View>
+              </Text>
+            </TouchableOpacity>
+
+
+            <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
+                <View style={styles.dateRow}>
+                  <Text style={styles.innerText}>
+                    <IonicIcon name={'musical-notes-outline'} color={'black'} size={20} /></Text>
+                </View>
+              </Text>
+            </TouchableOpacity>
+
+
+            <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
+                <View style={styles.dateRow}>
+                  <Text style={styles.innerText}>
+                    <IonicIcon name={'archive-outline'} color={'black'} size={20} /></Text>
+                </View>
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+              <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
+                <View style={styles.dateRow}>
+                  <Text style={styles.innerText}>
+                    
+                  <Image source={require("../assets/bell_icon.png")} style={{ resizeMode: 'contain', paddingTop: 0, width: 22, height: 20 }} />
+                    </Text>
+                </View>
+              </Text>
+            </TouchableOpacity>
+
+
+          </View>
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Time: 9.10 am</Text>
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Customer name: Taranjit Singh</Text>
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
+            <Text style={styles.long_text}>
+              This message is private, please enter 6 digit code to unlock it.
+            </Text>
+          </View>
+
+
+          <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
+
+
+          <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Date: Nov.21,2021</Text>
+              </View>
+            </Text>
+
+          </View>
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Time: 9.10 am</Text>
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Customer name: Taranjit Singh Wadhwa</Text>
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
+            <Text style={styles.long_text}>
+              Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem
+            </Text>
+          </View>
+
+          <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
+
+          <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Date: Nov.21,2021</Text>
+              </View>
+            </Text>
+
+          </View>
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Time: 9.10 am</Text>
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Customer name: Taranjit Singh Wadhwa</Text>
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
+            <Text style={styles.long_text}>
+              Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem
+            </Text>
+          </View>
+
+          <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
+
+
+          <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Date: Nov.21,2021</Text>
+              </View>
+            </Text>
+
+          </View>
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Time: 9.10 am</Text>
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+            <Text style={{ width: '100%' }}>
+              <View style={styles.dateRow}>
+                <Text style={styles.innerText}>Customer name: Taranjit Singh Wadhwa</Text>
+              </View>
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
+            <Text style={styles.long_text}>
+              Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem Lorem ipsum dolar Lorem ipsum dolarLorem ipsum Lorem
+            </Text>
+          </View>
+
+
+        </View>
+
+        <View style={styles.blank_view}>
+           <Text style={styles.input}></Text> 
       </View>
-    )
-  }
+      </ScrollView>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}               
+        onClickOutside={this.onClickOutside}                  
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.innerModalText}>Please enter 6 digit code to unlock this message.</Text>              
+            <TextInput style={styles.input} placeholder="Enter code:"/>
+
+
+            <View>                     
+              <TouchableOpacity style={styles.buttonClose}>
+                  <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
+                </TouchableOpacity>          
+            </View>
+
+            <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
+            <Pressable
+              style={styles.buttonPopupClose}
+              onPress={() => this.setModalVisible(!modalVisible)}
+            >
+              <Text style={{color:'white',padding:5}}>CLOSE</Text>
+            </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>      
+      
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={callModalVisible}                                       
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+          <Text style={styles.innerModalText}>Request for call</Text>              
+            <TextInput style={styles.input} multiline={true} numberOfLines={4} placeholder="Enter text:"/>                          
+            <View> 
+              <TouchableOpacity style={styles.buttonClose}>
+                  <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
+                </TouchableOpacity>          
+            </View>
+
+            <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
+            <Pressable
+              style={styles.buttonPopupClose}
+              onPress={() => this.setCallModalVisible(!callModalVisible)}
+            >
+              <Text style={{color:'white',padding:5}}>CLOSE</Text>
+            </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>    
+
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={notesModalVisible}                                       
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+          <Text style={styles.innerModalText}>Notes</Text>              
+            <TextInput style={styles.input} multiline={true} numberOfLines={4} placeholder="Enter text:"/>                          
+            <View> 
+              <TouchableOpacity style={styles.buttonClose}>
+                  <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
+                </TouchableOpacity>          
+            </View>
+
+            <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
+            <Pressable
+              style={styles.buttonPopupClose}
+              onPress={() => this.setNotesModalVisible(!notesModalVisible)}
+            >
+              <Text style={{color:'white',padding:5}}>CLOSE</Text>
+            </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>  
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={reminderVisible}                                       
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+          <Text style={styles.innerModalText}>Set Reminder</Text>                          
+            <Picker
+            selectedValue={"Select"}
+            style={{ height: 50, width: 150 }}
+            onValueChange={(itemValue, itemIndex) => this.selectedIndex(itemValue)}
+            >
+            <Picker.Item label="Select" value="" />
+              <Picker.Item label="15 min." value="15 min." />
+              <Picker.Item label="30 min." value="30 min." />
+              <Picker.Item label="1 hour" value="1 hour" />
+              <Picker.Item label="4 hours" value="4 hours" />
+              <Picker.Item label="24 hours" value="24 hours" />
+              <Picker.Item label="7 days" value="7 days" />
+              <Picker.Item label="30 days" value="30 days" />
+            </Picker>
+
+            <View> 
+              <TouchableOpacity style={styles.buttonClose}>
+                  <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
+                </TouchableOpacity>          
+            </View>
+
+            <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
+            <Pressable
+              style={styles.buttonPopupClose}
+              onPress={() => this.setReminderVisible(!reminderVisible)}
+            >
+              <Text style={{color:'white',padding:5}}>CLOSE</Text>
+            </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>  
+
+
+
+      <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
+    </View>
+  )
+}
 }
 export default MessageScreen;
 const styles = StyleSheet.create
@@ -302,6 +532,9 @@ const styles = StyleSheet.create
     backgroundColor:'#F1F1F1',
     flex:1
   },
+  dropdown: {
+    width: '80%',
+  },
 
   innerModalText:
   {
@@ -309,7 +542,7 @@ const styles = StyleSheet.create
     fontSize:16
   },
   input:{
-    width:"95%",    
+    width:"85%",    
     borderColor:'#271833',
     padding:10,
     margin:8,
@@ -322,6 +555,12 @@ const styles = StyleSheet.create
     padding:16,
     borderRadius:5,
     color:'white'    
+  },
+  buttonPopupClose:{
+    backgroundColor: "red",  
+    padding:16,
+    borderRadius:5,
+    color:'white'  
   },
   logo: {
     marginTop: 20,
@@ -412,6 +651,6 @@ const styles = StyleSheet.create
   },
 
   blank_view:{
-  marginTop: Platform.OS === 'ios' ? 20 : 70
+    marginTop: Platform.OS === 'ios' ? 20 : 70
   },
 });

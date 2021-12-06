@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput, } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput,Platform } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 class StaffScreen extends React.Component {
     constructor(props) {

@@ -52,7 +52,7 @@ export default function Route(props)
 {
   return(
     <NavigationContainer>    
-    <Stack.Navigator initialRouteName="Login" screenOptions={{
+    <Stack.Navigator initialRouteName="Message" screenOptions={{
         headerShown: false,        
       }}>        
         <Stack.Screen name="Message" component={MessageScreen}/>
