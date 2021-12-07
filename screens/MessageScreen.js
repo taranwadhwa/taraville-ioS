@@ -27,6 +27,7 @@ class MessageScreen extends React.Component {
       callModalVisible:false,
       notesModalVisible:false,
       reminderVisible:false,
+      notes:''
                 
     }  
     //this.searchMessages = this.searchMessages.bind(this);
@@ -64,6 +65,20 @@ setReminderVisible = (visible)=>{
   this.setState({ callModalVisible: false })
   
 }
+
+saveNotes(){  
+  const{ notes } = this.state;
+  try{
+    const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse=>{
+      let parseObject = JSON.parse(syncResponse);      
+    })
+    
+  }
+  catch(error){
+    console.log("Error while getting asyncstorage on message screen="+error);
+  }
+}
+
 selectedIndex(index){
   alert(index)
 }
@@ -128,7 +143,7 @@ render(){
               <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
                   <Text style={styles.innerText}>
-                    <IonicIcon name={'lock-closed-outline'} color={'red'} size={20} /></Text>
+                    <IonicIcon name={'lock-closed'} color={'#6E2E35'} size={20} /></Text>
                 </View>
               </Text>
             </TouchableOpacity>
@@ -138,7 +153,7 @@ render(){
               <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
                   <Text style={styles.innerText}>
-                    <IonicIcon name={'musical-notes-outline'} color={'black'} size={20} /></Text>
+                    <IonicIcon name={'document-text-outline'} color={'black'} size={20} /></Text>
                 </View>
               </Text>
             </TouchableOpacity>
@@ -156,9 +171,8 @@ render(){
             <TouchableOpacity onPress={() => this.setReminderVisible(true)}>
               <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>
-                    
-                  <Image source={require("../assets/bell_icon.png")} style={{ resizeMode: 'contain', paddingTop: 0, width: 22, height: 20 }} />
+                  <Text style={styles.bell_icon}>                    
+                    <Image source={require("../assets/bell_icon.png")} style={{ resizeMode: 'contain', width: 22, height: 20 }} />
                     </Text>
                 </View>
               </Text>
@@ -189,6 +203,10 @@ render(){
             </Text>
           </View>
 
+          <View style={{ flexDirection: 'row', justifyContent:'flex-end' }}>
+            <Text style={{backgroundColor:'#6E2E35',padding:5,color:'white',borderRadius:5}}> URGENT </Text>
+          </View>
+
           <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
 
 
@@ -212,7 +230,7 @@ render(){
               <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
                   <Text style={styles.innerText}>
-                    <IonicIcon name={'lock-closed-outline'} color={'red'} size={20} /></Text>
+                    <IonicIcon name={'lock-closed'} color={'#6E2E35'} size={20} /></Text>
                 </View>
               </Text>
             </TouchableOpacity>
@@ -222,7 +240,7 @@ render(){
               <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
                   <Text style={styles.innerText}>
-                    <IonicIcon name={'musical-notes-outline'} color={'black'} size={20} /></Text>
+                    <IonicIcon name={'document-text-outline'} color={'black'} size={20} /></Text>
                 </View>
               </Text>
             </TouchableOpacity>
@@ -240,7 +258,7 @@ render(){
             <TouchableOpacity onPress={() => this.setModalVisible(true)}>
               <Text style={{ width: '100%', borderWidth: 0,paddingRight:10 }}>
                 <View style={styles.dateRow}>
-                  <Text style={styles.innerText}>
+                  <Text style={styles.bell_icon}>
                     
                   <Image source={require("../assets/bell_icon.png")} style={{ resizeMode: 'contain', paddingTop: 0, width: 22, height: 20 }} />
                     </Text>
@@ -273,6 +291,9 @@ render(){
             </Text>
           </View>
 
+          <View style={{ flexDirection: 'row', justifyContent:'flex-end' }}>
+            <Text style={{backgroundColor:'#1BB467',padding:5,color:'white',borderRadius:5}}> Sent to VM </Text>
+          </View>
 
           <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>
 
@@ -392,7 +413,7 @@ render(){
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.innerModalText}>Please enter 6 digit code to unlock this message.</Text>              
-            <TextInput style={styles.input} placeholder="Enter code:"/>
+            <TextInput style={styles.modalInput} placeholder="Enter code:"/>
 
 
             <View>                     
@@ -421,7 +442,7 @@ render(){
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
           <Text style={styles.innerModalText}>Request for call</Text>              
-            <TextInput style={styles.input} multiline={true} numberOfLines={4} placeholder="Enter text:"/>                          
+            <TextInput style={styles.modalInput} numberOfLines={4} multiline={true}/>                          
             <View> 
               <TouchableOpacity style={styles.buttonClose}>
                   <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
@@ -449,10 +470,10 @@ render(){
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
           <Text style={styles.innerModalText}>Notes</Text>              
-            <TextInput style={styles.input} multiline={true} numberOfLines={4} placeholder="Enter text:"/>                          
+            <TextInput onChangeText={(notes)=>this.setState({notes:notes})} style={styles.modalInput} multiline={true} numberOfLines={4} />                          
             <View> 
               <TouchableOpacity style={styles.buttonClose}>
-                  <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
+                  <Text onPress={()=>this.saveNotes()} style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
                 </TouchableOpacity>          
             </View>
 
@@ -475,10 +496,11 @@ render(){
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-          <Text style={styles.innerModalText}>Set Reminder</Text>                          
-            <Picker
+          <Text style={styles.innerModalText}>Set Reminder</Text>
+            <View style={{borderWidth:1, borderColor:'#C1C1C1',width: "100%",marginTop:10}}>                          
+            <Picker 
             selectedValue={"Select"}
-            style={{ height: 50, width: 150 }}
+            style={{ height: 50, width: '100%',padding:10,borderWidth:1,borderColor:'#C1C1C1', }}
             onValueChange={(itemValue, itemIndex) => this.selectedIndex(itemValue)}
             >
             <Picker.Item label="Select" value="" />
@@ -490,8 +512,8 @@ render(){
               <Picker.Item label="7 days" value="7 days" />
               <Picker.Item label="30 days" value="30 days" />
             </Picker>
-
-            <View> 
+            </View>
+            <View style={styles.reminderContainer}> 
               <TouchableOpacity style={styles.buttonClose}>
                   <Text style={{color:'white',padding:5,alignSelf:'center',textAlign:'center',fontSize:16}}>SUBMIT</Text>
                 </TouchableOpacity>          
@@ -539,20 +561,32 @@ const styles = StyleSheet.create
   innerModalText:
   {
     color:'black',
-    fontSize:16
+    fontSize:16,
+    paddingLeft:10,
+    paddingTop:5
   },
   input:{
     width:"85%",    
     borderColor:'#271833',
-    padding:10,
+    padding:7,
     margin:8,
+    borderRadius:5,
+    fontSize:18,
+    borderWidth:1
+  },
+  modalInput:{
+    width:"98%",    
+    borderColor:'#271833',
+    padding:7,
+    margin:4,
+    marginBottom:5,
     borderRadius:5,
     fontSize:18,
     borderWidth:1
   },
   buttonClose: {
     backgroundColor: "#1BB467",  
-    padding:16,
+    padding:7,
     borderRadius:5,
     color:'white'    
   },
@@ -650,6 +684,12 @@ const styles = StyleSheet.create
 
   },
 
+  bell_icon:{
+    marginTop: Platform.OS === 'ios' ? 5 : 1
+  },
+  reminderContainer:{
+    marginTop: Platform.OS === 'ios' ? 130 : 40
+  },  
   blank_view:{
     marginTop: Platform.OS === 'ios' ? 20 : 70
   },

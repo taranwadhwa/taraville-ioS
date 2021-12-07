@@ -19,10 +19,12 @@ import {
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios  from 'axios';
+import configData from "../components/config.json";
 
 class DashboardScreen extends React.Component{
-  constructor(props) {
-    
+  constructor(props) {    
     super(props); 
     this.state = {
       fname:'',
@@ -32,14 +34,21 @@ class DashboardScreen extends React.Component{
       phone:'',
       loading:false,
       validation_status:true,
-      expmonth:'', 
-      exp_year:'', 
+      ccnumber:'',
+      expiryMonth:'', 
+      expiryYear:'', 
       cvv:'', 
+      buisness_name:'',
+      website:'',
+      address:'',
+      description:'',
+      hooperations:'',
+      plan_name:'',
       modalVisible: false,
       staffVisible:false,              
   }
   this.loadNewStaff = this.loadNewStaff.bind(this);
-    
+  this._updateInfo = this._updateInfo.bind(this);  
   }
    
   loadNewStaff()
@@ -56,12 +65,108 @@ class DashboardScreen extends React.Component{
     this.setState({ modalVisible: visible });
   }
 
+  componentDidMount(){
+   try{
+      const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse=>{
+       let parseObject = JSON.parse(syncResponse);  
+       var uid =  parseObject.id;
+       var user_token =  parseObject.token;   
+
+       if(uid!=null)
+       {
+        try{
+          const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/fetch.php", {
+            user_token,uid           
+          })
+          .then(res=>{
+              if(res.data.status == "OK")
+              {
+                this.setState({
+                  fname:res.data.user_records.first_name,
+                  lname:res.data.user_records.last_name,
+                  email:res.data.user_records.email,
+                  phone:res.data.user_records.phone,
+                  buisness_name:res.data.user_records.business,
+                  website:res.data.user_records.website,
+                  address:res.data.user_records.address,  
+                  description:res.data.user_records.description, 
+                  hooperations:res.data.user_records.hooperations,    
+                })
+                
+              }
+              else{
+                alert(res.data.status)
+              }
+             
+          })
+
+          }
+          catch(error){
+            alert("Error while fetching request for dashboard update="+error)
+          }
+
+       }   
+
+    });
+   }
+   catch(error){
+     console.log("Error while getting fetch asyncstorage on dashboard screen="+error);
+   }
+        
+
+  }
+
+  _updateInfo(){    
+    const{
+      fname,lname,email,password,phone,ccnumber,
+      expiryMonth,expiryYear,cvv,buisness_name,
+      website,address,description,hooperations,plan_name
+    } = this.state;
+
+    try{
+        const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse=>{
+          let parseObject = JSON.parse(syncResponse);  
+          var uid =  parseObject.id;
+          var user_token =  parseObject.token;                      
+          if(uid!=null)
+          {            
+            try{
+            const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/update.php", {
+              fname,lname,phone,ccnumber,expiryMonth,expiryYear,cvv,buisness_name,
+              website,address,description,hooperations,plan_name,uid,user_token              
+            })
+            .then(res=>{
+                if(res.data.status == "OK"){
+                  alert("Profile information has been successfully saved.")
+                }else{
+                  alert(res.data.status)
+                }
+               
+            })
+
+            }
+            catch(error){
+              alert("Error while sendign request for dashboard update="+error)
+            }
+
+          }
+
+      });       
+    }
+    catch(error){
+      console.log("Error while getting asyncstorage on dashboard screen="+error);
+    }
+
+
+
+  }
+
    render(){    
     const{loading} = this.state
     let iconName='add-outline';
     let iconColor = '#271833'   
     let staffIconName='person-add-outline';
-    const { modalVisible,staffVisible } = this.state; 
+    const { modalVisible,staffVisible,fname,lname,email,phone,buisness_name,website,address,description,hooperations } = this.state; 
    
    {
     if(!this.state.staffVisible){
@@ -83,47 +188,46 @@ class DashboardScreen extends React.Component{
 
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            
-          <TextInput style={styles.input} placeholder="First name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
-          <TextInput style={styles.input} placeholder="Last name:" onChangeText={(lname)=>this.setState({lname:lname})}/>          
-          <TextInput style={styles.input} placeholder="E-mail:" onChangeText={(email)=>this.setState({email:email})}/>
-          <TextInput style={styles.input} placeholder="Phone #:" onChangeText={(phone)=>this.setState({phone:phone})}/>          
+          <TextInput value={fname} style={styles.input} placeholder="First name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
+          <TextInput value={lname} style={styles.input} placeholder="Last name:" onChangeText={(lname)=>this.setState({lname:lname})}/>          
+          <TextInput  editable = {false} value={email}  style={styles.input} placeholder="E-mail:" onChangeText={(email)=>this.setState({email:email})}/>
+          <TextInput value={phone} style={styles.input} placeholder="Phone #:" onChangeText={(phone)=>this.setState({phone:phone})}/>          
         </View>         
           <View style={[styles.inputCard, styles.elevation]}>
           <Text style={styles.heading}>Business Information</Text>            
-          <TextInput style={styles.input} placeholder="Buisness name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
-          <TextInput style={styles.input} placeholder="Website:" onChangeText={(lname)=>this.setState({lname:lname})}/>          
-          <TextInput style={styles.input} placeholder="Address:" onChangeText={(email)=>this.setState({email:email})}/>          
-          <TextInput multiline={true}  numberOfLines={4} style={styles.input} placeholder="Description:" onChangeText={(phone)=>this.setState({phone:phone})}/>
-          <TextInput style={styles.input} placeholder="Hours of operations:" onChangeText={(lname)=>this.setState({lname:lname})}/>                   
+          <TextInput value={buisness_name} style={styles.input} placeholder="Buisness name:" onChangeText={(buisness_name)=>this.setState({buisness_name:buisness_name})}/>          
+          <TextInput value={website} style={styles.input} placeholder="Website:" onChangeText={(website)=>this.setState({website:website})}/>          
+          <TextInput value={address} style={styles.input} placeholder="Address:" onChangeText={(address)=>this.setState({address:address})}/>          
+          <TextInput value={description} multiline={true}  numberOfLines={4} style={styles.input} placeholder="Description:" onChangeText={(description)=>this.setState({description:description})}/>
+          <TextInput value={hooperations} style={styles.input} placeholder="Hours of operations:" onChangeText={(hooperations)=>this.setState({hooperations:hooperations})}/>                   
         </View> 
                      
         <View style={[styles.inputCard, styles.elevation]}>
           <Text style={styles.heading}>Billing Details</Text>  
 
-          <TextInput style={styles.input} placeholder="Plan name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
-
-          <TextInput keyboardAppearance="light" keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
+          <TextInput style={styles.input} placeholder="Plan name:" onChangeText={(plan_name)=>this.setState({plan_name:plan_name})}/>          
+          <TextInput keyboardAppearance="light" keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(ccnumber)=>this.setState({ccnumber:ccnumber})}/>          
           
           <View style={styles.text_container}>
             <TextInput keyboardAppearance="light" keyboardType="numeric" 
               style={[styles.half_input, { borderColor: this.state.validation_status ? '#C1C1C1' : 'red' }]}
               label="Expiry month" mode="flat"
               placeholder="Expiry month e.g. 05" maxLength={2} ref="exp_month" 
-              onChangeText={(expmonth)=>this.setState({expiryMonth:expmonth})}
+              onChangeText={(expiryMonth)=>this.setState({expiryMonth:expiryMonth})}
               />
 
             <TextInput keyboardAppearance="light" keyboardType="numeric" 
               style={[styles.half_input, { borderColor: this.state.validation_status ? '#C1C1C1' : 'red' }]}
               label="Expiry year" mode="flat"
               placeholder="Expiry year e.g. 25" maxLength={2}
-              onChangeText={(exp_year)=>this.setState({expiryYear:exp_year})}
+              onChangeText={(expiryYear)=>this.setState({expiryYear:expiryYear})}
               />
           </View>
          <TextInput secureTextEntry={true} keyboardAppearance="light" keyboardType="numeric" maxLength={4} style={styles.input} placeholder="CVV:" onChangeText={(cvv)=>this.setState({cvv:cvv})}/>                                 
         </View>
         <View>                     
-          <TouchableOpacity style={styles.btnTouch} onPress={()=>this.doLogin()} disabled={loading}>
-              <Text style={styles.btnText}>{loading ? "Loading...":"UPDATE"}</Text>
+          <TouchableOpacity style={styles.btnTouch} onPress={()=>this._updateInfo()}>
+              <Text style={styles.btnText}>UPDATE</Text>
             </TouchableOpacity>          
         </View>
         <View style={styles.blank_view}>

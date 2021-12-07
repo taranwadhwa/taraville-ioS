@@ -33,16 +33,18 @@ class LoginScreen extends React.Component{
       // start //
      
       try {
-
           const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/login.php", {
           email,
           password
         })
         .then(res => {
           if (res.data.status == "OK") {
-            this.setState({loading:true})  
-            const token = res.data.rem_token;                      
-            AsyncStorage.setItem("id", res.data.id);
+            this.setState({loading:true})              
+            let user_object={
+              id:res.data.id,
+              token:res.data.rem_token
+            }            
+            AsyncStorage.setItem("user_info", JSON.stringify(user_object));            
             this.props.navigation.navigate('Message')  
           }
           else {
