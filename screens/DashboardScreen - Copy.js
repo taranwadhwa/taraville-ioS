@@ -15,8 +15,7 @@ import {
   Button,
   Pressable,  
   Modal,
-  useIsFocused,     
-  ActivityIndicator
+  useIsFocused     
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
@@ -46,10 +45,10 @@ class DashboardScreen extends React.Component{
       hooperations:'',
       plan_name:'',
       modalVisible: false,
-      isButtonLoading:false,
-      isLoading:false             
+      //staffVisible:false, 
+      isLoading:true             
   }
-  
+  this.loadNewStaff = this.loadNewStaff.bind(this);
   this._updateInfo = this._updateInfo.bind(this);  
   }
    
@@ -72,7 +71,8 @@ class DashboardScreen extends React.Component{
   }
  
   
-  handleFetchdata(){    
+  handleFetchdata(){
+    alert("fetch")
     try{
       const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse=>{
        let parseObject = JSON.parse(syncResponse);  
@@ -88,7 +88,6 @@ class DashboardScreen extends React.Component{
           .then(res=>{            
               if(res.data.status == "OK")
               {
-                this.setState({isLoading:true});
                 this.setState({
                   fname:res.data.user_records.first_name,
                   lname:res.data.user_records.last_name,
@@ -98,13 +97,7 @@ class DashboardScreen extends React.Component{
                   website:res.data.user_records.website,
                   address:res.data.user_records.address,  
                   description:res.data.user_records.description, 
-                  hooperations:res.data.user_records.hooperations,
-                  plan_name:res.data.user_records.plan_name,    
-                  ccnumber:res.data.user_records.ccnumber,
-                  expiryMonth:res.data.user_records.expiryMonth,
-                  expiryYear:res.data.user_records.expiryYear,
-                  cvv:res.data.user_records.cvv      
-
+                  hooperations:res.data.user_records.hooperations,    
                 })
                 
               }
@@ -128,11 +121,10 @@ class DashboardScreen extends React.Component{
    }  
   }
   componentDidMount(){
-    this.handleFetchdata();
+    handleFetchdata();
   }
 
-  _updateInfo(){
-    this.setState({isButtonLoading:true});    
+  _updateInfo(){    
     const{
       fname,lname,email,password,phone,ccnumber,
       expiryMonth,expiryYear,cvv,buisness_name,
@@ -153,7 +145,6 @@ class DashboardScreen extends React.Component{
             })
             .then(res=>{
                 if(res.data.status == "OK"){
-                  this.setState({isButtonLoading:false});     
                   alert("Profile information has been successfully saved.")
                 }else{
                   alert(res.data.status)
@@ -179,14 +170,14 @@ class DashboardScreen extends React.Component{
   }
 
    render(){        
-    const{loading,isLoading,isButtonLoading} = this.state
+    const{loading,isLoading} = this.state
     let iconName='add-outline';
     let iconColor = '#271833'   
     let staffIconName='person-add-outline';
-    const { modalVisible,fname,lname,email,phone,buisness_name,website,
-    address,description,hooperations,plan_name,ccnumber,expiryMonth,expiryYear,cvv } = this.state;       
-    
-    if(isLoading){
+    const { modalVisible,staffVisible,fname,lname,email,phone,buisness_name,website,address,description,hooperations } = this.state; 
+   
+   {
+    if(!this.state.staffVisible){
     return(                  
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
         style={styles.container}>                                   
@@ -223,18 +214,18 @@ class DashboardScreen extends React.Component{
         <View style={[styles.inputCard, styles.elevation]}>
           <Text style={styles.heading}>Billing Details</Text>  
 
-          <TextInput value={plan_name}  editable = {false} style={styles.input} placeholder="Plan name:" onChangeText={(plan_name)=>this.setState({plan_name:plan_name})}/>          
-          <TextInput value={ccnumber} keyboardAppearance="light" keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(ccnumber)=>this.setState({ccnumber:ccnumber})}/>          
+          <TextInput style={styles.input} placeholder="Plan name:" onChangeText={(plan_name)=>this.setState({plan_name:plan_name})}/>          
+          <TextInput keyboardAppearance="light" keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(ccnumber)=>this.setState({ccnumber:ccnumber})}/>          
           
           <View style={styles.text_container}>
-            <TextInput value={expiryMonth} keyboardAppearance="light" keyboardType="numeric" 
+            <TextInput keyboardAppearance="light" keyboardType="numeric" 
               style={[styles.half_input, { borderColor: this.state.validation_status ? '#C1C1C1' : 'red' }]}
               label="Expiry month" mode="flat"
               placeholder="Expiry month e.g. 05" maxLength={2} ref="exp_month" 
               onChangeText={(expiryMonth)=>this.setState({expiryMonth:expiryMonth})}
               />
 
-            <TextInput value={expiryYear} keyboardAppearance="light" keyboardType="numeric" 
+            <TextInput keyboardAppearance="light" keyboardType="numeric" 
               style={[styles.half_input, { borderColor: this.state.validation_status ? '#C1C1C1' : 'red' }]}
               label="Expiry year" mode="flat"
               placeholder="Expiry year e.g. 25" maxLength={2}
@@ -244,16 +235,9 @@ class DashboardScreen extends React.Component{
          <TextInput secureTextEntry={true} keyboardAppearance="light" keyboardType="numeric" maxLength={4} style={styles.input} placeholder="CVV:" onChangeText={(cvv)=>this.setState({cvv:cvv})}/>                                 
         </View>
         <View>                     
-          
           <TouchableOpacity style={styles.btnTouch} onPress={()=>this._updateInfo()}>
-              {
-                isButtonLoading ? (
-                <ActivityIndicator animating={isButtonLoading} size="large" color="white"/>
-                ):(               
               <Text style={styles.btnText}>UPDATE</Text>
-               )}
-
-          </TouchableOpacity>          
+            </TouchableOpacity>          
         </View>
         
 
@@ -306,17 +290,35 @@ class DashboardScreen extends React.Component{
         <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route}/>            
         </KeyboardAvoidingView>                                
 
-    ) 
+    )     
     }
     else{
-      return(
-          <View style={styles.container}>
-            <ActivityIndicator animating={true} size="large" color="#FFF"/>
-            <Text style={{color:'white',textAlign:'center',alignItems:'center'}}>Please wait... while we are fetching yoru profile information.</Text>
-          </View>
-      )
-    }    
-   
+      return(      
+        <View style={styles.container}>
+            <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
+            <View style={styles.logo}>
+                <Image source = {require("../assets/logo.png")} style={{resizeMode:'contain',marginTop:10,width:170,height:55}}/>
+            </View>               
+            <View style={[styles.inputCard, styles.elevation]}> 
+            <Text style={styles.heading}>Staff Information</Text>            
+                <TextInput style={styles.input} placeholder="Full name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
+                <TextInput style={styles.input} placeholder="Position:" onChangeText={(position)=>this.setState({position:position})}/>          
+                <TextInput style={styles.input} placeholder="E-mail:" onChangeText={(email)=>this.setState({email:email})}/>
+                <TextInput style={styles.input} placeholder="Phone #:" onChangeText={(phone)=>this.setState({phone:phone})}/>          
+             </View>
+
+             <View>                     
+            <TouchableOpacity style={styles.btnTouch}>
+                <Text style={styles.btnText}>SUBMIT</Text>
+                <Text style={styles.btnText}>BACK</Text>
+            </TouchableOpacity>          
+            </View>            
+            
+            </View>
+      
+        )
+    }
+   } 
   }
 }
 export default DashboardScreen;

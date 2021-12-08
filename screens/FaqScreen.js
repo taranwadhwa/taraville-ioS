@@ -3,24 +3,21 @@ import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Imag
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
-class StaffScreen extends React.Component {
+class FaqScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            full_name:'',
-            position:'',
-            email:'',
-            phone:'',
-            isButtonLoading:false
+            question:'',
+            answer:'',
+            isButtonLoader:false            
         }
-        this.handleStaff = this.handleStaff.bind(this);
+        this.handleFaq = this.handleFaq.bind(this);
 
     }
 
-    handleStaff(){      
-        this.setState({isButtonLoading:true});  
-        const{full_name,position,email,phone} = this.state;   
-        if(email && full_name){        
+    handleFaq(){
+        this.setState({isButtonLoader:true});
+        const{question,answer} = this.state;           
         try {
             const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse => {
                 let parseObject = JSON.parse(syncResponse);
@@ -28,20 +25,15 @@ class StaffScreen extends React.Component {
                 var user_token = parseObject.token;
                 if (uid != null) {
                     try {
-                        const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/staff.php", {
-                            full_name, position,email,phone,uid,user_token
+                        const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/faq.php", {
+                            question,answer,uid,user_token
                         })
                         .then(res => {
-                            console.log(res)
                             if (res.data.status == "OK") {
-                                this.setState({isButtonLoading:false});  
-                                alert("Staff information has been successfully saved.")
+                                this.setState({isButtonLoader:false});
+                                alert("FAQ information has been successfully saved.")
                             } 
-                            else if(res.data.status == "EXISTS"){
-                                alert("Entered staff information already exists. This can not be added again.")   
-                            }
                             else {
-                                alert("here")
                                 alert(res.data.status)
                             }
 
@@ -49,7 +41,7 @@ class StaffScreen extends React.Component {
 
                     }
                     catch (error) {
-                        alert("Error while sending request for saving staff information=" + error)
+                        alert("Error while sending request for saving faq information=" + error)
                     }
 
                 }
@@ -57,16 +49,14 @@ class StaffScreen extends React.Component {
             });
         }
         catch (error) {
-            alert("catch of")
-            console.log("Error while getting asyncstorage on staff screen=" + error);
+            console.log("Error while getting asyncstorage on faq screen=" + error);
         }
-    }
 
 
     }
 
     render() {
-        const{isButtonLoading}=this.state;
+        const{isButtonLoader}=this.state;
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor="#271933" barStyle="light-content" />
@@ -74,19 +64,17 @@ class StaffScreen extends React.Component {
                     <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
                 </View>
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Staff Information</Text>
-                    <TextInput style={styles.input} placeholder="Full name:" onChangeText={(full_name) => this.setState({ full_name: full_name })} />
-                    <TextInput style={styles.input} placeholder="Position:" onChangeText={(position) => this.setState({ position: position })} />
-                    <TextInput style={styles.input} placeholder="E-mail:" onChangeText={(email) => this.setState({ email: email })} />
-                    <TextInput style={styles.input} placeholder="Phone #:" onChangeText={(phone) => this.setState({ phone: phone })} />
+                    <Text style={styles.heading}>FAQ Information</Text>
+                    <TextInput style={styles.input} placeholder="Enter your question:" onChangeText={(question) => this.setState({ question: question })} />
+                    <TextInput style={styles.input} placeholder="Enter answer:" onChangeText={(answer) => this.setState({ answer: answer })} />                    
                 </View>
 
                 <View>
-                    <TouchableOpacity onPress={this.handleStaff} style={styles.btnTouch}>
-                        {isButtonLoading? (
-                        <ActivityIndicator animating={isButtonLoading} size="large" color="white"/>
-                        ) : (<Text style={styles.btnText}>SUBMIT</Text>)
-                        }   
+                    <TouchableOpacity onPress={this.handleFaq} style={styles.btnTouch}>
+                        {isButtonLoader?(<ActivityIndicator animating={isButtonLoader} size="large" color="white"/>
+                        ):(
+                            <Text style={styles.btnText}>SUBMIT</Text>
+                        )}    
                     </TouchableOpacity>
                 </View>
                 <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
@@ -95,7 +83,7 @@ class StaffScreen extends React.Component {
         );
     }
 }
-export default StaffScreen;
+export default FaqScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,

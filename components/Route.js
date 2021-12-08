@@ -9,6 +9,7 @@ import StatusScreen from '../screens/StatusScreen';
 import MessageScreen from '../screens/MessageScreen';
 import InsightScreen from '../screens/InsightScreen';
 import StaffScreen  from '../screens/StaffScreen';
+import FaqScreen  from '../screens/FaqScreen';
 import {Dimensions} from 'react-native'
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 
@@ -60,7 +61,8 @@ export default function Route(props)
         <Stack.Screen name="Insight" component={InsightScreen}/>
         <Stack.Screen name="Dashboard" component={DashboardScreen}/>      
         <Stack.Screen name="Login" component={LoginScreen}/>
-        <Stack.Screen name="Staff" component={StaffScreen}/>          
+        <Stack.Screen name="Staff" component={StaffScreen}/>
+        <Stack.Screen name="Faq" component={FaqScreen}/>                    
      </Stack.Navigator>              
     </NavigationContainer>
        
