@@ -38,10 +38,11 @@ class StaffScreen extends React.Component {
                                 alert("Staff information has been successfully saved.")
                             } 
                             else if(res.data.status == "EXISTS"){
+                                this.setState({isButtonLoading:false});  
                                 alert("Entered staff information already exists. This can not be added again.")   
                             }
-                            else {
-                                alert("here")
+                            else {       
+                                this.setState({isButtonLoading:false});                           
                                 alert(res.data.status)
                             }
 
@@ -75,9 +76,9 @@ class StaffScreen extends React.Component {
                 </View>
                 <View style={[styles.inputCard, styles.elevation]}>
                     <Text style={styles.heading}>Staff Information</Text>
-                    <TextInput style={styles.input} placeholder="Full name:" onChangeText={(full_name) => this.setState({ full_name: full_name })} />
+                    <TextInput style={styles.input} placeholder="Full name:*" onChangeText={(full_name) => this.setState({ full_name: full_name })} />
                     <TextInput style={styles.input} placeholder="Position:" onChangeText={(position) => this.setState({ position: position })} />
-                    <TextInput style={styles.input} placeholder="E-mail:" onChangeText={(email) => this.setState({ email: email })} />
+                    <TextInput style={styles.input} placeholder="E-mail:*" onChangeText={(email) => this.setState({ email: email })} />
                     <TextInput style={styles.input} placeholder="Phone #:" onChangeText={(phone) => this.setState({ phone: phone })} />
                 </View>
 

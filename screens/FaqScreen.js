@@ -1,62 +1,63 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput,Platform,ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput, Platform, ActivityIndicator } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios  from 'axios';
+import axios from 'axios';
 class FaqScreen extends React.Component {
     constructor(props) {
         super(props);
-        this.state={
-            question:'',
-            answer:'',
-            isButtonLoader:false            
+        this.state = {
+            question: '',
+            answer: '',
+            isButtonLoader: false
         }
         this.handleFaq = this.handleFaq.bind(this);
 
     }
 
-    handleFaq(){
-        this.setState({isButtonLoader:true});
-        const{question,answer} = this.state;           
-        try {
-            const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse => {
-                let parseObject = JSON.parse(syncResponse);
-                var uid = parseObject.id;
-                var user_token = parseObject.token;
-                if (uid != null) {
-                    try {
-                        const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/faq.php", {
-                            question,answer,uid,user_token
-                        })
-                        .then(res => {
-                            if (res.data.status == "OK") {
-                                this.setState({isButtonLoader:false});
-                                alert("FAQ information has been successfully saved.")
-                            } 
-                            else {
-                                alert(res.data.status)
-                            }
+    handleFaq() {
+        this.setState({ isButtonLoader: true });
+        const { question, answer } = this.state;
+        if (question && answer) {
+            try {
+                const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse => {
+                    let parseObject = JSON.parse(syncResponse);
+                    var uid = parseObject.id;
+                    var user_token = parseObject.token;
+                    if (uid != null) {
+                        try {
+                            const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/faq.php", {
+                                question, answer, uid, user_token
+                            })
+                                .then(res => {
+                                    if (res.data.status == "OK") {
+                                        this.setState({ isButtonLoader: false });
+                                        alert("FAQ information has been successfully saved.")
+                                    }
+                                    else {
+                                        alert(res.data.status)
+                                    }
 
-                        })
+                                })
+
+                        }
+                        catch (error) {
+                            alert("Error while sending request for saving faq information=" + error)
+                        }
 
                     }
-                    catch (error) {
-                        alert("Error while sending request for saving faq information=" + error)
-                    }
 
-                }
-
-            });
+                });
+            }
+            catch (error) {
+                console.log("Error while getting asyncstorage on faq screen=" + error);
+            }
         }
-        catch (error) {
-            console.log("Error while getting asyncstorage on faq screen=" + error);
-        }
-
 
     }
 
     render() {
-        const{isButtonLoader}=this.state;
+        const { isButtonLoader } = this.state;
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor="#271933" barStyle="light-content" />
@@ -65,16 +66,16 @@ class FaqScreen extends React.Component {
                 </View>
                 <View style={[styles.inputCard, styles.elevation]}>
                     <Text style={styles.heading}>FAQ Information</Text>
-                    <TextInput style={styles.input} placeholder="Enter your question:" onChangeText={(question) => this.setState({ question: question })} />
-                    <TextInput style={styles.input} placeholder="Enter answer:" onChangeText={(answer) => this.setState({ answer: answer })} />                    
+                    <TextInput style={styles.input} placeholder="Enter your question:*" onChangeText={(question) => this.setState({ question: question })} />
+                    <TextInput style={styles.input} placeholder="Enter answer:*" onChangeText={(answer) => this.setState({ answer: answer })} />
                 </View>
 
                 <View>
                     <TouchableOpacity onPress={this.handleFaq} style={styles.btnTouch}>
-                        {isButtonLoader?(<ActivityIndicator animating={isButtonLoader} size="large" color="white"/>
-                        ):(
+                        {isButtonLoader ? (<ActivityIndicator animating={isButtonLoader} size="large" color="white" />
+                        ) : (
                             <Text style={styles.btnText}>SUBMIT</Text>
-                        )}    
+                        )}
                     </TouchableOpacity>
                 </View>
                 <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />

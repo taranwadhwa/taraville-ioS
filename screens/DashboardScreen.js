@@ -104,11 +104,11 @@ class DashboardScreen extends React.Component{
                   expiryMonth:res.data.user_records.expiryMonth,
                   expiryYear:res.data.user_records.expiryYear,
                   cvv:res.data.user_records.cvv      
-
                 })
                 
               }
               else{               
+                console.log("Dashboard output");
                 alert(res.data.status)
               }
              
@@ -312,7 +312,7 @@ class DashboardScreen extends React.Component{
       return(
           <View style={styles.container}>
             <ActivityIndicator animating={true} size="large" color="#FFF"/>
-            <Text style={{color:'white',textAlign:'center',alignItems:'center'}}>Please wait... while we are fetching yoru profile information.</Text>
+            <Text style={{color:'white',textAlign:'center',alignItems:'center'}}>Please wait... while we are fetching your profile information.</Text>
           </View>
       )
     }    
