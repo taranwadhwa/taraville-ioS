@@ -323,12 +323,12 @@ class MessageScreen extends React.Component {
               </Text>
             </View>
           </View>
-          <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
-          {
-             listing.map((records, index) => (
-            <View key={records.id} style={[styles.messagesCard, styles.elevation]}>
-                             
-              <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
+          <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>                     
+            <View style={[styles.messagesCard, styles.elevation]}>
+            {
+              listing.map((records, index) => (
+              <View key={records.id}>
+              <View style={{ flexDirection: 'row', padding:3, margin: 2, width: '100%',borderBottomWidth:1,borderBottomColor:'#C1C1C1' }}>
                 <Text style={{ width: '50%' }}>
                   <View style={styles.dateRow}>
                     <Text style={styles.innerText}><Text style={styles.label_trick}>Date:</Text> {records.date_added}</Text>
@@ -374,16 +374,16 @@ class MessageScreen extends React.Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.setReminderVisible(records.id,true)}>
-                  <Text style={{ width: '100%', borderWidth: 0, paddingRight: 10 }}>
+                  <Text style={{ width: '100%', borderWidth: 0, paddingRight: 10}}>
                     <View style={styles.dateRow}>
                       <Text style={styles.bell_icon}>
-                        <Image source={require("../assets/bell_icon.png")} style={{ resizeMode: 'contain', width: 22, height: 20 }} />
+                      <IonicIcon name={'ios-notifications'} color={'#B33F40'} size={20} />
                       </Text>
                     </View>
                   </Text>
                 </TouchableOpacity>
               </View>
-              <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+              <View style={{ flexDirection: 'row', padding:3, margin: 1, width: '100%',borderBottomWidth:1,borderBottomColor:'#C1C1C1' }}>
                 <Text style={{ width: '40%' }}>
                   <View style={styles.dateRow}>
                     <Text style={styles.innerText}><Text style={styles.label_trick}>Time:</Text> {records.log_time}</Text>
@@ -391,7 +391,7 @@ class MessageScreen extends React.Component {
                 </Text>
               </View>
 
-              <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+              <View style={{ flexDirection: 'row', padding:3, margin: 1, width: '100%',borderBottomWidth:1,borderBottomColor:'#C1C1C1' }}>
                 <Text style={{ width: '80%' }}>
                   <View style={styles.dateRow}>
                     <Text style={styles.innerText}><Text style={styles.label_trick}>Customer name:</Text> {records.name}</Text>
@@ -399,32 +399,40 @@ class MessageScreen extends React.Component {
                 </Text>
               </View>
 
-              <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+              <View style={{ flexDirection: 'row', padding:3, margin: 1, width: '100%',borderBottomWidth:1,borderBottomColor:'#C1C1C1' }}>
                 <Text style={{ width: '70%' }}>
                   <View style={styles.dateRow}>
                     <Text style={styles.innerText}><Text style={styles.label_trick}>Phone #:</Text> {records.phone}</Text>
                   </View>
                 </Text>
               </View>
+              
+
               {records.message_type=='Yes'?( 
-              <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
+              <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1,padding:3,margin: 1 }}>
                 <Text style={styles.long_text}>
                   This message is private. Please unlock it by entering 6 digit code.
                 </Text>
               </View>
-              ):(<View style={{ flexDirection: 'row', flexGrow: 1, flex: 1 }}>
+              ):(
+              
+              <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1,padding:3,margin: 1 }}>
               <Text style={styles.long_text}>
                 {records.call_notes}
               </Text>
+              
             </View>)
               }
               
-              <View style={{ flexDirection: 'row', justifyContent:'flex-start',marginTop:7 }}>                                               
-                <Text style={{ textAlign:'left', alignItems:'flex-end', fontSize:12 }}>                                 
-                 2 Comment(s) added by you.               
-                </Text>
-              </View>
-              
+              {
+              records.numberOfComments>0?(
+              <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1,padding:3,margin:1 }}>
+                <Text style={{paddingLeft:3,fontSize:11}}>
+                  {records.numberOfComments} Comment(s) added by you.
+                </Text>              
+              </View>)              
+            :(null)
+              }                             
               <View style={{ flexDirection: 'row', justifyContent:'flex-end' }}>                                               
                 <Text style={{ textAlign:'right', alignItems:'flex-end', backgroundColor:'#'+records.color_code, padding: 8,  color: '#'+records.font_color_code }}>                                 
                   {records.action_taken}                 
@@ -432,11 +440,11 @@ class MessageScreen extends React.Component {
               </View>
 
               <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, marginTop:6 }}><Text></Text></View>              
-
-            </View>
-
-            ))
+              </View>                              
+              ))
           }
+            </View>
+           
 
             <View style={styles.blank_view}>
               <Text style={styles.input}></Text>
@@ -580,7 +588,7 @@ class MessageScreen extends React.Component {
     }
     else {
       return (
-        <View style={styles.container}>
+        <View style={styles.activity_container}>
           <ActivityIndicator animating={true} size="large" color="#FFF" />
           <Text style={{ color: 'white', textAlign: 'center', alignItems: 'center' }}>Please wait... while we are fetching your messages.</Text>
         </View>
@@ -596,6 +604,13 @@ const styles = StyleSheet.create
       alignItems: 'stretch',
       backgroundColor: '#271933',
       flexDirection: 'column'
+    },
+    activity_container:{
+      flex: 1,
+      alignItems: 'center',
+      backgroundColor: '#271933',
+      flexDirection: 'column',
+      justifyContent: 'center',
     },
 
     centeredView: {
@@ -742,7 +757,7 @@ const styles = StyleSheet.create
       marginTop: Platform.OS === 'ios' ? 130 : 40
     },
     blank_view: {
-      marginTop: Platform.OS === 'ios' ? 20 : 70
+      marginTop: Platform.OS === 'ios' ? 20 : 40
     },
     label_trick:{
       fontWeight:'bold'
