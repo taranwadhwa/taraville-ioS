@@ -9,14 +9,14 @@ import {
   Modal,
   Pressable,
   Platform,
-  Alert,
-  Picker,
+  Alert,  
   ActivityIndicator
 } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
 import { render } from 'react-dom';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
 
@@ -35,6 +35,10 @@ class MessageScreen extends React.Component {
       screenLoader: false,
       private_code:'',
       message_id:'',
+      reminder_time:'',
+      notes_input:'',
+      call_request:'',
+      call_input:'',
 
     }
     //this.searchMessages = this.searchMessages.bind(this);
@@ -89,8 +93,8 @@ class MessageScreen extends React.Component {
   }
 
 
-  setCallModalVisible = (visible) => {
-    this.setState({ callModalVisible: visible })
+  setCallModalVisible = (message_id,visible) => {
+    this.setState({ callModalVisible: visible,message_id:message_id })
     this.setState({ modalVisible: false })
     this.setState({ notesModalVisible: false })
     this.setState({ reminderVisible: false })
@@ -102,8 +106,8 @@ class MessageScreen extends React.Component {
     this.setState({ callModalVisible: false })
     this.setState({ reminderVisible: false })
   }
-  setReminderVisible = (visible) => {
-    this.setState({ reminderVisible: visible })
+  setReminderVisible = (message_id,visible) => {
+    this.setState({ reminderVisible: visible,message_id:message_id })
     this.setState({ notesModalVisible: false })
     this.setState({ modalVisible: false })
     this.setState({ callModalVisible: false })
@@ -155,33 +159,152 @@ class MessageScreen extends React.Component {
     
 
   }
-
   saveNotes() {
-    const { notes } = this.state;
-    try {
-      const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse => {
+    const { message_id,notes } = this.state;
+    if(notes)
+    {
+      try {
+          const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse => {
+          let parseObject = JSON.parse(syncResponse);
+          var uid = parseObject.id;
+          var user_token = parseObject.token;        
+          if(uid != null) 
+          {            
+              try 
+                {
+                    const signInRes = axios.post("https://iosapi.taraville.com/api/v1/messages/save-notes.php", {
+                      uid, user_token,message_id,notes
+                    })
+                    .then(res => {                  
+                      if(res.data.status=="OK"){
+                          alert("Entered notes has been successfully saved for this message.");                                                     
+                      }
+                      else{
+                          alert(res.data.status)
+                      }
+                      this.setState({notes_input:''})
+                      
+                    })
+                }
+                catch (error) {
+                  console.log("Error while sending notes request on message screen=" + error)
+                }
+              
+
+          }
+
+
+        })
+
+      }
+      catch (error) {
+        console.log("Error while getting asyncstorage on save notes request message screen=" + error);
+      }
+    }
+    else{
+      alert("Please enter your comments.");
+    }
+  }
+
+
+  handleCallRequest(){
+    const { message_id,call_request } = this.state;    
+    if(call_request)
+    {
+      try {
+        const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse => {
         let parseObject = JSON.parse(syncResponse);
+        var uid = parseObject.id;
+        var user_token = parseObject.token;        
+        if(uid != null) 
+        {            
+            try 
+              {
+                  const signInRes = axios.post("https://iosapi.taraville.com/api/v1/messages/save-call-request.php", {
+                    uid, user_token,message_id,call_request
+                  })
+                  .then(res => {                  
+                    if(res.data.status=="OK"){
+                        alert("Call request for this message has been successfully placed.");                                                     
+                    }
+                    else{
+                        alert(res.data.status)
+                    }
+                    this.setState({call_input:''})
+                    
+                  })
+              }
+              catch (error) {
+                console.log("Error while sending call request on message screen=" + error)
+              }
+            
+
+        }
+
+
       })
 
     }
     catch (error) {
-      console.log("Error while getting asyncstorage on message screen=" + error);
+      console.log("Error while getting asyncstorage on call request message screen=" + error);
+    } 
+
+    } 
+    else{
+      alert("Please enter your call request.")
     }
+
   }
 
-  selectedIndex(index) {
-    alert(index)
+  selectedIndex(index) {    
+    this.setState({reminder_time:index})    
   }
-  render() {
+  handleReminder(){
+    const{reminder_time,message_id}=this.state;
+    if(reminder_time){
+      try {
+        const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse => {
+        let parseObject = JSON.parse(syncResponse);
+        var uid = parseObject.id;
+        var user_token = parseObject.token;        
+        if(uid != null) 
+        {            
+            try 
+              {
+                  const signInRes = axios.post("https://iosapi.taraville.com/api/v1/messages/save-reminder.php", {
+                    uid, user_token,message_id,reminder_time
+                  })
+                  .then(res => {                  
+                    if(res.data.status=="OK"){
+                        alert("Reminder for this message has been successfully set.");                                                     
+                    }
+                    else{
+                        alert(res.data.status)
+                    }                    
+                    
+                  })
+              }
+              catch (error) {
+                console.log("Error while sending reminder request on message screen=" + error)
+              }
+            
 
-    let data = [{
-      value: 'Banana',
-    }, {
-      value: 'Mango',
-    }, {
-      value: 'Pear',
-    }];
+        }        
 
+      })
+      
+    }
+    catch (error) {
+      console.log("Error while getting asyncstorage on reminder request message screen=" + error);
+    }
+
+  }
+  else{
+    alert("Please select reminder time for this message.")
+  }
+}
+
+  render() {    
     const { modalVisible, callModalVisible, notesModalVisible, reminderVisible, screenLoader,listing } = this.state;
     if (screenLoader) {
       return (
@@ -203,16 +326,16 @@ class MessageScreen extends React.Component {
           <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
           {
              listing.map((records, index) => (
-            <View style={[styles.messagesCard, styles.elevation]}>
+            <View key={records.id} style={[styles.messagesCard, styles.elevation]}>
                              
               <View style={{ flexDirection: 'row', margin: 2, width: '100%' }}>
                 <Text style={{ width: '50%' }}>
                   <View style={styles.dateRow}>
-                    <Text style={styles.innerText}>Date: {records.date_added}</Text>
+                    <Text style={styles.innerText}><Text style={styles.label_trick}>Date:</Text> {records.date_added}</Text>
                   </View>
                 </Text>
 
-                <TouchableOpacity onPress={() => this.setCallModalVisible(true)}>
+                <TouchableOpacity onPress={() => this.setCallModalVisible(records.id,true)}>
                   <Text style={{ width: '100%', borderWidth: 0, paddingRight: 10 }}>
                     <View style={styles.dateRow}>
                       <Text style={styles.innerText}>
@@ -241,7 +364,6 @@ class MessageScreen extends React.Component {
                   </Text>
                 </TouchableOpacity>
 
-
                 <TouchableOpacity onPress={() => this.setModalVisible(true)}>
                   <Text style={{ width: '100%', borderWidth: 0, paddingRight: 10 }}>
                     <View style={styles.dateRow}>
@@ -251,7 +373,7 @@ class MessageScreen extends React.Component {
                   </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.setReminderVisible(true)}>
+                <TouchableOpacity onPress={() => this.setReminderVisible(records.id,true)}>
                   <Text style={{ width: '100%', borderWidth: 0, paddingRight: 10 }}>
                     <View style={styles.dateRow}>
                       <Text style={styles.bell_icon}>
@@ -264,7 +386,15 @@ class MessageScreen extends React.Component {
               <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
                 <Text style={{ width: '40%' }}>
                   <View style={styles.dateRow}>
-                    <Text style={styles.innerText}>Time: {records.log_time}</Text>
+                    <Text style={styles.innerText}><Text style={styles.label_trick}>Time:</Text> {records.log_time}</Text>
+                  </View>
+                </Text>
+              </View>
+
+              <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
+                <Text style={{ width: '80%' }}>
+                  <View style={styles.dateRow}>
+                    <Text style={styles.innerText}><Text style={styles.label_trick}>Customer name:</Text> {records.name}</Text>
                   </View>
                 </Text>
               </View>
@@ -272,15 +402,7 @@ class MessageScreen extends React.Component {
               <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
                 <Text style={{ width: '70%' }}>
                   <View style={styles.dateRow}>
-                    <Text style={styles.innerText}>Customer name: {records.name}</Text>
-                  </View>
-                </Text>
-              </View>
-
-              <View style={{ flexDirection: 'row', margin: 1, width: '100%' }}>
-                <Text style={{ width: '70%' }}>
-                  <View style={styles.dateRow}>
-                    <Text style={styles.innerText}>Phone #: {records.phone}</Text>
+                    <Text style={styles.innerText}><Text style={styles.label_trick}>Phone #:</Text> {records.phone}</Text>
                   </View>
                 </Text>
               </View>
@@ -296,15 +418,20 @@ class MessageScreen extends React.Component {
               </Text>
             </View>)
               }
-
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                
-                <Text style={{ backgroundColor:'#'+records.color_code, padding: 5,  color: '#'+records.font_color_code, borderRadius: 5 }}>                                 
+              
+              <View style={{ flexDirection: 'row', justifyContent:'flex-start',marginTop:7 }}>                                               
+                <Text style={{ textAlign:'left', alignItems:'flex-end', fontSize:12 }}>                                 
+                 2 Comment(s) added by you.               
+                </Text>
+              </View>
+              
+              <View style={{ flexDirection: 'row', justifyContent:'flex-end' }}>                                               
+                <Text style={{ textAlign:'right', alignItems:'flex-end', backgroundColor:'#'+records.color_code, padding: 8,  color: '#'+records.font_color_code }}>                                 
                   {records.action_taken}                 
                 </Text>
               </View>
 
-              <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, }}><Text></Text></View>              
+              <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, marginTop:6 }}><Text></Text></View>              
 
             </View>
 
@@ -354,9 +481,9 @@ class MessageScreen extends React.Component {
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
                 <Text style={styles.innerModalText}>Request for call</Text>
-                <TextInput style={styles.modalInput} numberOfLines={4} multiline={true} />
+                <TextInput value={this.state.call_input} onChangeText={(val)=>this.setState({call_request:val, call_input:val })} style={styles.modalInput} numberOfLines={4} multiline={true} />
                 <View>
-                  <TouchableOpacity style={styles.buttonClose}>
+                  <TouchableOpacity onPress={()=>this.handleCallRequest()} style={styles.buttonClose}>
                     <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
                   </TouchableOpacity>
                 </View>
@@ -364,7 +491,7 @@ class MessageScreen extends React.Component {
                 <View style={{ flexDirection: 'column', alignItems: 'flex-end', marginTop: 15 }}>
                   <Pressable
                     style={styles.buttonPopupClose}
-                    onPress={() => this.setCallModalVisible(!callModalVisible)}
+                    onPress={() => this.setCallModalVisible('',!callModalVisible)}
                   >
                     <Text style={{ color: 'white', padding: 5 }}>CLOSE</Text>
                   </Pressable>
@@ -381,11 +508,11 @@ class MessageScreen extends React.Component {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>Notes</Text>
-                <TextInput onChangeText={(notes) => this.setState({ notes: notes })} style={styles.modalInput} multiline={true} numberOfLines={4} />
+                <Text style={styles.innerModalText}>Comments</Text>
+                <TextInput value={this.state.notes_input}  onChangeText={(notes) => this.setState({ notes: notes,notes_input:notes })} style={styles.modalInput} multiline={true} numberOfLines={5} />
                 <View>
-                  <TouchableOpacity style={styles.buttonClose}>
-                    <Text onPress={() => this.saveNotes()} style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
+                  <TouchableOpacity style={styles.buttonClose} onPress={() => this.saveNotes()}>
+                    <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -408,11 +535,13 @@ class MessageScreen extends React.Component {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>Set Reminder</Text>
+                <Text style={styles.innerModalText}>Set Reminder({this.state.reminder_time})</Text>
                 <View style={{ borderWidth: 1, borderColor: '#C1C1C1', width: "100%", marginTop: 10 }}>
                   <Picker
-                    selectedValue={"Select"}
-                    style={{ height: 50, width: '100%', padding: 10, borderWidth: 1, borderColor: '#C1C1C1', }}
+                    mode='dropdown'
+                    selectedValue={this.state.reminder_time}
+                    style={{ height: 50, width: '100%', padding: 6, borderWidth: 1, borderColor: '#C1C1C1', }}
+                    value={this.state.reminder_time}
                     onValueChange={(itemValue, itemIndex) => this.selectedIndex(itemValue)}
                   >
                     <Picker.Item label="Select" value="" />
@@ -426,7 +555,7 @@ class MessageScreen extends React.Component {
                   </Picker>
                 </View>
                 <View style={styles.reminderContainer}>
-                  <TouchableOpacity style={styles.buttonClose}>
+                  <TouchableOpacity onPress={()=>this.handleReminder()} style={styles.buttonClose}>
                     <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
                   </TouchableOpacity>
                 </View>
@@ -434,7 +563,7 @@ class MessageScreen extends React.Component {
                 <View style={{ flexDirection: 'column', alignItems: 'flex-end', marginTop: 15 }}>
                   <Pressable
                     style={styles.buttonPopupClose}
-                    onPress={() => this.setReminderVisible(!reminderVisible)}
+                    onPress={() => this.setReminderVisible('',!reminderVisible)}
                   >
                     <Text style={{ color: 'white', padding: 5 }}>CLOSE</Text>
                   </Pressable>
@@ -583,8 +712,9 @@ const styles = StyleSheet.create
     },
     long_text: {
       padding: 2,
-      lineHeight: 20,
-      fontSize: 15
+      lineHeight: 25,
+      fontSize: 16,
+      textAlign:'justify'
     },
 
     modalView: {
@@ -614,4 +744,7 @@ const styles = StyleSheet.create
     blank_view: {
       marginTop: Platform.OS === 'ios' ? 20 : 70
     },
+    label_trick:{
+      fontWeight:'bold'
+    }
   });
