@@ -10,7 +10,8 @@ import {
   Pressable,
   Platform,
   Alert,  
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
@@ -18,6 +19,7 @@ import { render } from 'react-dom';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import { keyboardProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 
 
 class MessageScreen extends React.Component {
@@ -39,17 +41,20 @@ class MessageScreen extends React.Component {
       notes_input:'',
       call_request:'',
       call_input:'',
+      search_txt:''
 
     }
     //this.searchMessages = this.searchMessages.bind(this);
     this.selectedIndex = this.selectedIndex.bind(this);
     this.unlockMessage = this.unlockMessage.bind(this);
+    this.refreshScreen = this.refreshScreen.bind(this);
   }
 
   componentDidMount() {
     this.handleListing();
   }
   handleListing = () => {
+   
     try {
       const syncUserInfo = AsyncStorage.getItem("user_info")
         .then(syncResponse => {
@@ -61,11 +66,16 @@ class MessageScreen extends React.Component {
               const signInRes = axios.post("https://iosapi.taraville.com/api/v1/messages/listing.php", {
                 uid, user_token
               })
-                .then(res => {                  
-                  this.setState({
-                    screenLoader: true,
-                    listing: res.data.listing
-                  });                  
+                .then(res => {
+                  if(res.data.status=="OK"){                    
+                    this.setState({
+                      screenLoader: true,
+                      listing: res.data.listing
+                    }); 
+                  }
+                  else{
+                    this.setState({ screenLoader: true });                           
+                  }                 
                 })
             }
             catch (error) {
@@ -81,8 +91,48 @@ class MessageScreen extends React.Component {
 
   }
 
-  searchMessages = async () => {
-    const user_id = AsyncStorage.getItem("id");
+  handleSearch = async () => {        
+    Keyboard.dismiss();
+    const{search_txt} = this.state;    
+    if(search_txt)
+    {
+      try {
+        const syncUserInfo = AsyncStorage.getItem("user_info")
+          .then(syncResponse => {
+            let parseObject = JSON.parse(syncResponse);
+            var uid = parseObject.id;
+            var user_token = parseObject.token;
+            if (uid != null) {
+              try {
+                const searchRes = axios.post("https://iosapi.taraville.com/api/v1/messages/search.php", {
+                  uid, user_token,search_txt
+                })
+                  .then(res => {   
+                    console.log(res.data.listing)
+                    if(res.data.status=="OK"){               
+                    this.setState({
+                      listing: res.data.listing
+                    });
+                  }
+                  else{
+                    alert("No record(s) found")
+                  }                  
+                  })
+              }
+              catch (error) {
+                console.log("Error while search fetching messages on message screen=" + error)
+              }
+            }
+  
+          });
+      }
+      catch (e) {
+        console.log("Error while search fetching messages on message screen=" + e)
+      }
+
+
+    }
+
   }
   setModalVisible = (message_id,visible) => {
 
@@ -115,6 +165,7 @@ class MessageScreen extends React.Component {
   }
   
   unlockMessage(){
+    
     const{message_id,private_code} = this.state;    
     if(private_code){
       try {
@@ -160,6 +211,7 @@ class MessageScreen extends React.Component {
 
   }
   saveNotes() {
+    
     const { message_id,notes } = this.state;
     if(notes)
     {
@@ -259,6 +311,9 @@ class MessageScreen extends React.Component {
   selectedIndex(index) {    
     this.setState({reminder_time:index})    
   }
+  refreshScreen(){    
+    this.props.navigation.replace('Message')
+  }
   handleReminder(){
     const{reminder_time,message_id}=this.state;
     if(reminder_time){
@@ -315,23 +370,32 @@ class MessageScreen extends React.Component {
           </View>
           <View style={[styles.messagesCard, styles.elevation]}>
             <View style={{ flexDirection: 'row' }}>
-              <TextInput style={styles.input} placeholder="Search:" />
+              <TextInput style={styles.input} placeholder="Search with customer name or phone#:" onChangeText={(sval)=>this.setState({search_txt:sval})} />
               <Text>
-                <TouchableOpacity onPress={this.searchMessages}>
-                  <IonicIcon name={'search-outline'} color={'black'} size={25} style={{ paddingTop: 18 }} />
+                <TouchableOpacity onPress={this.handleSearch}>
+                  <IonicIcon name={'search'} color={'black'} size={25} style={{ paddingTop: 18 }} />
+                  
                 </TouchableOpacity>
+              </Text>
+              <Text>
+              <TouchableOpacity onPress={this.refreshScreen}>
+                 <IonicIcon name={'refresh'} color={'black'} size={25} style={{ paddingTop: 18,paddingLeft:8 }} />
+                 </TouchableOpacity>
               </Text>
             </View>
           </View>
-          <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>                     
-            <View style={[styles.messagesCard, styles.elevation]}>
-            {
-              listing.map((records, index) => (
+                      
+          
+          <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}> 
+             {listing.length>0?(                      
+            <View style={[styles.messagesCard, styles.elevation]}>              
+            {                            
+               listing.map((records, index) => (
               <View key={records.id}>
               <View style={{ flexDirection: 'row', padding:3, margin: 2, width: '100%',borderBottomWidth:1,borderBottomColor:'#C1C1C1' }}>
                 <Text style={{ width: '50%' }}>
                   <View style={styles.dateRow}>
-                    <Text style={styles.innerText}><Text style={styles.label_trick}>Date:</Text> {records.date_added}</Text>
+                    <Text style={styles.innerText}><Text style={styles.label_trick}>Date:</Text> {records.fdate_added}</Text>
                   </View>
                 </Text>
 
@@ -376,7 +440,7 @@ class MessageScreen extends React.Component {
                 <TouchableOpacity onPress={() => this.setReminderVisible(records.id,true)}>
                   <Text style={{ width: '100%', borderWidth: 0, paddingRight: 10}}>
                     <View style={styles.dateRow}>
-                      <Text style={styles.bell_icon}>
+                      <Text style={styles.innerText}>
                       <IonicIcon name={'ios-notifications'} color={'#B33F40'} size={20} />
                       </Text>
                     </View>
@@ -443,13 +507,23 @@ class MessageScreen extends React.Component {
               </View>                              
               ))
           }
+        
             </View>
-           
+             ):(
+              <View style={[styles.messagesEmptyCard, styles.elevation]}>
+                <Text style={{textAlign:'center',padding:10,fontSize:18}}>No message(s) found.</Text>                
+              </View> 
+
+             )
+             }
 
             <View style={styles.blank_view}>
               <Text style={styles.input}></Text>
             </View>
+    
           </ScrollView>
+        
+        
 
           <Modal
             animationType="fade"
@@ -631,7 +705,7 @@ const styles = StyleSheet.create
       paddingTop: 5
     },
     input: {
-      width: "85%",
+      width: "78%",
       borderColor: '#271833',
       padding: 7,
       margin: 8,
@@ -694,6 +768,22 @@ const styles = StyleSheet.create
       paddingVertical: 10,
       paddingHorizontal: 10,
       width: '100%',
+      marginVertical: 2,
+      shadowOpacity: 1,
+      shadowRadius: 3,
+      shadowOffset: {
+        height: 0,
+        width: 0
+      },
+
+    },
+    messagesEmptyCard:{
+      backgroundColor: '#f1f1f1',
+      borderRadius: 8,
+      paddingVertical: 10,
+      paddingHorizontal: 10,
+      width: '100%',
+      height:'50%',
       marginVertical: 2,
       shadowOpacity: 1,
       shadowRadius: 3,
