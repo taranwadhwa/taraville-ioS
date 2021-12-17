@@ -37,7 +37,7 @@ const App = (props) => {
         },
         headerStyle: {
           height: 60,
-          backgroundColor:'#1BB467',
+          backgroundColor:'#1BB467',          
                     
         },        
         overlayColor: 'transparent',
