@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import React,{ useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
+import { createDrawerNavigator,DrawerButton } from '@react-navigation/drawer';
 import { StyleSheet, Text, View,ActivityIndicator } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
@@ -14,14 +15,74 @@ import FaqScreen  from './screens/FaqScreen';
 import { AuthContext } from './components/context';
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
 import axios  from 'axios';
-
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-const App = () => {  
+
+
+const App = (props) => {  
   const initialLoginState = {
     isLoading: true,    
     userToken: null,
   };
+
+  const DrawerRoute=()=>{
+    return (
+      <Drawer.Navigator screenOptions={{        
+        drawerStyle: {
+          backgroundColor: '#FFF',
+          padding:10,
+          width:250,                    
+        },
+        headerStyle: {
+          height: 60,
+          backgroundColor:'#1BB467',
+                    
+        },        
+        overlayColor: 'transparent',
+        headerTintColor: '#FFF',
+        drawerLabelStyle:{
+          color:'#3E2B2C',          
+        },
+        drawerItemStyle:{          
+          padding:3,          
+        },
+        drawerContentStyle:{
+          top:50,
+          
+        }, 
+                
+      }}>           
+        <Drawer.Screen name="My Profile" component={DashboardScreen} options={{ 
+          drawerLabel: 'My Profile',          
+          drawerIcon: ({focused, size}) => (
+          <IonicIcon
+             name="person-outline"
+             size={20}
+             color={'#3E2B2C'}             
+          />
+          ), }} />                                   
+        <Drawer.Screen name="My Staff" component={StaffScreen}  options={{ drawerLabel: 'My Staff',
+        drawerIcon: ({focused, size}) => (
+          <IonicIcon
+             name="person-add-outline"
+             size={20}
+             color={'#3E2B2C'}   
+          />
+       ), }} />        
+        <Drawer.Screen name="My Faq" component={FaqScreen} options={{ drawerLabel: 'My FAQ',
+        drawerIcon: ({focused, size}) => (
+          <IonicIcon
+             name="apps-outline"
+             size={20}
+             color={'#3E2B2C'}
+          />
+       ), }}     
+        />                  
+      </Drawer.Navigator>
+    );
+  }
 
   const loginReducer = (prevState, action) => {
     switch (action.type) {
@@ -126,17 +187,15 @@ const App = () => {
             </Stack.Navigator>
           )
             :
-            <Stack.Navigator initialRouteName="Status" screenOptions={{
-              headerShown: false,
-            }}>
+              <Stack.Navigator initialRouteName="Status" screenOptions={{
+                headerShown: false,
+              }}>                               
+              <Stack.Screen name="Status" component={StatusScreen}   />
+              <Stack.Screen name="Dashboard" component={DrawerRoute}  />                                                  
+              <Stack.Screen name="Message" component={MessageScreen} />               
+              <Stack.Screen name="Insight" component={InsightScreen}  />             
+              </Stack.Navigator>                                                              
 
-              <Stack.Screen name="Status" component={StatusScreen} />
-              <Stack.Screen name="Insight" component={InsightScreen} />
-              <Stack.Screen name="Dashboard" component={DashboardScreen} />
-              <Stack.Screen name="Staff" component={StaffScreen} />
-              <Stack.Screen name="Message" component={MessageScreen}/>
-              <Stack.Screen name="Faq" component={FaqScreen}/>       
-            </Stack.Navigator>
         }
 
       </NavigationContainer>

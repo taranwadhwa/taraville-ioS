@@ -15,11 +15,10 @@ import {
 } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
-import { render } from 'react-dom';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import { keyboardProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
+
 
 
 class MessageScreen extends React.Component {

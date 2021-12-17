@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View,StatusBar,Image,TextInput,TouchableOpacity,ScrollView,Modal,Pressable  } from 'react-native';
+import { StyleSheet, Text, View,StatusBar,Image,TextInput,TouchableOpacity,ScrollView,Modal,Pressable,Platform  } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import { Picker } from '@react-native-picker/picker';
