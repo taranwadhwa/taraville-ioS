@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput, Platform, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, 
+    TextInput, Platform, ActivityIndicator,ScrollView } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -7,81 +8,107 @@ class FaqScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            question: '',
-            answer: '',
+            listing: [],
             isButtonLoader: false
         }
-        this.handleFaq = this.handleFaq.bind(this);
+
 
     }
+    componentDidMount(){
+        this.fetchFaq();
+    }
 
-    handleFaq() {
-        this.setState({ isButtonLoader: true });
-        const { question, answer } = this.state;
-        if (question && answer) {
-            try {
-                const syncUserInfo = AsyncStorage.getItem("user_info").then(syncResponse => {
-                    let parseObject = JSON.parse(syncResponse);
-                    var uid = parseObject.id;
-                    var user_token = parseObject.token;
-                    if (uid != null) {
-                        try {
-                            const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/faq.php", {
-                                question, answer, uid, user_token
-                            })
-                                .then(res => {
-                                    if (res.data.status == "OK") {
-                                        this.setState({ isButtonLoader: false });
-                                        alert("FAQ information has been successfully saved.")
-                                    }
-                                    else {
-                                        alert(res.data.status)
-                                    }
-
-                                })
-
+    fetchFaq = () => {
+        
+        try {
+            const syncUserInfo = AsyncStorage.getItem("user_info")
+              .then(syncResponse => {
+                let parseObject = JSON.parse(syncResponse);
+                var uid = parseObject.id;
+                var user_token = parseObject.token;
+                if (uid != null) {
+                  try {
+                    const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/faq-listing.php", {
+                      uid, user_token
+                    })
+                      .then(res => {
+                        if(res.data.status=="OK"){                    
+                          this.setState({
+                            isButtonLoader: true,
+                            listing: res.data.listing
+                          });                           
                         }
-                        catch (error) {
-                            alert("Error while sending request for saving faq information=" + error)
-                        }
-
-                    }
-
-                });
-            }
-            catch (error) {
-                console.log("Error while getting asyncstorage on faq screen=" + error);
-            }
-        }
+                        else{
+                          this.setState({ isButtonLoader: true });                           
+                        }                 
+                      })
+                  }
+                  catch (error) {
+                    console.log("Error while fetching messages on faq screen=" + error)
+                  }
+                }
+      
+              });
+          }
+          catch (e) {
+            console.log("Error while fetching messages on faq screen=" + e)
+          }
 
     }
 
     render() {
-        const { isButtonLoader } = this.state;
+        const { isButtonLoader,listing } = this.state;
+        if(isButtonLoader){
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor="#271933" barStyle="light-content" />
                 <View style={styles.logo}>
                     <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
                 </View>
-                <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>FAQ Information</Text>
-                    <TextInput style={styles.input} placeholder="Enter your question:*" onChangeText={(question) => this.setState({ question: question })} />
-                    <TextInput style={styles.input} placeholder="Enter answer:*" onChangeText={(answer) => this.setState({ answer: answer })} />
-                </View>
+                <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
+                {listing.length>0?(                                      
+                    <View style={[styles.messagesCard, styles.elevation]}>
+                        {                            
+                        listing.map((records, index) => (   
+                         <View key={records.id}>       
+                            <View style={{ flexDirection: 'row', padding:3, margin: 2, width: '100%',borderBottomWidth:1,borderBottomColor:'#C1C1C1' }}>                    
+                                <Text style={{ width: '100%' }}>
+                                    <View style={styles.dateRow}>
+                                        <Text style={styles.innerText}>Q{index+1}. {records.question}:</Text>
+                                    </View>
+                                </Text>
+                            </View>
 
-                <View>
-                    <TouchableOpacity onPress={this.handleFaq} style={styles.btnTouch}>
-                        {isButtonLoader ? (<ActivityIndicator animating={isButtonLoader} size="large" color="white" />
-                        ) : (
-                            <Text style={styles.btnText}>SUBMIT</Text>
-                        )}
-                    </TouchableOpacity>
-                </View>
+                            <View style={{ flexDirection: 'row', flexGrow: 1, flex: 1,padding:3,margin: 1 }}>                    
+                                <Text style={styles.long_text}>
+                                {records.answer}
+                                </Text>
+                            </View>
+                            </View> 
+                            ))
+                        }
+                     </View>
+                ):(
+                <View style={[styles.messagesEmptyCard, styles.elevation]}>
+                    <Text style={{textAlign:'center',padding:10,fontSize:18}}>No record(s) found.</Text>                
+                </View> 
+                )}    
+                                                                    
+                </ScrollView>                 
+                
                 <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
             </View>
 
         );
+        }
+        else{
+            return (
+            <View style={styles.activity_container}>
+                <ActivityIndicator animating={true} size="large" color="#FFF" />
+                <Text style={{ color: 'white', textAlign: 'center', alignItems: 'center' }}>Please wait... while we are fetching your records.</Text>
+            </View>
+            );
+        }
     }
 }
 export default FaqScreen;
@@ -93,25 +120,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#271933',
         flexDirection: 'column',
 
-    },
-    inputCard: {
-        backgroundColor: '#F1F1F1',
-        borderRadius: 8,
-        paddingVertical: 20,
-        paddingHorizontal: 20,
-        padding: 10,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        width: '100%',
-        height: Platform.OS === 'ios' ? '60%' : '52%'
-
-    },
+    },    
+    activity_container:{
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: '#271933',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      },
     elevation: {
         elevation: 20,
         shadowColor: '#FFF',
@@ -124,19 +140,7 @@ const styles = StyleSheet.create({
         height: 65,
         margin: 7,
 
-    },
-
-
-    input: {
-        width: "95%",
-        borderColor: '#271833',
-        padding: 10,
-        margin: 8,
-        borderRadius: 5,
-        fontSize: 18,
-        borderWidth: 1
-
-    },
+    },   
     btnTouch: {
         backgroundColor: '#1BB467',
         height: 45,
@@ -151,6 +155,52 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: 'white',
     },
+    messagesCard: {
+        backgroundColor: '#f1f1f1',
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        width: '100%',
+        marginVertical: 2,
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        shadowOffset: {
+          height: 0,
+          width: 0
+        },                            
+  
+      },
 
+      dateRow: {
+        borderWidth: 0,
+        padding: 1
+      },     
+      innerText: {
+        fontSize: 17,
+        padding: 1,
+        fontWeight:'bold'
+      },
+      long_text: {
+        padding: 2,
+        lineHeight: 25,
+        fontSize: 16,
+        textAlign:'justify'
+      },
+      messagesEmptyCard:{
+        backgroundColor: '#f1f1f1',
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        width: '100%',
+        height:'50%',
+        marginVertical: 2,
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        shadowOffset: {
+          height: 0,
+          width: 0
+        },
+  
+      },
 
 });

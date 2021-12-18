@@ -29,7 +29,7 @@ class StaffScreen extends React.Component {
                 if (uid != null) {
                     try {
                         const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/staff.php", {
-                            full_name, position,email,phone,uid,user_token
+                            full_name,position,email,phone,uid,user_token
                         })
                         .then(res => {
                             console.log(res)
@@ -58,9 +58,13 @@ class StaffScreen extends React.Component {
             });
         }
         catch (error) {
-            alert("catch of")
+            
             console.log("Error while getting asyncstorage on staff screen=" + error);
         }
+    }
+    else{
+        this.setState({isButtonLoading:false});  
+        alert("Please enter the value in mandatory field(s)")
     }
 
 

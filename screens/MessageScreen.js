@@ -652,9 +652,6 @@ class MessageScreen extends React.Component {
               </View>
             </View>
           </Modal>
-
-
-
           <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
         </View>
       )

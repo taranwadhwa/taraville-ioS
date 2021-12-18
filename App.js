@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React,{ useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer,useRoute } from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
 import { createDrawerNavigator,DrawerButton } from '@react-navigation/drawer';
 import { StyleSheet, Text, View,ActivityIndicator } from 'react-native';
@@ -12,6 +12,8 @@ import InsightScreen from './screens/InsightScreen';
 import StaffScreen from './screens/StaffScreen';
 import MessageScreen from './screens/MessageScreen';
 import FaqScreen  from './screens/FaqScreen';
+import NewFaqScreen from './screens/NewFaqScreen';
+import NewStaffScreen from './screens/AddStaffScreen';
 import { AuthContext } from './components/context';
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
 import axios  from 'axios';
@@ -20,14 +22,13 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 
-
 const App = (props) => {  
   const initialLoginState = {
     isLoading: true,    
     userToken: null,
   };
 
-  const DrawerRoute=()=>{
+  const DrawerRoute=()=>{     
     return (
       <Drawer.Navigator screenOptions={{        
         drawerStyle: {
@@ -41,45 +42,70 @@ const App = (props) => {
                     
         },        
         overlayColor: 'transparent',
-        headerTintColor: '#FFF',
-        drawerLabelStyle:{
-          color:'#3E2B2C',          
-        },
+        headerTintColor: '#FFF',        
         drawerItemStyle:{          
-          padding:3,          
+          padding:3,
+          borderBottomWidth:1          
         },
         drawerContentStyle:{
-          top:50,
-          
-        }, 
+          top:50,          
+        },           
                 
       }}>           
-        <Drawer.Screen name="My Profile" component={DashboardScreen} options={{ 
+        <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{ 
           drawerLabel: 'My Profile',          
           drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="person-outline"
-             size={20}
+             size={15}
              color={'#3E2B2C'}             
           />
           ), }} />                                   
-        <Drawer.Screen name="My Staff" component={StaffScreen}  options={{ drawerLabel: 'My Staff',
+        <Drawer.Screen name="My Staff"  component={StaffScreen}  options={{ 
+          drawerActiveBackgroundColor:'#271933',
+          drawerActiveTintColor:'#FFF',
+          drawerInactiveTintColor:'#000',
+          drawerLabel: 'My Staff',
+        drawerIcon: ({focused, size}) => (
+          <IonicIcon
+             name="person-circle-outline"
+             size={15}
+             color={'#3E2B2C'}
+             activeTintColor={'#FFF'}  
+          />
+       ), }} />
+
+        
+        <Drawer.Screen name="Add New Staff" component={NewStaffScreen} options={{ drawerLabel: 'Add New Staff',
         drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="person-add-outline"
-             size={20}
-             color={'#3E2B2C'}   
+             size={15}
+             color={'#3E2B2C'}
           />
-       ), }} />        
+       ), }}       />
+               
+              
         <Drawer.Screen name="My Faq" component={FaqScreen} options={{ drawerLabel: 'My FAQ',
         drawerIcon: ({focused, size}) => (
           <IonicIcon
-             name="apps-outline"
+             name="newspaper-outline"
+             size={15}
+             color={'#3E2B2C'}
+          />
+       ), }}     
+        />     
+
+<Drawer.Screen name="Add New Question" component={NewFaqScreen} options={{ drawerLabel: 'Add New FAQ',
+        drawerIcon: ({focused, size}) => (
+          <IonicIcon
+             name="add-outline"
              size={20}
              color={'#3E2B2C'}
           />
        ), }}     
-        />                  
+        />     
+
       </Drawer.Navigator>
     );
   }
@@ -193,7 +219,7 @@ const App = (props) => {
               <Stack.Screen name="Status" component={StatusScreen}   />
               <Stack.Screen name="Dashboard" component={DrawerRoute}  />                                                  
               <Stack.Screen name="Message" component={MessageScreen} />               
-              <Stack.Screen name="Insight" component={InsightScreen}  />             
+              <Stack.Screen name="Insight" component={InsightScreen}  />                          
               </Stack.Navigator>                                                              
 
         }

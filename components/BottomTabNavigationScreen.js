@@ -8,7 +8,7 @@ const BottomTab=(props)=>
   const [data, setData] = React.useState({
     croute:props.route.name,    
   });  
-  
+    
   const {signOut} = React.useContext(AuthContext);  
   return(  
     
