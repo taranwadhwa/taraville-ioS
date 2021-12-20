@@ -11,22 +11,10 @@ const StatusScreen = (props) => {
   });
 
 
-  const setReminderVisible = (visible) => {
-    setData({
-      ...data,
-      reminderVisible: visible
-    });
- 
+  const handleNewStatus=()=>{
+    //props.navigation.replace('NewStatus')
   }
-
-  const selectedIndex=(index)=> {        
-    setData({
-      ...data,
-      reminder_time: index
-    });
-
-  }
-    
+  
   return(
     <View style={styles.container}>       
        <StatusBar backgroundColor="#271933" barStyle="light-content" />
@@ -40,7 +28,7 @@ const StatusScreen = (props) => {
             <Text style={{width:'20%',margin:5,padding:3}}>
                    <IonicIcon name={'calendar-outline'} color={'black'} size={25} />
             </Text>
-              <TouchableOpacity style={styles.btnTouch} onPress={()=>{setReminderVisible(true)}}>                
+              <TouchableOpacity style={styles.btnTouch} onPress={()=>handleNewStatus()}>                
                   <Text style={styles.btnText}>
                     <IonicIcon name={'add-outline'} color={'white'} size={20} />Add New Status
                   </Text>                                               
@@ -63,49 +51,7 @@ const StatusScreen = (props) => {
                 </View>
 
             </View> 
-          </ScrollView>
-
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={data.reminderVisible}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>Add Status (Dec 15,2021)</Text>
-                <View style={{ borderWidth: 1, borderColor: '#C1C1C1', width: "100%", marginTop: 10 }}>
-                  <Picker
-                    mode='dropdown'
-                    selectedValue={data.reminder_time}
-                    style={{ height: 50, width: '100%', padding: 6, borderWidth: 1, borderColor: '#C1C1C1', }}
-                    value={data.reminder_time}
-                    onValueChange={(itemValue, itemIndex) => {selectedIndex(itemValue)}}
-                  >
-                    <Picker.Item label="Select" value="" />
-                    <Picker.Item label="Available" value="Available" />
-                    <Picker.Item label="Unavailable" value="Unavailable" />                    
-                  </Picker>
-                </View>
-                <View style={styles.reminderContainer}>
-                  <TouchableOpacity onPress={()=>handleReminder()} style={styles.buttonClose}>
-                    <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <View style={{ flexDirection: 'column', alignItems: 'flex-end', marginTop: 25 }}>
-                  <Pressable
-                    style={styles.buttonPopupClose}
-                    onPress={() => setReminderVisible(false)}
-                  >
-                    <Text style={{ color: 'white', padding: 5 }}>CLOSE</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </View>
-          </Modal>
-
-
-
+          </ScrollView>          
         <BottomTabNavigationScreen navigation={props.navigation} route={props.route} />           
       </View>
   )

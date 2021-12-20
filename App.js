@@ -8,6 +8,7 @@ import { StyleSheet, Text, View,ActivityIndicator } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import StatusScreen from './screens/StatusScreen';
+import NewStatusScreen from './screens/NewStatusScreen';
 import InsightScreen from './screens/InsightScreen';
 import StaffScreen from './screens/StaffScreen';
 import MessageScreen from './screens/MessageScreen';
@@ -52,6 +53,33 @@ const App = (props) => {
         },           
                 
       }}>           
+        
+        <Drawer.Screen name="Status" component={StatusScreen} options={{ 
+          drawerLabel: 'Status',          
+          drawerIcon: ({focused, size}) => (
+          <IonicIcon
+             name="person-outline"
+             size={15}
+             color={'#3E2B2C'}             
+          />
+          ), }} />   
+
+
+          <Drawer.Screen name="New Status"  component={NewStatusScreen}  options={{ 
+          drawerActiveBackgroundColor:'#271933',
+          drawerActiveTintColor:'#FFF',
+          drawerInactiveTintColor:'#000',
+          drawerLabel: 'Add New Status',
+        drawerIcon: ({focused, size}) => (
+          <IonicIcon
+             name="person-circle-outline"
+             size={15}
+             color={'#3E2B2C'}
+             activeTintColor={'#FFF'}  
+             
+          />
+       ), }} />      
+        
         <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{ 
           drawerLabel: 'My Profile',          
           drawerIcon: ({focused, size}) => (
@@ -72,6 +100,7 @@ const App = (props) => {
              size={15}
              color={'#3E2B2C'}
              activeTintColor={'#FFF'}  
+             
           />
        ), }} />
 
@@ -96,7 +125,7 @@ const App = (props) => {
        ), }}     
         />     
 
-<Drawer.Screen name="Add New Question" component={NewFaqScreen} options={{ drawerLabel: 'Add New FAQ',
+      <Drawer.Screen name="Add New Question" component={NewFaqScreen} options={{ drawerLabel: 'Add New FAQ',
         drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="add-outline"
@@ -216,7 +245,7 @@ const App = (props) => {
               <Stack.Navigator initialRouteName="Status" screenOptions={{
                 headerShown: false,
               }}>                               
-              <Stack.Screen name="Status" component={StatusScreen}   />
+              <Stack.Screen name="Status" component={DrawerRoute}   />
               <Stack.Screen name="Dashboard" component={DrawerRoute}  />                                                  
               <Stack.Screen name="Message" component={MessageScreen} />               
               <Stack.Screen name="Insight" component={InsightScreen}  />                          
