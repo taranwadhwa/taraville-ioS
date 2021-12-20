@@ -46,91 +46,103 @@ const App = (props) => {
         headerTintColor: '#FFF',        
         drawerItemStyle:{          
           padding:3,
-          borderBottomWidth:1          
+          borderBottomWidth:1,
+          borderBottomColor:'#1BB467'          
         },
         drawerContentStyle:{
           top:50,          
         },           
                 
-      }}>           
-        
+      }}>                   
         <Drawer.Screen name="Status" component={StatusScreen} options={{ 
+          drawerActiveBackgroundColor:'#1BB467',
+          drawerActiveTintColor:'#FFF',
+          drawerInactiveTintColor:'#000',
           drawerLabel: 'Status',          
           drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="person-outline"
-             size={15}
-             color={'#3E2B2C'}             
+             size={20}
+             color={'#271933'}                                       
           />
           ), }} />   
 
-
-          <Drawer.Screen name="New Status"  component={NewStatusScreen}  options={{ 
-          drawerActiveBackgroundColor:'#271933',
+        <Drawer.Screen name="New Status"  component={NewStatusScreen}  options={{ 
+          drawerActiveBackgroundColor:'#1BB467',
           drawerActiveTintColor:'#FFF',
           drawerInactiveTintColor:'#000',
-          drawerLabel: 'Add New Status',
+          drawerLabel: 'New Status',
         drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="person-circle-outline"
-             size={15}
-             color={'#3E2B2C'}
-             activeTintColor={'#FFF'}  
-             
+             size={20}
+             color={'#271933'}                         
           />
        ), }} />      
         
-        <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{ 
+        <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{
+          drawerActiveBackgroundColor:'#1BB467',
+          drawerActiveTintColor:'#FFF',
+          drawerInactiveTintColor:'#000', 
           drawerLabel: 'My Profile',          
           drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="person-outline"
-             size={15}
-             color={'#3E2B2C'}             
+             size={20}
+             color={'#271933'}             
           />
           ), }} />                                   
         <Drawer.Screen name="My Staff"  component={StaffScreen}  options={{ 
-          drawerActiveBackgroundColor:'#271933',
-          drawerActiveTintColor:'#FFF',
-          drawerInactiveTintColor:'#000',
-          drawerLabel: 'My Staff',
+           drawerActiveBackgroundColor:'#1BB467',
+           drawerActiveTintColor:'#FFF',
+           drawerInactiveTintColor:'#000', 
+           drawerLabel: 'My Staff',
         drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="person-circle-outline"
-             size={15}
-             color={'#3E2B2C'}
-             activeTintColor={'#FFF'}  
+             size={20}
+             color={'#271933'}             
              
           />
        ), }} />
-
         
-        <Drawer.Screen name="Add New Staff" component={NewStaffScreen} options={{ drawerLabel: 'Add New Staff',
-        drawerIcon: ({focused, size}) => (
+        <Drawer.Screen name="Add New Staff" component={NewStaffScreen} options={{ drawerLabel: 'New Staff',         
+          drawerActiveBackgroundColor:'#1BB467',
+          drawerActiveTintColor:'#FFF',
+          drawerInactiveTintColor:'#000', 
+         
+         drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="person-add-outline"
-             size={15}
-             color={'#3E2B2C'}
+             size={20}
+             color={'#271933'}
           />
        ), }}       />
                
               
-        <Drawer.Screen name="My Faq" component={FaqScreen} options={{ drawerLabel: 'My FAQ',
-        drawerIcon: ({focused, size}) => (
+        <Drawer.Screen name="My Faq" component={FaqScreen} options={{ drawerLabel: 'FAQ',
+         drawerActiveBackgroundColor:'#1BB467',
+         drawerActiveTintColor:'#FFF',
+         drawerInactiveTintColor:'#000',
+         
+         drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="newspaper-outline"
-             size={15}
-             color={'#3E2B2C'}
+             size={20}
+             color={'#271933'}
           />
        ), }}     
         />     
 
-      <Drawer.Screen name="Add New Question" component={NewFaqScreen} options={{ drawerLabel: 'Add New FAQ',
+      <Drawer.Screen name="Add New Question" component={NewFaqScreen} options={{ drawerLabel: 'New FAQ',
+        drawerActiveBackgroundColor:'#1BB467',
+        drawerActiveTintColor:'#FFF',
+        drawerInactiveTintColor:'#000',
         drawerIcon: ({focused, size}) => (
           <IonicIcon
              name="add-outline"
              size={20}
-             color={'#3E2B2C'}
+             color={'#271933'}
           />
        ), }}     
         />     

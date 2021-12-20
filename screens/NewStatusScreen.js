@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useEffect,useState  } from 'react';
 import {
     StyleSheet, Text, View, StatusBar, Image,
     TextInput, TouchableOpacity, ScrollView, Modal, Pressable, Platform
@@ -8,6 +8,8 @@ import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios  from 'axios';
 
 const NewStatusScreen = (props) => {
 
@@ -20,6 +22,8 @@ const NewStatusScreen = (props) => {
         fromTime:'',
         toTime:'',
         prescheduleState:false,
+        listing: [],
+        labelThree:''        
 
     });
     const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
@@ -45,9 +49,13 @@ const NewStatusScreen = (props) => {
         setData({
             ...data,
             labelTwo: index,
-        });
-        
-
+        });        
+    }
+    const selectedIndexLabelThree=(index)=>{
+        setData({
+            ...data,
+            labelThree: index,
+        });   
     }
     const showDatePicker = () => {        
         setDatePickerVisibility(true)                          
@@ -81,7 +89,54 @@ const NewStatusScreen = (props) => {
         hideDateToPicker();
       }
      
+      function handleStaffListing(){
     
+        try {
+          const syncUserInfo = AsyncStorage.getItem("user_info")
+            .then(syncResponse => {
+              let parseObject = JSON.parse(syncResponse);
+              var uid = parseObject.id;
+              var user_token = parseObject.token;
+              if (uid != null) {
+                try {
+                  const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/staff-listing.php", {
+                    uid, user_token
+                  })
+                    .then(res => {
+                      if(res.data.status=="OK"){                    
+                        setData({
+                          ...data,
+                          listing: res.data.listing,                          
+                        });                    
+                      }
+                      else{
+                                        
+                      }                 
+                    })
+                }
+                catch (error) {
+                  console.log("Error while fetching messages on message screen=" + error)
+                }
+              }
+    
+            });
+        }
+        catch (e) {
+          console.log("Error while fetching messages on message screen=" + e)
+        }
+    
+    
+      }
+      useEffect(() => {
+        handleStaffListing()   
+       }, []);
+    
+       function handleSaveStatus()
+       {          
+          alert(data.labelOne) 
+
+       }
+
     return (
 
         <View style={styles.container}>
@@ -91,7 +146,7 @@ const NewStatusScreen = (props) => {
             </View>
             <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Add your status Information ({data.status})</Text>
+                    <Text style={styles.heading}>Add status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
                     <Picker  mode='dropdown'                                               
                          selectedValue={data.status}
                          style={{width: '100%', height: 150}} itemStyle={{height: 150,}}
@@ -107,8 +162,8 @@ const NewStatusScreen = (props) => {
                <View>
                 <View style={[styles.inputCardCalendar, styles.elevation]}>
                     <View style={{flexDirection:'row',padding:1}}>
-                        <Text style={styles.heading}>From date: {data.fromDate}</Text>
-                        <Text style={styles.heading}>Time: {data.fromTime}</Text>
+                        <Text style={styles.heading}>From date: <Text style={{fontSize:11}}>{data.fromDate}</Text></Text>
+                        <Text style={styles.heading}>Time: <Text style={{fontSize:11}}>{data.fromTime}</Text></Text>
                     </View>
                      <View style={{marginTop:1}}>
                     <TouchableOpacity onPress={showDatePicker}>
@@ -131,13 +186,15 @@ const NewStatusScreen = (props) => {
                 ):(null)}
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Additional Information</Text>
-                    <Picker mode='dropdown'
-                      
-                         style={{width: '100%', height: 104,}} itemStyle={{height: 104,}}
-                        
-                    >
-                          <Picker.Item label="Select day status" value="" />
+                    <Text style={styles.heading}>Additional Information<Text style={{fontSize:11}}> ({data.labelOne})</Text></Text>
+                    <Picker mode='dropdown'                      
+                         selectedValue={data.labelOne}
+                         style={{width: '100%', height: 130}} itemStyle={{height: 130,}}
+                         value={data.labelOne}
+                         onValueChange={(itemValue, itemIndex) => { selectedIndexLabelOne(itemValue) }}
+                         >       
+                    
+                        <Picker.Item label="Select day status" value="" />
                         <Picker.Item label="Not taking calls" value="Not taking calls" />
                         <Picker.Item label="Out of office" value="Out of office" />
                         <Picker.Item label="In a meeting" value="In a meeting" />
@@ -149,9 +206,12 @@ const NewStatusScreen = (props) => {
                 </View>
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Further Information</Text>
+                    <Text style={styles.heading}>Further Information <Text style={{fontSize:11}}> ({data.labelTwo})</Text></Text>
                     <Picker mode='dropdown'
-                         style={{width: '100%', height: 104,}} itemStyle={{height: 104,}}
+                         selectedValue={data.labelTwo}
+                         style={{width: '100%', height: 130}} itemStyle={{height: 130,}}
+                         value={data.labelTwo}
+                         onValueChange={(itemValue, itemIndex) => { selectedIndexLabelTwo(itemValue) }}
                         
                     >
                         <Picker.Item label="Select" value="" />
@@ -162,6 +222,34 @@ const NewStatusScreen = (props) => {
                         <Picker.Item label="Transfer calls to" value="Transfer calls to" /> 
                     </Picker>                                        
                 </View>
+
+                <View style={[styles.inputCard, styles.elevation]}>
+                    <Text style={styles.heading}>Employee Information <Text style={{fontSize:11}}> ({data.labelThree})</Text></Text>
+                    <Picker mode='dropdown'
+                         selectedValue={data.labelThree}
+                         value={data.labelThree}                        
+                         style={{width: '100%', height: 130}} itemStyle={{height: 130,}}                    
+                         onValueChange={(itemValue, itemIndex) => { selectedIndexLabelThree(itemValue) }}                        
+                    >
+                        <Picker.Item label="Select Employee" value="" />                        
+                        {                            
+                            data.listing.map((records, index) => (                        
+                                <Picker.Item label={records.full_name} value={records.full_name} />
+                            ))
+                        }                        
+                    </Picker>                                        
+                </View>
+
+                <View>                               
+                <TouchableOpacity style={styles.btnTouch} onPress={()=>handleSaveStatus()}>                            
+                    <Text style={styles.btnText}>SAVE</Text>                
+                </TouchableOpacity>          
+                </View>      
+
+                <View style={styles.blank_view}>
+                    <Text style={styles.input}></Text> 
+                </View>       
+
                 <DateTimePickerModal
                     isVisible={isDatePickerVisible}
                     mode="datetime"                    
@@ -246,6 +334,23 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
+      },
+      blank_view:{
+        marginTop: Platform.OS === 'ios' ? 20 : 30
+      },
+      btnTouch:{
+        backgroundColor:'#1BB467',
+        height:45,
+        padding:10,
+        width:'95%',
+        margin:10,       
+        borderRadius:50,
+      },
+      btnText:{
+        fontSize:18,
+        textAlign:"center",
+        fontWeight:"bold",
+        color:'#FFF',    
       },
 
 });
