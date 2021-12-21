@@ -1,19 +1,64 @@
-import React from 'react';
+import React,{ useEffect  } from 'react';
 import { StyleSheet, Text, View,StatusBar,Image,TextInput,TouchableOpacity,ScrollView,Modal,Pressable,Platform  } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import { Picker } from '@react-native-picker/picker';
-const StatusScreen = (props) => {  
-  
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios  from 'axios';
+const StatusScreen = (props) => {    
   const [data, setData] = React.useState({    
     reminderVisible: false,
     reminder_time:'',
+    cslist: [],
+    pslist: [],
+    cslist_len:''
   });
 
-
   const handleNewStatus=()=>{
-    //props.navigation.replace('NewStatus')
+    //props.navigation.replace('New Status');
   }
+
+  function fetchStatus(){        
+    try {
+      const syncUserInfo = AsyncStorage.getItem("user_info")
+        .then(syncResponse => {
+          let parseObject = JSON.parse(syncResponse);
+          var uid = parseObject.id;
+          var user_token = parseObject.token;
+          if (uid != null) {
+            try {
+              const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/fetch-status.php", {
+                uid, user_token,
+              })
+                .then(res => {
+                  if(res.data.status=="OK"){                    
+                    setData({
+                      ...data,
+                      cslist:res.data.csstatus,
+                      cslist_len:res.data.csstatus_len                      
+                    });                       
+                   console.log(res.data.csstatus)
+                  }
+                  else{
+                    alert("in status")
+                  }                 
+                })
+            }
+            catch (error) {
+              console.log("Error while fetching status on status screen=" + error)
+            }
+          }
+
+        });
+    }
+    catch (e) {
+      console.log("Error while fetching status on status screen=" + e)
+    }
+  }
+
+  useEffect(() => {
+    fetchStatus();   
+   }, []);
   
   return(
     <View style={styles.container}>       
@@ -37,20 +82,40 @@ const StatusScreen = (props) => {
           </View>
 
           <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>              
+            {
+              data.cslist_len>0?(
             <View style={[styles.messagesCard, styles.elevation]}>
                 <View style={{flexDirection:'row',paddingBottom:10}}>
-                  <Text>Today (Dec 15, 2021)</Text>
+                  <Text>Today ({data.cslist.cdate})</Text>
                 </View>
                 <View style={{flexDirection:'row'}}>
-                  <Text style={styles.status_card}>Current Status:</Text>
-                  <Text style={styles.available_card}>AVAILABLE</Text>                  
+                  <Text style={styles.status_card}>Current Status</Text>                                  
                 </View>
 
                 <View style={{flexDirection:'row',paddingTop:10,flexGrow: 1, flex: 1,}}>
-                  <Text style={styles.long_txt}>Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar</Text>
+                  <Text style={styles.long_txt}>{data.cslist.label_one}</Text>
                 </View>
+                <View style={{flexDirection:'row',paddingTop:10,flexGrow: 1, flex: 1,}}>
+                  <Text style={styles.long_txt}>{data.cslist.label_two}</Text>
+                </View>  
 
             </View> 
+              ):(
+
+                <View style={[styles.messagesCard, styles.elevation]}>
+                <View style={{flexDirection:'row',paddingBottom:10}}>
+                  <Text>Today ({data.cslist.cdate})</Text>
+                </View>
+                <View style={{flexDirection:'row'}}>
+                  <Text style={styles.status_card_empty}>No status has been saved by you.:</Text>                                  
+                </View>
+
+                
+            </View> 
+
+
+              )}
+
           </ScrollView>          
         <BottomTabNavigationScreen navigation={props.navigation} route={props.route} />           
       </View>
@@ -109,8 +174,14 @@ export default StatusScreen;
     },
     status_card:{
       width:'70%',
-      fontSize:17,
+      fontSize:20,
       fontWeight:'bold'
+    },
+    status_card_empty:{
+      width:'70%',
+      fontSize:18,
+      fontWeight:'bold',
+      alignContent:'center'
     },
     available_card:{
       fontSize:18,

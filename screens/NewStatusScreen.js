@@ -89,8 +89,7 @@ const NewStatusScreen = (props) => {
         hideDateToPicker();
       }
      
-      function handleStaffListing(){
-    
+      function handleStaffListing(){        
         try {
           const syncUserInfo = AsyncStorage.getItem("user_info")
             .then(syncResponse => {
@@ -100,7 +99,7 @@ const NewStatusScreen = (props) => {
               if (uid != null) {
                 try {
                   const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/staff-listing.php", {
-                    uid, user_token
+                    uid, user_token,
                   })
                     .then(res => {
                       if(res.data.status=="OK"){                    
@@ -115,14 +114,14 @@ const NewStatusScreen = (props) => {
                     })
                 }
                 catch (error) {
-                  console.log("Error while fetching messages on message screen=" + error)
+                  console.log("Error while fetching staff list on new status screen=" + error)
                 }
               }
     
             });
         }
         catch (e) {
-          console.log("Error while fetching messages on message screen=" + e)
+          console.log("Error while fetching staff list on new status on message screen=" + e)
         }
     
     
@@ -133,7 +132,45 @@ const NewStatusScreen = (props) => {
     
        function handleSaveStatus()
        {          
-          alert(data.labelOne) 
+         const{status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime} = data;
+         if(status)
+         {
+            try {
+              const syncUserInfo = AsyncStorage.getItem("user_info")
+                .then(syncResponse => {
+                  let parseObject = JSON.parse(syncResponse);
+                  var uid = parseObject.id;
+                  var user_token = parseObject.token;
+                  if (uid != null) {
+                    try {
+                      const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/status.php", {
+                        uid, user_token,status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime
+                      })
+                        .then(res => {
+                          if(res.data.status=="OK")
+                          {
+                            alert("Your status has been successfully saved.");
+                          }                                                                  
+                          else{
+                            alert(res.data.status)                                        
+                          }  
+
+                        })
+                    }
+                    catch (error) {
+                      console.log("Error while fetching messages on message screen=" + error)
+                    }
+                  }
+        
+                });
+            }
+            catch (e) {
+              console.log("Error while fetching messages on message screen=" + e)
+            }
+         }
+         else{
+           alert("Please select status information.");
+         }
 
        }
 
@@ -149,7 +186,7 @@ const NewStatusScreen = (props) => {
                     <Text style={styles.heading}>Add status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
                     <Picker  mode='dropdown'                                               
                          selectedValue={data.status}
-                         style={{width: '100%', height: 150}} itemStyle={{height: 150,}}
+                         style={{width: '90%', height: 150}} itemStyle={{height: 150,}}
                          value={data.status}
                          onValueChange={(itemValue, itemIndex) => { selectedIndex(itemValue) }}
                     >
@@ -186,10 +223,10 @@ const NewStatusScreen = (props) => {
                 ):(null)}
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Additional Information<Text style={{fontSize:11}}> ({data.labelOne})</Text></Text>
+                    <Text style={styles.heading}>Additional Information<Text style={{fontSize:11}}> {data.labelOne?data.labelOne:null}</Text></Text>
                     <Picker mode='dropdown'                      
                          selectedValue={data.labelOne}
-                         style={{width: '100%', height: 130}} itemStyle={{height: 130,}}
+                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}
                          value={data.labelOne}
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelOne(itemValue) }}
                          >       
@@ -206,10 +243,10 @@ const NewStatusScreen = (props) => {
                 </View>
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Further Information <Text style={{fontSize:11}}> ({data.labelTwo})</Text></Text>
+                    <Text style={styles.heading}>Further Information <Text style={{fontSize:11}}> {data.labelTwo?data.labelTwo:null}</Text></Text>
                     <Picker mode='dropdown'
                          selectedValue={data.labelTwo}
-                         style={{width: '100%', height: 130}} itemStyle={{height: 130,}}
+                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}
                          value={data.labelTwo}
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelTwo(itemValue) }}
                         
@@ -228,13 +265,13 @@ const NewStatusScreen = (props) => {
                     <Picker mode='dropdown'
                          selectedValue={data.labelThree}
                          value={data.labelThree}                        
-                         style={{width: '100%', height: 130}} itemStyle={{height: 130,}}                    
+                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}                    
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelThree(itemValue) }}                        
                     >
                         <Picker.Item label="Select Employee" value="" />                        
                         {                            
                             data.listing.map((records, index) => (                        
-                                <Picker.Item label={records.full_name} value={records.full_name} />
+                                <Picker.Item key={records.id} label={records.full_name} value={records.full_name} />
                             ))
                         }                        
                     </Picker>                                        
