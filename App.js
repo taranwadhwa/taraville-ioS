@@ -61,7 +61,7 @@ const App = (props) => {
           drawerLabel: 'Status',          
           drawerIcon: ({focused, size}) => (
           <IonicIcon
-             name="person-outline"
+             name="caret-forward-outline"
              size={20}
              color={'#271933'}                                       
           />
@@ -74,7 +74,7 @@ const App = (props) => {
           drawerLabel: 'New Status',
         drawerIcon: ({focused, size}) => (
           <IonicIcon
-             name="person-circle-outline"
+             name="add-outline"
              size={20}
              color={'#271933'}                         
           />

@@ -23,7 +23,8 @@ const NewStatusScreen = (props) => {
         toTime:'',
         prescheduleState:false,
         listing: [],
-        labelThree:''        
+        labelThree:'',
+        isButtonLoading:false        
 
     });
     const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
@@ -131,8 +132,9 @@ const NewStatusScreen = (props) => {
        }, []);
     
        function handleSaveStatus()
-       {          
-         const{status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime} = data;
+       {     
+                         
+         const{status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime} = data;         
          if(status)
          {
             try {
@@ -150,6 +152,9 @@ const NewStatusScreen = (props) => {
                           if(res.data.status=="OK")
                           {
                             alert("Your status has been successfully saved.");
+                            setData({...data,isButtonLoading:false})
+                            props.navigation.replace('Status')       
+                          
                           }                                                                  
                           else{
                             alert(res.data.status)                                        
@@ -158,14 +163,14 @@ const NewStatusScreen = (props) => {
                         })
                     }
                     catch (error) {
-                      console.log("Error while fetching messages on message screen=" + error)
+                      console.log("Error while on new status screen=" + error)
                     }
                   }
         
                 });
             }
             catch (e) {
-              console.log("Error while fetching messages on message screen=" + e)
+              console.log("Error while on new status screen=" + e)
             }
          }
          else{
@@ -175,7 +180,7 @@ const NewStatusScreen = (props) => {
        }
 
     return (
-
+  
         <View style={styles.container}>
             <StatusBar backgroundColor="#271933" barStyle="light-content" />
             <View style={styles.logo}>
@@ -268,7 +273,7 @@ const NewStatusScreen = (props) => {
                          style={{width: '90%', height: 130}} itemStyle={{height: 130,}}                    
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelThree(itemValue) }}                        
                     >
-                        <Picker.Item label="Select Employee" value="" />                        
+                       <Picker.Item label="Select Employee" value="" />                        
                         {                            
                             data.listing.map((records, index) => (                        
                                 <Picker.Item key={records.id} label={records.full_name} value={records.full_name} />
@@ -278,8 +283,8 @@ const NewStatusScreen = (props) => {
                 </View>
 
                 <View>                               
-                <TouchableOpacity style={styles.btnTouch} onPress={()=>handleSaveStatus()}>                            
-                    <Text style={styles.btnText}>SAVE</Text>                
+                <TouchableOpacity style={styles.btnTouch} onPress={()=>handleSaveStatus()}>                   
+                   <Text style={styles.btnText}>SAVE</Text>                   
                 </TouchableOpacity>          
                 </View>      
 
