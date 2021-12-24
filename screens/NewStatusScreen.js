@@ -1,7 +1,7 @@
 import React,{ useEffect,useState  } from 'react';
 import {
     StyleSheet, Text, View, StatusBar, Image,
-    TextInput, TouchableOpacity, ScrollView, Modal, Pressable, Platform
+    TextInput, TouchableOpacity, ScrollView, Modal, Pressable, Platform,KeyboardAvoidingView
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
@@ -24,11 +24,16 @@ const NewStatusScreen = (props) => {
         prescheduleState:false,
         listing: [],
         labelThree:'',
-        isButtonLoading:false        
+        isButtonLoading:false,
+        other_label:''        
 
     });
-    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+    const [isDatePickerVisible,setDatePickerVisibility] = React.useState(false);
     const [isDateToPickerVisible, setDateToPickerVisibility] = React.useState(false);
+
+    const [isTimePickerVisible,setTimePickerVisibility] = React.useState(false);
+    const [isToTimePickerVisible,setToTimePickerVisibility] = React.useState(false);
+
 
     const selectedIndex = (index) => {                       
         if(index=="PreScheduled"){            
@@ -61,6 +66,14 @@ const NewStatusScreen = (props) => {
     const showDatePicker = () => {        
         setDatePickerVisibility(true)                          
       };
+
+      const showTimePicker=()=>{
+        setTimePickerVisibility(true) 
+      }
+
+      const showToTimePicker=() =>{
+        setToTimePickerVisibility(true) 
+      }
     
       const showToDatePicker=()=>{
         setDateToPickerVisibility(true)      
@@ -71,10 +84,31 @@ const NewStatusScreen = (props) => {
     
       const handleConfirm = (date) => {                
         setData({ ...data,
-            fromDate:moment(date).format('L'),
-            fromTime:moment(date).format('LT')
+            fromDate:moment(date).format('L'),            
+            //fromTime:moment(date).format('LT')
         });             
         hideDatePicker();
+      };
+
+      const handleTimeConfirm = (date) => {                
+        setData({ ...data,            
+            fromTime:moment(date).format('LT')
+        });             
+        hideTimePicker();
+      };
+      const handleToTimeConfirm=(date)=>{
+          setData({ ...data,            
+            toTime:moment(date).format('LT')
+        });             
+        hideToTimePicker();
+      }
+
+      const hideToTimePicker = () => {
+        setToTimePickerVisibility(false);
+      };
+
+      const hideTimePicker = () => {
+        setTimePickerVisibility(false);
       };
 
       const hideDateToPicker = () => {
@@ -85,7 +119,7 @@ const NewStatusScreen = (props) => {
       const handleToConfirm=(date)=>{   
         setData({ ...data,
             toDate:moment(date).format('L'),
-            toTime:moment(date).format('LT')
+            //toTime:moment(date).format('LT')
         });              
         hideDateToPicker();
       }
@@ -132,9 +166,8 @@ const NewStatusScreen = (props) => {
        }, []);
     
        function handleSaveStatus()
-       {     
-                         
-         const{status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime} = data;         
+       {                              
+         const{status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime,other_label} = data;                  
          if(status)
          {
             try {
@@ -146,7 +179,7 @@ const NewStatusScreen = (props) => {
                   if (uid != null) {
                     try {
                       const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/status.php", {
-                        uid, user_token,status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime
+                        uid, user_token,status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime,other_label
                       })
                         .then(res => {
                           if(res.data.status=="OK")
@@ -181,7 +214,8 @@ const NewStatusScreen = (props) => {
 
     return (
   
-        <View style={styles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
+      style={styles.container}>                                 
             <StatusBar backgroundColor="#271933" barStyle="light-content" />
             <View style={styles.logo}>
                 <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
@@ -205,23 +239,33 @@ const NewStatusScreen = (props) => {
                 <View style={[styles.inputCardCalendar, styles.elevation]}>
                     <View style={{flexDirection:'row',padding:1}}>
                         <Text style={styles.heading}>From date: <Text style={{fontSize:11}}>{data.fromDate}</Text></Text>
-                        <Text style={styles.heading}>Time: <Text style={{fontSize:11}}>{data.fromTime}</Text></Text>
+                        <Text style={styles.heading}>From Time: <Text style={{fontSize:11}}>{data.fromTime}</Text></Text>                        
                     </View>
-                     <View style={{marginTop:1}}>
-                    <TouchableOpacity onPress={showDatePicker}>
-                        <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>
-                    </TouchableOpacity>
-                    </View>                                                                             
+
+                     <View style={{marginTop:1,flexDirection:'row'}}>
+                      <TouchableOpacity onPress={showDatePicker} style={{width:'48%'}}>
+                          <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                                  
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={showTimePicker} >
+                          <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                                  
+                      </TouchableOpacity>
+                    </View>
+                                                                                                  
                 </View>
                 <View style={[styles.inputCardCalendar, styles.elevation]}>                    
                     <View style={{flexDirection:'row',padding:1}}>
-                            <Text style={styles.heading}>To date: {data.toDate}</Text>
-                            <Text style={styles.heading}>To Time: {data.toTime}</Text>
+                        <Text style={styles.heading}>To date: <Text style={{fontSize:11}}>{data.toDate}</Text> </Text>
+                        <Text style={styles.heading}>To Time: <Text style={{fontSize:11}}>{data.toTime}</Text></Text>
                     </View>
-                    <View style={{marginTop:1}}>
-                    <TouchableOpacity onPress={showToDatePicker}>
+                    <View style={{marginTop:1,flexDirection:'row'}}>
+                    <TouchableOpacity onPress={showToDatePicker} style={{width:'48%'}}>
                         <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                   
                     </TouchableOpacity> 
+
+                    <TouchableOpacity onPress={showToTimePicker}>
+                        <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                   
+                    </TouchableOpacity> 
+
                     </View>                           
                 </View>
                 </View>
@@ -281,6 +325,10 @@ const NewStatusScreen = (props) => {
                         }                        
                     </Picker>                                        
                 </View>
+                <View style={[styles.inputCard, styles.elevation]}>
+                <Text style={styles.heading}>Other Information </Text>
+                  <TextInput style={styles.input} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
+                </View>   
 
                 <View>                               
                 <TouchableOpacity style={styles.btnTouch} onPress={()=>handleSaveStatus()}>                   
@@ -294,7 +342,7 @@ const NewStatusScreen = (props) => {
 
                 <DateTimePickerModal
                     isVisible={isDatePickerVisible}
-                    mode="datetime"                    
+                    mode="date"                    
                     onConfirm={handleConfirm}
                     onCancel={hideDatePicker}
                     is24Hour={true}
@@ -303,8 +351,30 @@ const NewStatusScreen = (props) => {
                     
                 />
                 <DateTimePickerModal
+                    isVisible={isTimePickerVisible}
+                    mode="time"
+                    onConfirm={handleTimeConfirm}
+                    onCancel={hideTimePicker}                                      
+                    is24Hour={true}
+                    display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
+                    style={styles.datePicker}
+                    
+                />
+
+                <DateTimePickerModal
+                isVisible={isToTimePickerVisible}
+                mode="time"
+                onConfirm={handleToTimeConfirm}
+                onCancel={hideToTimePicker}                                      
+                is24Hour={true}
+                display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
+                style={styles.datePicker}
+
+                />
+
+                <DateTimePickerModal
                     isVisible={isDateToPickerVisible}
-                    mode="datetime"
+                    mode="date"
                     onConfirm={handleToConfirm}
                     onCancel={hideDateToPicker}
                     is24Hour={true}
@@ -315,7 +385,7 @@ const NewStatusScreen = (props) => {
             </ScrollView>
 
 
-        </View>
+        </KeyboardAvoidingView>
 
     );
 }
@@ -341,7 +411,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginTop: 2,
-        marginLeft:10
+        marginLeft:10,        
     },
     inputCard: {
         backgroundColor: 'white',
@@ -393,6 +463,16 @@ const styles = StyleSheet.create({
         textAlign:"center",
         fontWeight:"bold",
         color:'#FFF',    
+      },
+      input:{
+        width:"95%",    
+        borderColor:'#271833',
+        padding:10,
+        margin:8,
+        borderRadius:5,
+        fontSize:18,
+        borderWidth:1
+        
       },
 
 });
