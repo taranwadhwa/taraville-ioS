@@ -11,7 +11,7 @@ import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
 
-const NewStatusScreen = (props) => {
+const EditStatusScreen = (props) => {
 
     const [data, setData] = React.useState({
         status: 'Current Date',
@@ -25,15 +25,10 @@ const NewStatusScreen = (props) => {
         listing: [],
         labelThree:'',
         isButtonLoading:false,
-        other_label:''        
+        other_label:'',
+        isButtonLoader:false        
 
     });
-    const [isDatePickerVisible,setDatePickerVisibility] = React.useState(false);
-    const [isDateToPickerVisible, setDateToPickerVisibility] = React.useState(false);
-
-    const [isTimePickerVisible,setTimePickerVisibility] = React.useState(false);
-    const [isToTimePickerVisible,setToTimePickerVisibility] = React.useState(false);
-
 
     const selectedIndex = (index) => {                       
         if(index=="PreScheduled"){            
@@ -63,66 +58,9 @@ const NewStatusScreen = (props) => {
             labelThree: index,
         });   
     }
-    const showDatePicker = () => {        
-        setDatePickerVisibility(true)                          
-      };
-
-      const showTimePicker=()=>{
-        setTimePickerVisibility(true) 
-      }
-
-      const showToTimePicker=() =>{
-        setToTimePickerVisibility(true) 
-      }
-    
-      const showToDatePicker=()=>{
-        setDateToPickerVisibility(true)      
-      }
-      const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-      };
-    
-      const handleConfirm = (date) => {                
-        setData({ ...data,
-            fromDate:moment(date).format('L'),            
-            //fromTime:moment(date).format('LT')
-        });             
-        hideDatePicker();
-      };
-
-      const handleTimeConfirm = (date) => {                
-        setData({ ...data,            
-            fromTime:moment(date).format('LT')
-        });             
-        hideTimePicker();
-      };
-      const handleToTimeConfirm=(date)=>{
-          setData({ ...data,            
-            toTime:moment(date).format('LT')
-        });             
-        hideToTimePicker();
-      }
-
-      const hideToTimePicker = () => {
-        setToTimePickerVisibility(false);
-      };
-
-      const hideTimePicker = () => {
-        setTimePickerVisibility(false);
-      };
-
-      const hideDateToPicker = () => {
-        setDateToPickerVisibility(false)      
-      };
-
-
-      const handleToConfirm=(date)=>{   
-        setData({ ...data,
-            toDate:moment(date).format('L'),
-            //toTime:moment(date).format('LT')
-        });              
-        hideDateToPicker();
-      }
+    const handleBack=()=>{
+       props.navigation.goBack() 
+    }
      
       function handleStaffListing(){        
         try {
@@ -133,14 +71,19 @@ const NewStatusScreen = (props) => {
               var user_token = parseObject.token;
               if (uid != null) {
                 try {
-                  const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/staff-listing.php", {
+                  const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/old-status.php", {
                     uid, user_token,
                   })
                     .then(res => {
                       if(res.data.status=="OK"){                    
                         setData({
                           ...data,
-                          listing: res.data.listing,                          
+                          labelOne: res.data.list.label_one,                          
+                          labelTwo: res.data.list.label_two,
+                          labelThree: res.data.list.employee_name,
+                          other_label:res.data.list.other_info,
+                          listing:res.data.emp_list,
+                          status:'Current Date'                          
                         });                    
                       }
                       else{
@@ -149,14 +92,14 @@ const NewStatusScreen = (props) => {
                     })
                 }
                 catch (error) {
-                  console.log("Error while fetching staff list on new status screen=" + error)
+                  console.log("Error while fetching staff list edit current date status screen=" + error)
                 }
               }
     
             });
         }
         catch (e) {
-          console.log("Error while fetching staff list on new status on message screen=" + e)
+          console.log("Error while fetching staff list on edit current date status screen=" + e)
         }
     
     
@@ -165,10 +108,10 @@ const NewStatusScreen = (props) => {
         handleStaffListing()   
        }, []);
     
-       function handleSaveStatus()
-       {                              
-        setData({...data,isButtonLoader:true})   
-        const{status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime,other_label} = data;                  
+       function handleUpdateStatus()
+       {       
+         setData({...data,isButtonLoader:true})                       
+         const{status,labelOne,labelTwo,labelThree,other_label,} = data;                  
          if(status)
          {
             try {
@@ -180,32 +123,32 @@ const NewStatusScreen = (props) => {
                   if (uid != null) {
                     try {
                       const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/status.php", {
-                        uid, user_token,status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime,other_label
+                        uid, user_token,status,labelOne,labelTwo,labelThree,other_label
                       })
-                        .then(res => {
+                        .then(res => {                            
                           if(res.data.status=="OK")
                           {
-                            alert("Your status has been successfully saved.");
-                            setData({...data,isButtonLoading:false})
+                            alert("Your status has been successfully updated.");   
+                            setData({...data,isButtonLoader:false});                         
                             props.navigation.replace('Status')       
                           
                           }                                                                  
                           else{
                             alert(res.data.status) 
-                            setData({...data,isButtonLoading:false})                                       
+                            setData({...data,isButtonLoader:false});                                        
                           }  
 
                         })
                     }
                     catch (error) {
-                      console.log("Error while on new status screen=" + error)
+                      console.log("Error while on edit current date status screen=" + error)
                     }
                   }
         
                 });
             }
             catch (e) {
-              console.log("Error while on new status screen=" + e)
+              console.log("Error while on edit current date status screen=" + e)
             }
          }
          else{
@@ -217,67 +160,37 @@ const NewStatusScreen = (props) => {
     return (
   
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
-      style={styles.container}>                                 
+      style={styles.container}>   
+
+            <View style={{flexDirection:'row',borderWidth:2,backgroundColor:'#1BB467',height:60}}>
+                <TouchableOpacity onPress={()=>handleBack()}><Text style={styles.header_txt}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></Text></TouchableOpacity>
+                <Text style={styles.header_txt}>Edit Status</Text>
+            </View>
+
             <StatusBar backgroundColor="#271933" barStyle="light-content" />
             <View style={styles.logo}>
                 <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
             </View>
             <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Add status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
+                    <Text></Text>
+                    <Text style={styles.heading}>Edit status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
                     <Picker  mode='dropdown'                                               
                          selectedValue={data.status}
-                         style={{width: '90%', height: 150}} itemStyle={{height: 150,}}
+                         style={styles.picker} itemStyle={{height: 150,}}
                          value={data.status}
                          onValueChange={(itemValue, itemIndex) => { selectedIndex(itemValue) }}
-                    >
-                        <Picker.Item label="Select Status Type" value="" />
-                        <Picker.Item label="Current Date" value="Current Date" />
-                        <Picker.Item label="PreScheduled" value="PreScheduled" />
+                    >                        
+                        <Picker.Item label="Current Date" value="Current Date" />                        
                     </Picker>                                        
                 </View>
-                {data.prescheduleState?(                                        
-               <View>
-                <View style={[styles.inputCardCalendar, styles.elevation]}>
-                    <View style={{flexDirection:'row',padding:1}}>
-                        <Text style={styles.heading}>From date: <Text style={{fontSize:11}}>{data.fromDate}</Text></Text>
-                        <Text style={styles.heading}>From Time: <Text style={{fontSize:11}}>{data.fromTime}</Text></Text>                        
-                    </View>
-
-                     <View style={{marginTop:1,flexDirection:'row'}}>
-                      <TouchableOpacity onPress={showDatePicker} style={{width:'48%'}}>
-                          <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                                  
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={showTimePicker} >
-                          <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                                  
-                      </TouchableOpacity>
-                    </View>
-                                                                                                  
-                </View>
-                <View style={[styles.inputCardCalendar, styles.elevation]}>                    
-                    <View style={{flexDirection:'row',padding:1}}>
-                        <Text style={styles.heading}>To date: <Text style={{fontSize:11}}>{data.toDate}</Text> </Text>
-                        <Text style={styles.heading}>To Time: <Text style={{fontSize:11}}>{data.toTime}</Text></Text>
-                    </View>
-                    <View style={{marginTop:1,flexDirection:'row'}}>
-                    <TouchableOpacity onPress={showToDatePicker} style={{width:'48%'}}>
-                        <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                   
-                    </TouchableOpacity> 
-
-                    <TouchableOpacity onPress={showToTimePicker}>
-                        <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                   
-                    </TouchableOpacity> 
-
-                    </View>                           
-                </View>
-                </View>
-                ):(null)}
+               
 
                 <View style={[styles.inputCard, styles.elevation]}>
                     <Text style={styles.heading}>Additional Information<Text style={{fontSize:11}}> {data.labelOne?data.labelOne:null}</Text></Text>
                     <Picker mode='dropdown'                      
                          selectedValue={data.labelOne}
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}
+                         style={styles.picker} itemStyle={{height: 130,}}
                          value={data.labelOne}
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelOne(itemValue) }}
                          >       
@@ -297,7 +210,7 @@ const NewStatusScreen = (props) => {
                     <Text style={styles.heading}>Further Information <Text style={{fontSize:11}}> {data.labelTwo?data.labelTwo:null}</Text></Text>
                     <Picker mode='dropdown'
                          selectedValue={data.labelTwo}
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}
+                         style={styles.picker} itemStyle={{height: 130,}}
                          value={data.labelTwo}
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelTwo(itemValue) }}
                         
@@ -316,77 +229,31 @@ const NewStatusScreen = (props) => {
                     <Picker mode='dropdown'
                          selectedValue={data.labelThree}
                          value={data.labelThree}                        
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}                    
+                         style={styles.picker} itemStyle={{height: 130,}}                    
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelThree(itemValue) }}                        
                     >
-                       <Picker.Item label="Select Employee" value="" />                        
-                        {                            
+                       <Picker.Item label="Select Employee" value="" />
+                       {                            
                             data.listing.map((records, index) => (                        
                                 <Picker.Item key={records.id} label={records.full_name} value={records.full_name} />
                             ))
-                        }                        
+                        }                                                    
                     </Picker>                                        
                 </View>
                 <View style={[styles.inputCard, styles.elevation]}>
                 <Text style={styles.heading}>Other Information </Text>
-                  <TextInput style={styles.input} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
+                  <TextInput value={data.other_label} style={styles.input} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
                 </View>   
 
                 <View>                               
-                <TouchableOpacity style={styles.btnTouch} onPress={()=>handleSaveStatus()}>
+                <TouchableOpacity style={styles.btnTouch} onPress={()=>handleUpdateStatus()}>
                 {data.isButtonLoader ? (<ActivityIndicator animating={data.isButtonLoader} size="large" color="white" />
-                        ) : (                        
-                   <Text style={styles.btnText}>SAVE</Text>
-                   )}                     
+                        ) : (                   
+                   <Text style={styles.btnText}>UPDATE</Text> 
+                   )}                  
                 </TouchableOpacity>          
                 </View>      
-
-                <View style={styles.blank_view}>
-                    <Text style={styles.input}></Text> 
-                </View>       
-
-                <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"                    
-                    onConfirm={handleConfirm}
-                    onCancel={hideDatePicker}
-                    is24Hour={true}
-                    display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
-                    style={styles.datePicker}
-                    
-                />
-                <DateTimePickerModal
-                    isVisible={isTimePickerVisible}
-                    mode="time"
-                    onConfirm={handleTimeConfirm}
-                    onCancel={hideTimePicker}                                      
-                    is24Hour={true}
-                    display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
-                    style={styles.datePicker}
-                    
-                />
-
-                <DateTimePickerModal
-                isVisible={isToTimePickerVisible}
-                mode="time"
-                onConfirm={handleToTimeConfirm}
-                onCancel={hideToTimePicker}                                      
-                is24Hour={true}
-                display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
-                style={styles.datePicker}
-
-                />
-
-                <DateTimePickerModal
-                    isVisible={isDateToPickerVisible}
-                    mode="date"
-                    onConfirm={handleToConfirm}
-                    onCancel={hideDateToPicker}
-                    is24Hour={true}
-                    display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
-                    style={styles.datePicker}
-                />
-
+               
             </ScrollView>
 
 
@@ -395,7 +262,7 @@ const NewStatusScreen = (props) => {
     );
 }
 
-export default NewStatusScreen;
+export default EditStatusScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -406,7 +273,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     logo: {
-        marginTop: 20,
+        marginTop: 10,
         backgroundColor: '#271933',
         borderRadius: 8,
         height: 65,
@@ -421,7 +288,7 @@ const styles = StyleSheet.create({
     inputCard: {
         backgroundColor: 'white',
         borderRadius: 4,
-        paddingVertical: 5,
+        paddingVertical: 15,
         paddingHorizontal: 5,
         width: '100%',
         marginVertical: 2,
@@ -437,11 +304,9 @@ const styles = StyleSheet.create({
         height:100
     },
     picker: {
-        width: 200,
-        backgroundColor: '#FFF0E0',
-        borderColor: 'black',
-        borderWidth: 1,        
-      },
+      width: '90%',             
+      height: Platform.OS === 'ios' ? 100 : 50,        
+    },
       pickerItem: {
         color: 'red'
       },
@@ -479,5 +344,11 @@ const styles = StyleSheet.create({
         borderWidth:1
         
       },
+      header_txt:{
+        color:'#FFF',
+        fontSize:19,
+        margin:5,
+        padding:10
+      }
 
 });

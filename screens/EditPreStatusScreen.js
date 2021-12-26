@@ -11,7 +11,7 @@ import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
 
-const NewStatusScreen = (props) => {
+const EditPreStatusScreen = (props) => {
 
     const [data, setData] = React.useState({
         status: 'Current Date',
@@ -124,23 +124,38 @@ const NewStatusScreen = (props) => {
         hideDateToPicker();
       }
      
-      function handleStaffListing(){        
+      const handleBack=()=>{
+        props.navigation.goBack() 
+     }
+      
+      function handleStaffListing(){                        
+        
         try {
           const syncUserInfo = AsyncStorage.getItem("user_info")
             .then(syncResponse => {
               let parseObject = JSON.parse(syncResponse);
               var uid = parseObject.id;
               var user_token = parseObject.token;
+              var status_id = props.route.params.statusID;
               if (uid != null) {
                 try {
-                  const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/staff-listing.php", {
-                    uid, user_token,
+                  const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/old-pre-status.php", {
+                    uid, user_token,status_id
                   })
                     .then(res => {
                       if(res.data.status=="OK"){                    
                         setData({
                           ...data,
-                          listing: res.data.listing,                          
+                          labelOne: res.data.list.label_one,                          
+                          labelTwo: res.data.list.label_two,
+                          labelThree: res.data.list.employee_name,
+                          other_label:res.data.list.other_info,
+                          listing:res.data.emp_list,
+                          status:'PreScheduled',
+                          fromDate:res.data.list.fdate,
+                          fromTime:res.data.list.ftime,
+                          toDate:res.data.list.tdate,
+                          toTime:res.data.list.ttime                          
                         });                    
                       }
                       else{
@@ -149,26 +164,28 @@ const NewStatusScreen = (props) => {
                     })
                 }
                 catch (error) {
-                  console.log("Error while fetching staff list on new status screen=" + error)
+                  console.log("Error while fetching staff list on edit preschedule status screen=" + error)
                 }
               }
     
             });
         }
         catch (e) {
-          console.log("Error while fetching staff list on new status on message screen=" + e)
+          console.log("Error while fetching staff list on edit preschedule status screen=" + e)
         }
     
     
       }
+
+
       useEffect(() => {
         handleStaffListing()   
        }, []);
     
-       function handleSaveStatus()
-       {                              
-        setData({...data,isButtonLoader:true})   
-        const{status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime,other_label} = data;                  
+       function handleSavePreStatus()
+       {   
+        setData({...data,isButtonLoader:true})                             
+         const{status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime,other_label} = data;                  
          if(status)
          {
             try {
@@ -177,10 +194,11 @@ const NewStatusScreen = (props) => {
                   let parseObject = JSON.parse(syncResponse);
                   var uid = parseObject.id;
                   var user_token = parseObject.token;
+                  var status_id = props.route.params.statusID;
                   if (uid != null) {
                     try {
-                      const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/status.php", {
-                        uid, user_token,status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime,other_label
+                      const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/update-pre-status.php", {
+                        uid, user_token,status,labelOne,labelTwo,labelThree,fromDate,toDate,fromTime,toTime,other_label,status_id
                       })
                         .then(res => {
                           if(res.data.status=="OK")
@@ -191,21 +209,21 @@ const NewStatusScreen = (props) => {
                           
                           }                                                                  
                           else{
-                            alert(res.data.status) 
-                            setData({...data,isButtonLoading:false})                                       
+                            alert(res.data.status)  
+                            setData({...data,isButtonLoading:false})                                      
                           }  
 
                         })
                     }
                     catch (error) {
-                      console.log("Error while on new status screen=" + error)
+                      console.log("Error while on edit preschedule status screen=" + error)
                     }
                   }
         
                 });
             }
             catch (e) {
-              console.log("Error while on new status screen=" + e)
+              console.log("Error while on on edit preschedule status screen=" + e)
             }
          }
          else{
@@ -217,26 +235,30 @@ const NewStatusScreen = (props) => {
     return (
   
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
-      style={styles.container}>                                 
+      style={styles.container}>    
+            <View style={{flexDirection:'row',borderWidth:2,backgroundColor:'#1BB467',height:60,borderWidth:5}}>
+                <TouchableOpacity onPress={()=>handleBack()}><Text style={styles.header_txt}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></Text></TouchableOpacity>
+                <Text style={styles.header_txt}>Edit Status</Text>
+            </View>
+
             <StatusBar backgroundColor="#271933" barStyle="light-content" />
             <View style={styles.logo}>
-                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
+                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 5, width: 170, height: 55 }} />
             </View>
             <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Add status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
+                    <Text></Text>
+                    <Text style={styles.heading}>Edit status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
                     <Picker  mode='dropdown'                                               
                          selectedValue={data.status}
-                         style={{width: '90%', height: 150}} itemStyle={{height: 150,}}
+                         style={styles.picker} itemStyle={{height: 120}}
                          value={data.status}
                          onValueChange={(itemValue, itemIndex) => { selectedIndex(itemValue) }}
-                    >
-                        <Picker.Item label="Select Status Type" value="" />
-                        <Picker.Item label="Current Date" value="Current Date" />
+                    >                        
                         <Picker.Item label="PreScheduled" value="PreScheduled" />
                     </Picker>                                        
                 </View>
-                {data.prescheduleState?(                                        
+                                                     
                <View>
                 <View style={[styles.inputCardCalendar, styles.elevation]}>
                     <View style={{flexDirection:'row',padding:1}}>
@@ -271,13 +293,13 @@ const NewStatusScreen = (props) => {
                     </View>                           
                 </View>
                 </View>
-                ):(null)}
+               
 
                 <View style={[styles.inputCard, styles.elevation]}>
                     <Text style={styles.heading}>Additional Information<Text style={{fontSize:11}}> {data.labelOne?data.labelOne:null}</Text></Text>
                     <Picker mode='dropdown'                      
                          selectedValue={data.labelOne}
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}
+                         style={styles.picker} itemStyle={{height: 120}}
                          value={data.labelOne}
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelOne(itemValue) }}
                          >       
@@ -297,7 +319,7 @@ const NewStatusScreen = (props) => {
                     <Text style={styles.heading}>Further Information <Text style={{fontSize:11}}> {data.labelTwo?data.labelTwo:null}</Text></Text>
                     <Picker mode='dropdown'
                          selectedValue={data.labelTwo}
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}
+                         style={styles.picker} itemStyle={{height: 120}}
                          value={data.labelTwo}
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelTwo(itemValue) }}
                         
@@ -316,7 +338,7 @@ const NewStatusScreen = (props) => {
                     <Picker mode='dropdown'
                          selectedValue={data.labelThree}
                          value={data.labelThree}                        
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}                    
+                         style={styles.picker} itemStyle={{height: 120}}                    
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelThree(itemValue) }}                        
                     >
                        <Picker.Item label="Select Employee" value="" />                        
@@ -329,22 +351,17 @@ const NewStatusScreen = (props) => {
                 </View>
                 <View style={[styles.inputCard, styles.elevation]}>
                 <Text style={styles.heading}>Other Information </Text>
-                  <TextInput style={styles.input} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
+                  <TextInput value={data.other_label} style={styles.input} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
                 </View>   
 
                 <View>                               
-                <TouchableOpacity style={styles.btnTouch} onPress={()=>handleSaveStatus()}>
+                <TouchableOpacity style={styles.btnTouch} onPress={()=>handleSavePreStatus()}>
                 {data.isButtonLoader ? (<ActivityIndicator animating={data.isButtonLoader} size="large" color="white" />
-                        ) : (                        
-                   <Text style={styles.btnText}>SAVE</Text>
-                   )}                     
+                        ) : (                      
+                   <Text style={styles.btnText}>UPDATE</Text> 
+                   )}                   
                 </TouchableOpacity>          
-                </View>      
-
-                <View style={styles.blank_view}>
-                    <Text style={styles.input}></Text> 
-                </View>       
-
+                </View>                            
                 <DateTimePickerModal
                     isVisible={isDatePickerVisible}
                     mode="date"                    
@@ -395,7 +412,7 @@ const NewStatusScreen = (props) => {
     );
 }
 
-export default NewStatusScreen;
+export default EditPreStatusScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -406,7 +423,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     logo: {
-        marginTop: 20,
+        marginTop: 10,
         backgroundColor: '#271933',
         borderRadius: 8,
         height: 65,
@@ -437,10 +454,8 @@ const styles = StyleSheet.create({
         height:100
     },
     picker: {
-        width: 200,
-        backgroundColor: '#FFF0E0',
-        borderColor: 'black',
-        borderWidth: 1,        
+        width: '90%',                
+        height: Platform.OS === 'ios' ? 120 : 50,        
       },
       pickerItem: {
         color: 'red'
@@ -453,7 +468,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
       },
       blank_view:{
-        marginTop: Platform.OS === 'ios' ? 20 : 30
+        marginTop: Platform.OS === 'ios' ? 20 : 10
       },
       btnTouch:{
         backgroundColor:'#1BB467',
@@ -479,5 +494,11 @@ const styles = StyleSheet.create({
         borderWidth:1
         
       },
+      header_txt:{
+        color:'#FFF',
+        fontSize:19,
+        margin:5,
+        padding:10
+      }
 
 });

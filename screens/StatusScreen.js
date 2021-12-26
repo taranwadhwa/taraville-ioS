@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import {
   StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity, ScrollView,
-  Modal, Pressable, Platform, ActivityIndicator
+  Modal, Pressable, Platform, ActivityIndicator,KeyboardAvoidingView
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
@@ -19,6 +19,13 @@ const StatusScreen = (props) => {
     isLoading: true
   });
 
+  const handleEditStatus=()=>{
+      props.navigation.navigate('EditStatus')
+  }
+
+  const handlePreStatus=(id)=>{    
+    props.navigation.navigate('EditPreStatusScreen',{statusID:id})
+  }
 
   function fetchStatus() {
     try {
@@ -42,6 +49,7 @@ const StatusScreen = (props) => {
                       pslist: res.data.psstatus,
                       isLoading: false
                     });
+                    
 
                   }
                   else {
@@ -77,7 +85,7 @@ const StatusScreen = (props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <StatusBar backgroundColor="#271933" barStyle="light-content" />
       <View style={styles.logo}>
         <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
@@ -93,7 +101,7 @@ const StatusScreen = (props) => {
 
         </View>
       </View>
-      <ScrollView style={{ marginTop: 2, flex: 1, height: '100%', }}>
+      <ScrollView style={{ marginTop: 2, flex: 1}}>
         {
           data.cslist_len > 0 ? (
             <View style={[styles.messagesCard, styles.elevation]}>
@@ -102,16 +110,16 @@ const StatusScreen = (props) => {
               </View>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.status_card}>Current Status</Text>
-                <Text><IonicIcon name={'pencil'} color={'black'} size={20} /></Text>
+                <TouchableOpacity onPress={()=>handleEditStatus()}><Text><IonicIcon name={'pencil'} color={'black'} size={20} /></Text></TouchableOpacity>
               </View>
 
               {data.cslist.label_one ? (
-                <View style={{ flexDirection: 'row', paddingTop: 15, flexGrow: 1, flex: 1, }}>
+                <View style={{ flexDirection: 'row', paddingTop: 15}}>
                   <Text style={styles.long_txt_lable}>{data.cslist.label_one}</Text>
                 </View>
               ) : (null)}
               {data.cslist.label_two ? (
-                <View style={{ flexDirection: 'row', paddingTop: 5, flexGrow: 1, flex: 1, }}>
+                <View style={{ flexDirection: 'row', paddingTop: 5 }}>
                   {data.cslist.label_two == "Transfer calls to" ? (
                     <Text style={styles.long_txt}>{data.cslist.label_two} - {data.cslist.employee_name}</Text>
                   ) : (<Text style={styles.long_txt}>{data.cslist.label_two}</Text>)}
@@ -119,8 +127,8 @@ const StatusScreen = (props) => {
               ) : (null)}
 
               {data.cslist.other_info ? (
-                <View style={{ flexDirection: 'row', paddingTop: 15, flexGrow: 1, flex: 1, }}>
-                  <Text style={styles.long_txt_lable}>{data.cslist.other_info}</Text>
+                <View style={{ flexDirection: 'row', paddingTop: 12 }}>
+                  <Text style={styles.long_txt}>{data.cslist.other_info}</Text>
                 </View>
               ) : (null)}
 
@@ -141,29 +149,26 @@ const StatusScreen = (props) => {
               </View>
 
             </View>
-          )}
+          )}              
 
-        <View style={[styles.messagesCard, styles.elevation]}>
+            {data.psstatus_len>0?(
+         <View>
+        {         
+          data.pslist.map((records, index) => (   
+        <View key={records.id} style={[styles.messagesCard, styles.elevation]}>
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.status_card}>Prescheduled </Text>
-            {data.psstatus_len > 0 ?( <Text><IonicIcon name={'pencil'} color={'black'} size={20} /></Text>):(null)}
-          </View>
-          {data.psstatus_len > 0 ? (
-            <View>
-              {
-                data.pslist.map((records, index) => (
-                  <View key={records.id}>
-
-                    <View style={{ flexDirection: 'row', paddingTop: 5, flexGrow: 1, flex: 1, }}>
+             <TouchableOpacity onPress={()=>handlePreStatus(records.id)}><Text><IonicIcon name={'pencil'} color={'black'} size={20} /></Text></TouchableOpacity>
+          </View>         
+            <View>                         
+                    <View style={{ flexDirection: 'row', paddingTop: 5 }}>
                       <Text style={styles.long_txt}>{records.ps_fulltext}</Text>
                     </View>
                     {records.label_one ? (
-                      <View style={{ flexDirection: 'row', paddingTop: 15, flexGrow: 1, flex: 1, }}>
+                      <View style={{ flexDirection: 'row', paddingTop: 15, }}>
                         <Text style={styles.long_txt_lable}>{records.label_one}</Text>
                       </View>
-                    ) : (
-                      null
-                    )}
+                    ) : (null)}
 
                     {records.label_two ? (<View style={{ flexDirection: 'row', paddingTop: 5, flexGrow: 1, flex: 1, }}>
 
@@ -176,23 +181,22 @@ const StatusScreen = (props) => {
                         <Text style={styles.long_txt}>{records.other_info}</Text>
                       </View>
                     ) : (null)}
-
-
-                  </View>
-                ))
-              }
-            </View>
-          ) : (
-            <View style={{ marginTop: 10 }}>
-              <Text style={styles.status_card_empty}>No prescheduled status was saved by you.</Text>
-            </View>
-          )}
-
-
-        </View>
+               
+            </View>            
+        </View>        
+         ))         
+        }
+        </View>   
+            ):(
+             null 
+            )}
+        <View style={styles.blank_view}>
+          <Text></Text>
+        </View>    
+              
       </ScrollView>
       <BottomTabNavigationScreen navigation={props.navigation} route={props.route} />
-    </View>
+    </KeyboardAvoidingView>
   )
 
 
@@ -324,6 +328,6 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   blank_view: {
-    marginTop: Platform.OS === 'ios' ? 20 : 10
+    marginTop: Platform.OS === 'ios' ? 20 : 80,        
   },
 });

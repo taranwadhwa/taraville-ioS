@@ -9,6 +9,8 @@ import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import StatusScreen from './screens/StatusScreen';
 import NewStatusScreen from './screens/NewStatusScreen';
+import EditStatusScreen from './screens/EditStatusScreen';
+import EditPreStatusScreen from './screens/EditPreStatusScreen';
 import InsightScreen from './screens/InsightScreen';
 import StaffScreen from './screens/StaffScreen';
 import MessageScreen from './screens/MessageScreen';
@@ -260,7 +262,9 @@ const App = (props) => {
               <Stack.Screen name="Status" component={DrawerRoute}   />
               <Stack.Screen name="Dashboard" component={DrawerRoute}  />                                                  
               <Stack.Screen name="Message" component={MessageScreen} />               
-              <Stack.Screen name="Insight" component={InsightScreen}  />                          
+              <Stack.Screen name="Insight" component={InsightScreen}  />  
+              <Stack.Screen name="EditStatus" component={EditStatusScreen} />
+              <Stack.Screen name="EditPreStatusScreen" component={EditPreStatusScreen} />                          
               </Stack.Navigator>                                                              
 
         }

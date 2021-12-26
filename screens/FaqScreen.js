@@ -90,7 +90,7 @@ class FaqScreen extends React.Component {
                      </View>
                 ):(
                 <View style={[styles.messagesEmptyCard, styles.elevation]}>
-                    <Text style={{textAlign:'center',padding:10,fontSize:18}}>No record(s) found.</Text>                
+                    <Text style={{textAlign:'center',padding:25,fontSize:18}}>No record(s) found.</Text>                
                 </View> 
                 )}    
                                                                     
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         width: '100%',
-        height:'50%',
+        height:'100%',
         marginVertical: 2,
         shadowOpacity: 1,
         shadowRadius: 3,
