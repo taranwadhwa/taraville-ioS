@@ -256,7 +256,7 @@ const App = (props) => {
             </Stack.Navigator>
           )
             :
-              <Stack.Navigator initialRouteName="Status" screenOptions={{
+              <Stack.Navigator initialRouteName="Insight" screenOptions={{
                 headerShown: false,
               }}>                               
               <Stack.Screen name="Status" component={DrawerRoute}   />

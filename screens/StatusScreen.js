@@ -87,6 +87,7 @@ const StatusScreen = (props) => {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <StatusBar backgroundColor="#271933" barStyle="light-content" />
+      
       <View style={styles.logo}>
         <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
       </View>

@@ -162,7 +162,7 @@ const EditStatusScreen = (props) => {
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
       style={styles.container}>   
 
-            <View style={{flexDirection:'row',borderWidth:2,backgroundColor:'#1BB467',height:60}}>
+            <View style={styles.topHeader}>
                 <TouchableOpacity onPress={()=>handleBack()}><Text style={styles.header_txt}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></Text></TouchableOpacity>
                 <Text style={styles.header_txt}>Edit Status</Text>
             </View>
@@ -346,9 +346,19 @@ const styles = StyleSheet.create({
       },
       header_txt:{
         color:'#FFF',
-        fontSize:19,
-        margin:5,
-        padding:10
-      }
+        fontSize: 22,
+        marginTop: 15,
+        padding: 15,
+        height:'100%'
+      },
+      topHeader:{
+        flexDirection: 'row', 
+        margin:1, 
+        borderRadius:1, 
+        backgroundColor: '#1BB467', 
+        height: 70,
+        borderColor:'#1BB467',
+        top:6,
+      },
 
 });
