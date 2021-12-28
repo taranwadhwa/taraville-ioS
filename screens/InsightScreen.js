@@ -15,7 +15,7 @@ const width = 360
 const height = 200
 
 const pieChartData = [
-  { name: 'Calls taken', population: 210000, color: '#508C44', legendFontColor: '#7F7F7F', legendFontSize: 14 },
+  { name: 'Calls taken', population: 210000, color: '#508C44', legendFontColor: '#508C44', legendFontSize: 14 },
   { name: 'Messages', population: 28000, color: '#73AE6A', legendFontColor: '#73AE6A', legendFontSize: 14 },
   { name: 'Calls left', population: 52612, color: '#323232', legendFontColor: '#411016', legendFontSize: 14 },
 ]
