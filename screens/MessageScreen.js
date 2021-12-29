@@ -106,8 +106,7 @@ class MessageScreen extends React.Component {
                 const searchRes = axios.post("https://iosapi.taraville.com/api/v1/messages/search.php", {
                   uid, user_token,search_txt
                 })
-                  .then(res => {   
-                    console.log(res.data.listing)
+                  .then(res => {                       
                     if(res.data.status=="OK"){               
                     this.setState({
                       listing: res.data.listing

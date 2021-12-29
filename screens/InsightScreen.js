@@ -9,18 +9,9 @@ import {
   ContributionGraph
 } from 'react-native-chart-kit'
 import { Picker } from '@react-native-picker/picker';
-
 //const width = Dimensions.get('window').width
 const width = 360
 const height = 200
-
-const pieChartData = [
-  { name: 'Calls taken', population: 210000, color: '#508C44', legendFontColor: '#508C44', legendFontSize: 14 },
-  { name: 'Messages', population: 28000, color: '#73AE6A', legendFontColor: '#73AE6A', legendFontSize: 14 },
-  { name: 'Calls left', population: 52612, color: '#323232', legendFontColor: '#411016', legendFontSize: 14 },
-]
-
-
 const chartConfigs = [
   {
     backgroundColor: '#000',
@@ -36,8 +27,61 @@ const chartConfigs = [
   },
 
 ]
-
 const InsightScreen = (props) => {
+  const [data, setData] = React.useState({
+    pieChartData:[],
+    selectedFilter:'',
+    other_info:[]
+  })
+
+  const selectedIndex = (index) => {
+    setData({...data,selectedFilter:index});
+    handleInsights(index);               
+  }
+
+  const handleInsights=(filter)=>{
+    
+    try {
+      const syncUserInfo = AsyncStorage.getItem("user_info")
+        .then(syncResponse => {
+          let parseObject = JSON.parse(syncResponse);
+          var uid = parseObject.id;
+          var user_token = parseObject.token;
+          if (uid != null) {
+            try {
+              const signInRes = axios.post("https://iosapi.taraville.com/api/v1/insights/listing.php", {
+                uid, user_token,filter
+              })
+                .then(res => {
+                  if(res.data.status=="OK"){                    
+                    setData({
+                      ...data,
+                      pieChartData: res.data.crecords, 
+                      other_info:res.data.other_records                         
+                    });                    
+                  }
+                  else{
+                    alert(res.data.status);                  
+                  }                 
+                })
+            }
+            catch (error) {
+              console.log("Error while fetching insight list on insight screen=" + error)
+            }
+          }
+
+        });
+    }
+    catch (e) {
+      console.log("Error while fetching insight list on new status on insight screen=" + e)
+    }
+
+  }
+
+  useEffect(() => {
+    handleInsights('Today');   
+   }, []);
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}>
@@ -53,9 +97,10 @@ const InsightScreen = (props) => {
         <View style={[styles.messagesCard, styles.elevation]}>
           <View style={{ flexDirection: 'row',justifyContent:'flex-start'}}>                       
             <Picker  mode='dropdown'                                                                        
-              style={{width: '100%',height: 50}} itemStyle={{height: 50,}}                                   
+              style={{width: '100%',height: 50}} itemStyle={{height: 50,}}
+              onValueChange={(itemValue, itemIndex) => { selectedIndex(itemValue) }}                                   
               >                
-                <Picker.Item label="Filter by Current Date" value="Current Date" />
+                <Picker.Item label="Today" value="Today" />
                 <Picker.Item label="Last 7 days" value="Last 7 days" />
                 <Picker.Item label="Last 30 days" value="Last 30 days" />
                 <Picker.Item label="Last 3 months" value="Last 3 months" />
@@ -88,7 +133,7 @@ const InsightScreen = (props) => {
               >
                 <Text style={{ borderStyle: 'dotted' }}>
                   <PieChart
-                    data={pieChartData}
+                    data={data.pieChartData}
                     height={height}
                     width={width}
                     chartConfig={chartConfig}
@@ -105,7 +150,7 @@ const InsightScreen = (props) => {
           <View style={{width:'100%'}}>
           <View style={styles.headingView}>
             <Text style={styles.reportHeading}>Total outbound calls placed:</Text>
-            <Text style={styles.reportAnswers}>10</Text>
+            <Text style={styles.reportAnswers}>5</Text>
           </View>
           <View style={styles.headingView}>
             <Text style={styles.reportHeading}>Most popular days:</Text>
