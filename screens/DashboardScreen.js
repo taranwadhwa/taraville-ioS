@@ -24,6 +24,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
 import configData from "../components/config.json";
 
+console.disableYellowBox = true;
+
 class DashboardScreen extends React.Component{
   constructor(props) {    
     super(props); 

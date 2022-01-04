@@ -11,7 +11,7 @@ import {
   Platform,
   Alert,  
   ActivityIndicator,
-  TouchableWithoutFeedback, Keyboard
+  TouchableWithoutFeedback, Keyboard,LogBox,RefreshControl 
 } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
@@ -19,7 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
-
+LogBox.ignoreAllLogs();
 
 class MessageScreen extends React.Component {
   constructor(props) {
@@ -40,7 +40,10 @@ class MessageScreen extends React.Component {
       notes_input:'',
       call_request:'',
       call_input:'',
-      search_txt:''
+      search_txt:'',
+      isCallButtonLoading:false,
+      isCommentButtonLoading:false,
+      isReminderButtonLoading:false,
 
     }
     //this.searchMessages = this.searchMessages.bind(this);
@@ -69,7 +72,8 @@ class MessageScreen extends React.Component {
                   if(res.data.status=="OK"){                    
                     this.setState({
                       screenLoader: true,
-                      listing: res.data.listing
+                      listing: res.data.listing,
+                      screenLoader:true                      
                     }); 
                   }
                   else{
@@ -161,6 +165,68 @@ class MessageScreen extends React.Component {
     this.setState({ callModalVisible: false })
 
   }
+ 
+  archiveSelectedMessage(messageID){
+    if(messageID)
+    {
+       
+      // START //
+        try {
+          const syncUserInfo = AsyncStorage.getItem("user_info")
+            .then(syncResponse => {
+              let parseObject = JSON.parse(syncResponse);
+              var uid = parseObject.id;
+              var user_token = parseObject.token;              
+              if (uid != null) {
+                try {
+                  const searchRes = axios.post("https://iosapi.taraville.com/api/v1/messages/archive.php", {
+                    uid,user_token,messageID
+                  })
+                    .then(res => {                       
+                      if(res.data.status=="OK"){                                    
+                      
+                        this.setState({                          
+                          listing: res.data.listing,                          
+                        });    
+
+
+                    }
+                    else{
+                      alert("No record(s) found")
+                    }  
+                                   
+                    })
+                }
+                catch (error) {
+                  console.log("Error while search fetching messages on message screen=" + error)
+                }
+              }
+    
+            });
+        }
+        catch (e) {
+          console.log("Error while search fetching messages on message screen=" + e)
+        }
+
+        // ENDS //
+    }
+
+  }
+
+  archiveMessage(messageID){
+    Alert.alert(
+      "Archive Message",
+      "Are you sure you want to archive this message",
+      [        
+        {
+          text: "No",         
+          style: "cancel"
+        },
+        { text: "YES", onPress: () => this.archiveSelectedMessage(messageID) }
+      ]
+    );
+
+  }
   
   unlockMessage(){
     
@@ -209,7 +275,7 @@ class MessageScreen extends React.Component {
 
   }
   saveNotes() {
-    
+    this.setState({isCommentButtonLoading:true});
     const { message_id,notes } = this.state;
     if(notes)
     {
@@ -232,7 +298,7 @@ class MessageScreen extends React.Component {
                       else{
                           alert(res.data.status)
                       }
-                      this.setState({notes_input:''})
+                      this.setState({notes_input:'',isCommentButtonLoading:false});
                       
                     })
                 }
@@ -253,11 +319,13 @@ class MessageScreen extends React.Component {
     }
     else{
       alert("Please enter your comments.");
+      this.setState({isCommentButtonLoading:false});
     }
   }
 
 
   handleCallRequest(){
+    this.setState({isCallButtonLoading:true});
     const { message_id,call_request } = this.state;    
     if(call_request)
     {
@@ -280,7 +348,7 @@ class MessageScreen extends React.Component {
                     else{
                         alert(res.data.status)
                     }
-                    this.setState({call_input:''})
+                    this.setState({call_input:'',isCallButtonLoading:false});
                     
                   })
               }
@@ -302,6 +370,7 @@ class MessageScreen extends React.Component {
     } 
     else{
       alert("Please enter your call request.")
+      this.setState({isCallButtonLoading:false});
     }
 
   }
@@ -313,6 +382,7 @@ class MessageScreen extends React.Component {
     this.props.navigation.replace('Message')
   }
   handleReminder(){
+    this.setState({isReminderButtonLoading:true});
     const{reminder_time,message_id}=this.state;
     if(reminder_time){
       try {
@@ -333,7 +403,8 @@ class MessageScreen extends React.Component {
                     }
                     else{
                         alert(res.data.status)
-                    }                    
+                    }   
+                    this.setState({isReminderButtonLoading:false});                 
                     
                   })
               }
@@ -354,6 +425,7 @@ class MessageScreen extends React.Component {
   }
   else{
     alert("Please select reminder time for this message.")
+    this.setState({isReminderButtonLoading:false});
   }
 }
 
@@ -361,11 +433,17 @@ class MessageScreen extends React.Component {
     const { modalVisible, callModalVisible, notesModalVisible, reminderVisible, screenLoader,listing } = this.state;
     if (screenLoader) {
       return (
-        <View style={styles.container}>
-          <StatusBar backgroundColor="#271933" barStyle="light-content" />
+        <View style={styles.container}>          
+
+          <StatusBar backgroundColor="#271933" barStyle="light-content"/> 
+        <View style={styles.topHeader}>
+          <Text style={styles.header_txt}>Message</Text>
+        </View>
+
           <View style={styles.logo}>
             <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-          </View>
+          </View>          
+
           <View style={[styles.messagesCard, styles.elevation]}>
             <View style={{ flexDirection: 'row' }}>
               <TextInput style={styles.input} placeholder="Search with customer name or phone#:" onChangeText={(sval)=>this.setState({search_txt:sval})} />
@@ -382,9 +460,21 @@ class MessageScreen extends React.Component {
               </Text>
             </View>
           </View>
-                      
+        
+          <View style={styles.tabMessagesCard}>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('Message')} style={{textAlign:'center',width:'50%',padding:13,fontSize:16,backgroundColor:'#1BB467',borderRadius:5,color:'#FFFFFF'}}>
+                <Text style={{color:'#FFFFFF'}}>
+                <IonicIcon name={'notifications'} color={'white'} size={15}  /> New Messages </Text>  
+            </TouchableOpacity>                 
+                <Text style={{width:'1%'}}></Text>
+                <TouchableOpacity onPress={()=>this.props.navigation.navigate('Archive')}  style={{textAlign:'center',width:'50%',padding:13,fontSize:16,backgroundColor:'#D3D3D3',borderRadius:5,color:'#A9A9A9'}}>
+                  <Text style={{color:'#A9A9A9'}}>
+                  <IonicIcon name={'archive'} color={'#A9A9A9'} size={15}  /> Archived Messages</Text>
+                </TouchableOpacity>
+             </View>           
           
-          <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}> 
+          <ScrollView style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!screenLoader} onRefresh={this.handleListing} />}>                          
+             
              {listing.length>0?(                      
             <View style={[styles.messagesCard, styles.elevation]}>              
             {                            
@@ -426,7 +516,7 @@ class MessageScreen extends React.Component {
                   </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+                <TouchableOpacity onPress={() => this.archiveMessage(records.id)}>
                   <Text style={{ width: '100%', borderWidth: 0, paddingRight: 10 }}>
                     <View style={styles.dateRow}>
                       <Text style={styles.innerText}>
@@ -510,6 +600,7 @@ class MessageScreen extends React.Component {
              ):(
               <View style={[styles.messagesEmptyCard, styles.elevation]}>
                 <Text style={{textAlign:'center',padding:10,fontSize:18}}>No message(s) found.</Text>                
+                <Text style={{textAlign:'center',fontSize:11}}>Pull down for refresh this screen</Text>                
               </View> 
 
              )
@@ -561,10 +652,13 @@ class MessageScreen extends React.Component {
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
                 <Text style={styles.innerModalText}>Request for call</Text>
-                <TextInput value={this.state.call_input} onChangeText={(val)=>this.setState({call_request:val, call_input:val })} style={styles.modalInput} numberOfLines={4} multiline={true} />
+                <TextInput value={this.state.call_input} onChangeText={(val)=>this.setState({call_request:val, call_input:val })} style={styles.modalInput} numberOfLines={5} multiline={true} />
                 <View>
                   <TouchableOpacity onPress={()=>this.handleCallRequest()} style={styles.buttonClose}>
+                  {this.state.isCallButtonLoading ? (<ActivityIndicator animating={this.state.isCallButtonLoading} size="large" color="white" />)
+                   : (  
                     <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
+                   )}
                   </TouchableOpacity>
                 </View>
 
@@ -592,7 +686,11 @@ class MessageScreen extends React.Component {
                 <TextInput value={this.state.notes_input}  onChangeText={(notes) => this.setState({ notes: notes,notes_input:notes })} style={styles.modalInput} multiline={true} numberOfLines={5} />
                 <View>
                   <TouchableOpacity style={styles.buttonClose} onPress={() => this.saveNotes()}>
+                  {this.state.isCommentButtonLoading ? (<ActivityIndicator animating={this.state.isCommentButtonLoading} size="large" color="white" />)
+                   : ( 
+                    
                     <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
+                    )}
                   </TouchableOpacity>
                 </View>
 
@@ -636,7 +734,11 @@ class MessageScreen extends React.Component {
                 </View>
                 <View style={styles.reminderContainer}>
                   <TouchableOpacity onPress={()=>this.handleReminder()} style={styles.buttonClose}>
+                    
+                  {this.state.isReminderButtonLoading ? (<ActivityIndicator animating={this.state.isReminderButtonLoading} size="large" color="white" />)
+                   : ( 
                     <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
+                    )}
                   </TouchableOpacity>
                 </View>
 
@@ -705,7 +807,7 @@ const styles = StyleSheet.create
       padding: 7,
       margin: 8,
       borderRadius: 5,
-      fontSize: 18,
+      fontSize: 16,
       borderWidth: 1
     },
     modalInput: {
@@ -759,18 +861,34 @@ const styles = StyleSheet.create
     },
     messagesCard: {
       backgroundColor: '#f1f1f1',
-      borderRadius: 8,
-      paddingVertical: 10,
-      paddingHorizontal: 10,
+      borderRadius: 5,
+      paddingVertical:10,
+      paddingHorizontal:10,
       width: '100%',
-      marginVertical: 2,
+      marginVertical: 3,
       shadowOpacity: 1,
       shadowRadius: 3,
       shadowOffset: {
         height: 0,
         width: 0
-      },
-
+      },      
+      margin:1
+    },
+    tabMessagesCard: {
+      flexDirection:'row',
+      backgroundColor: '#f1f1f1',
+      borderRadius: 5,
+      paddingVertical:10,
+      paddingHorizontal:10,
+      width: '100%',
+      marginVertical: 3,
+      shadowOpacity: 1,
+      shadowRadius: 3,
+      shadowOffset: {
+        height: 0,
+        width: 0
+      },      
+      margin:1
     },
     messagesEmptyCard:{
       backgroundColor: '#f1f1f1',
@@ -846,5 +964,22 @@ const styles = StyleSheet.create
     },
     label_trick:{
       fontWeight:'bold'
-    }
+    },
+    header_txt: {
+      color: '#FFF',
+      fontSize: 22,
+      marginTop: Platform.OS === 'ios' ? 2 : 10,    
+      padding: 10,
+      alignContent:'center',
+      alignItems:'center',          
+    },
+    topHeader:{
+      flexDirection: 'row', 
+      margin:1, 
+      borderRadius:1, 
+      backgroundColor: '#1BB467',     
+      height: Platform.OS === 'ios' ? 50 : 60,
+      borderColor:'#1BB467',
+      justifyContent:'center'    
+    },
   });

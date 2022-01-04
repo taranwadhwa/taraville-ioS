@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, Platform, KeyboardAvoidingView, Dimensions,StatusBar } from 'react-native';
+import React,{ useEffect,useState } from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, Platform, KeyboardAvoidingView,Dimensions,StatusBar,ActivityIndicator } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import {
   LineChart,
@@ -9,6 +9,9 @@ import {
   ContributionGraph
 } from 'react-native-chart-kit'
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios  from 'axios';
+console.disableYellowBox = true;
 //const width = Dimensions.get('window').width
 const width = 360
 const height = 200
@@ -31,16 +34,20 @@ const InsightScreen = (props) => {
   const [data, setData] = React.useState({
     pieChartData:[],
     selectedFilter:'',
-    other_info:[]
+    other_info:[],
+    isLoading: true
   })
 
   const selectedIndex = (index) => {
-    setData({...data,selectedFilter:index});
+    setData({
+      ...data,
+      selectedFilter: index,
+  });  
+
     handleInsights(index);               
   }
 
-  const handleInsights=(filter)=>{
-    
+  const handleInsights=(filter)=>{    
     try {
       const syncUserInfo = AsyncStorage.getItem("user_info")
         .then(syncResponse => {
@@ -57,10 +64,13 @@ const InsightScreen = (props) => {
                     setData({
                       ...data,
                       pieChartData: res.data.crecords, 
-                      other_info:res.data.other_records                         
-                    });                    
+                      other_info:res.data.other_records,
+                      isLoading: false,
+                      selectedFilter:res.data.other_records.selected_filter                         
+                    });                                        
                   }
                   else{
+                    setData({...data,isLoading: false});
                     alert(res.data.status);                  
                   }                 
                 })
@@ -79,9 +89,20 @@ const InsightScreen = (props) => {
   }
 
   useEffect(() => {
-    handleInsights('Today');   
-   }, []);
+    const timer = setTimeout(() => handleInsights('Today'), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
+
+  if (data.isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator animating={true} size="large" color="#000" />
+        <Text style={{ color: 'black', textAlign: 'center', alignItems: 'center' }}>Please wait... while we are fetching insight information.</Text>
+      </View>
+    )
+  }
+  else{
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}>
@@ -96,7 +117,9 @@ const InsightScreen = (props) => {
       <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
         <View style={[styles.messagesCard, styles.elevation]}>
           <View style={{ flexDirection: 'row',justifyContent:'flex-start'}}>                       
-            <Picker  mode='dropdown'                                                                        
+            <Picker  mode='dropdown'
+              selectedValue={data.selectedFilter}
+              value={data.selectedFilter}                                                                           
               style={{width: '100%',height: 50}} itemStyle={{height: 50,}}
               onValueChange={(itemValue, itemIndex) => { selectedIndex(itemValue) }}                                   
               >                
@@ -138,7 +161,8 @@ const InsightScreen = (props) => {
                     width={width}
                     chartConfig={chartConfig}
                     accessor="population"
-                    style={graphStyle}
+                    style={graphStyle}                    
+                    absolute
                   />
                 </Text>
               </View>
@@ -149,26 +173,29 @@ const InsightScreen = (props) => {
         <View style={[styles.messagesCard, styles.elevation]}>
           <View style={{width:'100%'}}>
           <View style={styles.headingView}>
-            <Text style={styles.reportHeading}>Total outbound calls placed:</Text>
-            <Text style={styles.reportAnswers}>5</Text>
+            <Text style={styles.reportHeading}>Tatal outbound calls placed:</Text>
+            <Text style={styles.reportAnswers}>{data.other_info.outbound_calls}</Text>
           </View>
           <View style={styles.headingView}>
             <Text style={styles.reportHeading}>Most popular days:</Text>
-            <Text style={styles.reportAnswers}>10</Text>
+            <Text style={styles.reportAnswers}>{data.other_info.popular_day}</Text>
           </View>
 
           <View style={styles.headingView}>
             <Text style={styles.reportHeading}>Most frequent caller:</Text>
-            <Text style={styles.reportAnswers}>Taranjit Singh </Text>
+            <Text style={styles.reportAnswers}>{data.other_info.caller_name}</Text>
           </View>
           <View style={styles.headingView}>
             <Text style={styles.reportHeading}>Most popular city:</Text>
-            <Text style={styles.reportAnswers}>Stamford</Text>
-          </View>
+            <Text style={styles.reportAnswers}>{data.other_info.popular_city}</Text>
+          </View>          
+
           <View style={styles.headingView}>
-            <Text style={styles.reportHeading}>Calls by hours:</Text>
-            <Text style={styles.reportAnswers}>5</Text>
+            <Text style={styles.reportHeading}>Number of spam calls:</Text>
+            <Text style={styles.reportAnswers}>{data.other_info.spam_calls}</Text>
           </View>
+
+
           </View>
         </View>       
       </ScrollView>
@@ -180,7 +207,7 @@ const InsightScreen = (props) => {
       <BottomTabNavigationScreen navigation={props.navigation} route={props.route} />
     </KeyboardAvoidingView>
   )
-
+        }          
 }
 export default InsightScreen;
 const styles = StyleSheet.create({

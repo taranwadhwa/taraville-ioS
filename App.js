@@ -4,7 +4,7 @@ import React,{ useEffect } from 'react';
 import { NavigationContainer,useRoute } from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
 import { createDrawerNavigator,DrawerButton } from '@react-navigation/drawer';
-import { StyleSheet, Text, View,ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View,ActivityIndicator,LogBox } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import StatusScreen from './screens/StatusScreen';
@@ -17,13 +17,15 @@ import MessageScreen from './screens/MessageScreen';
 import FaqScreen  from './screens/FaqScreen';
 import NewFaqScreen from './screens/NewFaqScreen';
 import NewStaffScreen from './screens/AddStaffScreen';
+import ArchiveScreen from './screens/ArchiveScreen';
 import { AuthContext } from './components/context';
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
 import axios  from 'axios';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
+LogBox.ignoreAllLogs();
 
 const App = (props) => {  
   const initialLoginState = {
@@ -31,9 +33,12 @@ const App = (props) => {
     userToken: null,
   };
 
-  const DrawerRoute=()=>{     
+  
+
+  const DrawerRoute=(props)=>{     
+    
     return (
-      <Drawer.Navigator screenOptions={{        
+      <Drawer.Navigator initialRouteName={props.route.name} screenOptions={{        
         drawerStyle: {
           backgroundColor: '#FFF',
           padding:10,
@@ -55,8 +60,9 @@ const App = (props) => {
           top:50,          
         },           
                 
-      }}>                   
-        <Drawer.Screen name="Status" component={StatusScreen} options={{ 
+      }}>     
+               
+          <Drawer.Screen name="Status" component={StatusScreen} options={{ 
           drawerActiveBackgroundColor:'#1BB467',
           drawerActiveTintColor:'#FFF',
           drawerInactiveTintColor:'#000',
@@ -80,8 +86,8 @@ const App = (props) => {
              size={20}
              color={'#271933'}                         
           />
-       ), }} />      
-        
+       ), }} />              
+          
         <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{
           drawerActiveBackgroundColor:'#1BB467',
           drawerActiveTintColor:'#FFF',
@@ -147,7 +153,8 @@ const App = (props) => {
              color={'#271933'}
           />
        ), }}     
-        />     
+        />      
+            
 
       </Drawer.Navigator>
     );
@@ -261,7 +268,8 @@ const App = (props) => {
               }}>                               
               <Stack.Screen name="Status" component={DrawerRoute}   />
               <Stack.Screen name="Dashboard" component={DrawerRoute}  />                                                  
-              <Stack.Screen name="Message" component={MessageScreen} />               
+              <Stack.Screen name="Message" component={MessageScreen} />
+              <Stack.Screen name="Archive" component={ArchiveScreen} />                             
               <Stack.Screen name="Insight" component={InsightScreen}  />  
               <Stack.Screen name="EditStatus" component={EditStatusScreen} />
               <Stack.Screen name="EditPreStatusScreen" component={EditPreStatusScreen} />                          

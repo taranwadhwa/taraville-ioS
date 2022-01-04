@@ -50,7 +50,7 @@ const BottomTab=(props)=>
 
 
             <Text style={styles.NavigationText}>
-            <Pressable onPress={()=>props.navigation.navigate('Insight')}>
+            <Pressable onPress={()=>props.navigation.replace('Insight')}>
             <View style={styles.icon}>
             {                
                 data.croute=='Insight'?   
@@ -111,7 +111,9 @@ const styles = StyleSheet.create({
     height:'9%',
     borderRadius:5,            
     alignSelf:'center',
-    margin:5  
+    margin:5,
+    borderTopWidth:1,
+    borderTopColor:'#CCCCCC'      
   },
   
   NavigationContainer:{ 
@@ -121,7 +123,8 @@ const styles = StyleSheet.create({
     backgroundColor:'#FFF',        
     flexDirection:'row',
     margin:1,    
-    borderRadius:13,    
+    borderRadius:13,
+    
   },
   NavigationInnerContainer:{
     borderWidth:1,
