@@ -12,6 +12,7 @@ import {
 }
     from 'react-native';
 import axios from 'axios';
+import IonicIcon from 'react-native-vector-icons/Ionicons'
 
 const ViewCommentsScreen = ({ navigation }) => {
 
@@ -34,12 +35,10 @@ const ViewCommentsScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>                    
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
-            <View style={styles.topHeader}>
-                <Text style={styles.header_txt}>Comments</Text>
-            </View>
-          <View style={styles.logo}>
-            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-          </View> 
+            <View style={styles.topHeader}>              
+                <TouchableOpacity onPress={()=>navigation.navigate('Message')} style={{marginTop:15,paddingLeft:10}}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></TouchableOpacity>
+                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 130, height: 49 }} />                
+            </View>          
 
           <View style={[styles.messagesCard, styles.elevation]}>
             <View style={{ flexDirection: 'column' }}>
@@ -49,13 +48,58 @@ const ViewCommentsScreen = ({ navigation }) => {
                  Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
                  Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
                 </Text>
+                <Text style={styles.innerSmallText}>Posted By: You</Text>                
+                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text>
                 <Text style={{borderBottomWidth: 1, borderBottomColor: '#C1C1C1'}}></Text>
             </View>           
           </View> 
 
 
            <ScrollView style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={handleAllComments} />}>                          
-             
+            <View style={[styles.messagesCard, styles.elevation]}>
+            <Text style={styles.head_message}>Comments (4)</Text> 
+              <View style={{ flexDirection: 'column' }}>              
+                <Text style={styles.long_text_comments}>
+                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
+                </Text>   
+                <Text style={styles.innerSmallText}>Posted By: You</Text>                
+                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text> 
+              </View>
+                <View style={{flexDirection:'row',borderBottomWidth:1,borderBottomColor:'#C1C1C1'}}><Text></Text></View>
+              <View style={{ flexDirection: 'column' }}>                
+                <Text style={styles.long_text_comments}>
+                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
+                </Text>   
+                <Text style={styles.innerSmallText}>Posted By: You</Text>                
+                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text> 
+              </View>
+              <View style={{flexDirection:'row',borderBottomWidth:1,borderBottomColor:'#C1C1C1'}}><Text></Text></View>
+              <View style={{ flexDirection: 'column' }}>                
+                <Text style={styles.long_text_comments}>
+                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
+                </Text>   
+                <Text style={styles.innerSmallText}>Posted By: You</Text>                
+                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text> 
+              </View>
+
+              <View style={{flexDirection:'row',borderBottomWidth:1,borderBottomColor:'#C1C1C1'}}><Text></Text></View>
+              <View style={{ flexDirection: 'column' }}>                
+                <Text style={styles.long_text_comments}>
+                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
+                </Text>   
+                <Text style={styles.innerSmallText}>Posted By: You</Text>                
+                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text> 
+              </View>
+
+            </View>
            </ScrollView> 
         </View>
     )
@@ -89,14 +133,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
       },
       topHeader: {
-        flexDirection: 'row',
+        flexDirection:'row',
         margin: 1,
         borderRadius: 1,
-        backgroundColor: '#1BB467',
-        height: Platform.OS === 'ios' ? 50 : 60,
+        backgroundColor: '#1BB467',        
+        height: Platform.OS === 'ios' ? 60 : 60,
         borderColor: '#1BB467',
-        justifyContent: 'center'
+        top:5,
+        borderWidth:1,        
+        alignContent:'flex-start'
       },
+    
       messagesCard: {
         backgroundColor: '#f1f1f1',
         borderRadius: 2,
@@ -118,10 +165,25 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'justify'
       },
+      long_text_comments: {
+        padding: 2,
+        lineHeight: 28,
+        fontSize: 13,
+        textAlign: 'justify'
+      },
       head_message:{
         color:'#000000',
         fontSize: 22,        
         paddingTop: 5
-      }
+      },
+      innerSmallText:{
+        color:'#000000',
+        fontSize: 16,
+        paddingLeft: 4,
+        paddingTop: 5,        
+        borderBottomWidth:1,
+        borderBottomColor:'#CCCCCC',
+        fontWeight:'bold'
+      },
   
 });

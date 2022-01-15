@@ -27,7 +27,7 @@ import IonicIcon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-LogBox.ignoreAllLogs();
+//LogBox.ignoreAllLogs();
 
 function App(props) {
   const initialLoginState = {

@@ -429,14 +429,10 @@ class MessageScreen extends React.Component {
         <View style={styles.container}>
 
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
-          <View style={styles.topHeader}>
-            <Text style={styles.header_txt}>Message</Text>
-          </View>
-
-          <View style={styles.logo}>
-            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-          </View>
-
+          <View style={styles.topHeader}>           
+            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 130, height: 49 }} />                
+            <Text style={styles.header_txt}>Messages</Text>            
+          </View>         
           <View style={[styles.messagesCard, styles.elevation]}>
             <View style={{ flexDirection: 'row' }}>
               <TextInput style={styles.input} placeholder="Search with customer name or phone#:" onChangeText={(sval) => this.setState({ search_txt: sval })} />
@@ -981,19 +977,20 @@ const styles = StyleSheet.create
     },
     header_txt: {
       color: '#FFF',
-      fontSize: 22,
-      marginTop: Platform.OS === 'ios' ? 2 : 10,
+      fontSize: 20,
+      marginTop: Platform.OS === 'ios' ? 5 : 10,
       padding: 10,
-      alignContent: 'center',
-      alignItems: 'center',
+      alignContent:'space-around',      
     },
     topHeader: {
-      flexDirection: 'row',
+      flexDirection:'row',
       margin: 1,
       borderRadius: 1,
-      backgroundColor: '#1BB467',
-      height: Platform.OS === 'ios' ? 50 : 60,
+      backgroundColor: '#1BB467',        
+      height: Platform.OS === 'ios' ? 60 : 60,
       borderColor: '#1BB467',
-      justifyContent: 'center'
+      top:5,
+      borderWidth:1,        
+      alignContent:'flex-start'
     },
   });
