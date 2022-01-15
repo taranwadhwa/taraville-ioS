@@ -1,5 +1,5 @@
 import React,{ useEffect,useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, Platform, KeyboardAvoidingView,Dimensions,StatusBar,ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, Platform, KeyboardAvoidingView,Dimensions,StatusBar,ActivityIndicator,LogBox } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import {
   LineChart,
@@ -11,7 +11,8 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
+
 //const width = Dimensions.get('window').width
 const width = 360
 const height = 200

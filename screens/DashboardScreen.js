@@ -16,7 +16,7 @@ import {
   Pressable,  
   Modal,
   useIsFocused,     
-  ActivityIndicator
+  ActivityIndicator,LogBox
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
@@ -24,7 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
 import configData from "../components/config.json";
 
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
 
 class DashboardScreen extends React.Component{
   constructor(props) {    
@@ -102,7 +102,7 @@ class DashboardScreen extends React.Component{
                   description:res.data.user_records.description, 
                   hooperations:res.data.user_records.hooperations,
                   plan_name:res.data.user_records.plan_name,    
-                  ccnumber:res.data.user_records.ccnumber,
+                  ccnumber:res.data.user_records.cc_number,
                   expiryMonth:res.data.user_records.expiryMonth,
                   expiryYear:res.data.user_records.expiryYear,
                   cvv:res.data.user_records.cvv      
@@ -186,26 +186,17 @@ class DashboardScreen extends React.Component{
     let iconColor = '#271833'   
     let staffIconName='person-add-outline';
     const { modalVisible,fname,lname,email,phone,buisness_name,website,
-    address,description,hooperations,plan_name,ccnumber,expiryMonth,expiryYear,cvv } = this.state;       
+    address,description,hooperations,plan_name,ccnumber,expiryMonth,expiryYear,cvv} = this.state;       
     
     if(isLoading){
     return(                  
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
-        style={styles.container}>                                   
+      <KeyboardAvoidingView  style={styles.container}>                                   
         <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
         <View style={styles.logo}>
           <Image source = {require("../assets/logo.png")} style={{resizeMode:'contain',marginTop:10,width:170,height:55}}/>
         </View>            
 
-        <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>  
-        
-        <TouchableOpacity onPress={() => this.setModalVisible(true)}>
-          <View style={styles.staff_container}>   
-				    <IonicIcon name={'add-outline'} color={'black'} size={45} style={{paddingBottom:3}} />
-          </View>  
-        </TouchableOpacity> 
-         
-           
+        <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>                                      
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            
           <TextInput value={fname} style={styles.input} placeholder="First name:" onChangeText={(fname)=>this.setState({fname:fname})}/>          
@@ -226,7 +217,7 @@ class DashboardScreen extends React.Component{
           <Text style={styles.heading}>Billing Details</Text>  
 
           <TextInput value={plan_name}  editable = {false} style={styles.input} placeholder="Plan name:" onChangeText={(plan_name)=>this.setState({plan_name:plan_name})}/>          
-          <TextInput value={ccnumber} keyboardAppearance="light" keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(ccnumber)=>this.setState({ccnumber:ccnumber})}/>          
+          <TextInput value={ccnumber} maxLength={16} keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(ccnumber)=>this.setState({ccnumber:ccnumber})}/>          
           
           <View style={styles.text_container}>
             <TextInput value={expiryMonth} keyboardAppearance="light" keyboardType="numeric" 
@@ -243,7 +234,7 @@ class DashboardScreen extends React.Component{
               onChangeText={(expiryYear)=>this.setState({expiryYear:expiryYear})}
               />
           </View>
-         <TextInput secureTextEntry={true} keyboardAppearance="light" keyboardType="numeric" maxLength={4} style={styles.input} placeholder="CVV:" onChangeText={(cvv)=>this.setState({cvv:cvv})}/>                                 
+         <TextInput value={cvv} secureTextEntry={true} keyboardAppearance="light" keyboardType="numeric" maxLength={4} style={styles.input} placeholder="CVV:" onChangeText={(cvv)=>this.setState({cvv:cvv})}/>                                 
         </View>
         <View>                     
           
@@ -257,56 +248,13 @@ class DashboardScreen extends React.Component{
 
           </TouchableOpacity>          
         </View>
-        
-
         <View style={styles.blank_view}>
-             <Text style={styles.input}></Text> 
-        </View>
-
-        </ScrollView>     
-
-        <View style={styles.centeredView}>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}               
-          onClickOutside={this.onClickOutside}                  
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={{marginTop:2}}></Text>
-
-              <TouchableOpacity style={styles.btnFaq}>
-              <Button 
-                onPress = {this.triggerStaffModal.bind(this)}
-                title = "CREATE ADDITIONAL STAFF" 
-                textAlign="left"               
-                color = "#FFF">
-              </Button>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.btnFaq}>
-              <Button                    
-                onPress = {this.triggerFAQModal.bind(this)}
-                title = "CREATE FAQ'S"
-                textAlign="left"
-                titleStyle="left"                 
-               color = "#FFF">
-              </Button>  
-              </TouchableOpacity>                          
-              <View style={{flexDirection:'column',alignItems:'flex-end',marginTop:15}}>                            
-              <Pressable
-                style={styles.buttonClose}
-                onPress={() => this.setModalVisible(!modalVisible)}
-              >
-                <Text style={{color:'white',fontWeight:'bold'}}>CLOSE</Text>
-              </Pressable>
-              </View>
-            </View>
-          </View>
-        </Modal>        
-      </View>
-        <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route}/>            
-        </KeyboardAvoidingView>                                
+          <Text></Text>
+        </View>        
+        </ScrollView>              
+      <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route}/>            
+      </KeyboardAvoidingView>  
+                                      
 
     ) 
     }
@@ -318,7 +266,7 @@ class DashboardScreen extends React.Component{
           </View>
       )
     }    
-   
+    
   }
 }
 export default DashboardScreen;
@@ -473,7 +421,7 @@ btnText:{
 },
 
 blank_view:{
-  marginTop: Platform.OS === 'ios' ? 20 : 30
+  marginTop: Platform.OS === 'ios' ? 30 : 30
 },
 modalText: {
   margin: 7,  

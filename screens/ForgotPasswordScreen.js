@@ -8,51 +8,42 @@ import {
   Image,
   StatusBar,
   Keyboard,
-  ActivityIndicator
+  ActivityIndicator,Linking
 }
   from 'react-native';
 import axios from 'axios';
-import configData from "../components/config.json";
-import { AuthContext } from '../components/context';
 
-const SignInScreen = ({ navigation }) => {
+const ForgotPasswordScreen = ({ navigation }) => {
   const [data, setData] = React.useState({
-    email: '',
-    password: '',
+    email: '',    
     validation_status: true,
     loading: false,
   });
 
   
-  const { signIn } = React.useContext(AuthContext);
-
+ 
   const textInputChange = (val) => {
     setData({
       ...data,
       email: val
     });
   }
-  const handlePasswordChange = (val) => {
-    setData({
-      ...data,
-      password: val
-    });
-  }
-  const handleForgotPassword=()=>{
-    navigation.navigate('ForgotPassword');
+  
+  const handleBackLogin=()=>{
+    navigation.navigate('Login');
   }
 
-  const loginHandle = (email, password) => {
-    if (email && password) {
+  const passwordHandle = (email) => {
+    if (email) {
       setData({ ...data, loading: true })
       try {
-        const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/login.php", {
-          email,
-          password
+        const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/fpassword.php", {
+          email,          
         })
           .then(res => {
             if (res.data.status == "OK") {              
-              signIn(res.data.rem_token,res.data.id);
+              alert("Please check your inbox to reset your password.")
+              setData({ ...data, loading:false })
             }
             else {
               alert(res.data.status)
@@ -68,7 +59,7 @@ const SignInScreen = ({ navigation }) => {
       catch (error) { console.log("error inside sign in" + error) }
     }
     else{
-      alert("Please enter valid email and password.")
+      alert("Please enter valid registered email.")
     }    
 
 }
@@ -79,20 +70,18 @@ return (
     <View style={styles.logo}>
       <Image source={require("../assets/logo.png")} />
     </View>
-    <TextInput autoCapitalize='none' autoCorrect={false} style={styles.input} placeholder="Email-address:" onChangeText={(email) => textInputChange(email)} />
-    <TextInput autoCapitalize = 'none' style={styles.input} placeholder="Password:" onChangeText={(password) => handlePasswordChange(password)} secureTextEntry={true} />
-
-    <View style={styles.btnContainer}>
-      <TouchableOpacity activeOpacity={0.8} onPress={() => { loginHandle(data.email, data.password) }}>
+    <TextInput autoCapitalize='none' autoCorrect={false} style={styles.input} placeholder="Email-address:" onChangeText={(email) => textInputChange(email)} />       
+      <TouchableOpacity activeOpacity={0.8} onPress={() => { passwordHandle(data.email) }} style={styles.touchBtn}>
+      <View style={styles.userBtn}>
         {
-          data.loading ? (<ActivityIndicator size="large" color="white" />) : (<Text style={styles.btnText}>SIGN IN</Text>)
+          data.loading ? (<ActivityIndicator size="large" color="white" />) : (<Text style={styles.btnText}>SUBMIT</Text>)
         }
-
+        </View>
       </TouchableOpacity>
-    </View>
+    
     <View style={styles.passwordContainer}>
-      <TouchableOpacity onPress={()=>handleForgotPassword()}>
-        <Text style={styles.forgot_button}>Forgot Password?</Text>
+      <TouchableOpacity onPress={()=>handleBackLogin()}>
+        <Text style={styles.forgot_button}>Back to Login</Text>
       </TouchableOpacity>
     </View>
 
@@ -102,7 +91,7 @@ return (
 
   }
 
-export default SignInScreen;
+export default ForgotPasswordScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -127,9 +116,13 @@ const styles = StyleSheet.create({
     fontSize: 18
 
   },
+  touchBtn:{
+    backgroundColor: '#32DD87',
+    width: "90%",
+    borderRadius: 3
+  },
   userBtn: {
-    padding: 15,
-    width: '45%',
+    padding: 15,    
     backgroundColor: '#32DD87',
     width: "90%",
     borderRadius: 3

@@ -10,8 +10,7 @@ const BottomTab=(props)=>
   });  
     
   const {signOut} = React.useContext(AuthContext);  
-  return(  
-    
+  return(      
     <View style={styles.container}>
       <View style={styles.NavigationContainer}>
         <View style={styles.NavigationInnerContainer}>          
@@ -107,8 +106,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',    
     flexDirection:'column',    
     position:'absolute',
-    bottom:2,
-    height:'9%',
+    bottom:3,
+    height:'11%',
     borderRadius:5,            
     alignSelf:'center',
     margin:5,
@@ -142,8 +141,7 @@ const styles = StyleSheet.create({
     justifyContent:'space-evenly'
     
   },
-  NavigationText:{
-    padding:8,
+  NavigationText:{    
     margin:13,    
     fontSize:17,
     shadowOpacity:0.1,

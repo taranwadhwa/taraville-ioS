@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import {
   StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity, ScrollView,
-  Modal, Pressable, Platform, ActivityIndicator, KeyboardAvoidingView,LogBox 
+  Modal, Pressable, Platform, ActivityIndicator, KeyboardAvoidingView, LogBox
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { textDecorationColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 LogBox.ignoreAllLogs();
 
@@ -112,7 +111,7 @@ const StatusScreen = (props) => {
 
 
           <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
-            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Today { data.cslist.fcdate?(data.cslist.fcdate):null }</Text>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Today {data.cslist.fcdate ? (data.cslist.fcdate) : null}</Text>
           </View>
 
           {
@@ -199,15 +198,11 @@ const StatusScreen = (props) => {
           ) : (
             null
           )}
-        </View>
-
-
-
-        <View style={styles.blank_view}>
-          <Text></Text>
-        </View>
-
+        </View>        
       </ScrollView>
+        <View style={styles.blank_view}>
+             <Text></Text> 
+        </View>
       <BottomTabNavigationScreen navigation={props.navigation} route={props.route} />
     </KeyboardAvoidingView>
   )
@@ -218,8 +213,7 @@ const StatusScreen = (props) => {
 export default StatusScreen;
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'stretch',
+    flex: 1,    
     justifyContent: 'center',
     backgroundColor: '#271933',
     flexDirection: 'column'
@@ -342,6 +336,6 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   blank_view: {
-    marginTop: Platform.OS === 'ios' ? 20 : 80,
+    marginTop: Platform.OS === 'ios' ? 55 : 30,
   },
 });

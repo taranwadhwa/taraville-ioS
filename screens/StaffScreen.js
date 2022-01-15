@@ -1,5 +1,5 @@
 import React,{ useEffect }  from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput,Platform,ActivityIndicator,ScrollView } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput,Platform,ActivityIndicator,ScrollView,RefreshControl } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
@@ -8,11 +8,11 @@ import IonicIcon from 'react-native-vector-icons/Ionicons';
 const StaffScreen = (props) => {
  const [data, setData] = React.useState({
     listing: [],
-    isLoading:true
+    isLoading:true,
+    screenLoader:false    
   });
  
-  function handleListing(){
-    
+  function handleListing(){    
     try {
       const syncUserInfo = AsyncStorage.getItem("user_info")
         .then(syncResponse => {
@@ -29,7 +29,8 @@ const StaffScreen = (props) => {
                     setData({
                       ...data,
                       listing: res.data.listing,
-                      isLoading:false
+                      isLoading:false,
+                      screenLoader:true
                     });                    
                   }
                   else{
@@ -61,7 +62,7 @@ const StaffScreen = (props) => {
             <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
           </View>
       
-          <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%' }}>                              
+          <ScrollView style={{ marginTop: 1, margin: 3, flex: 1, height: '100%' }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={handleListing} />}>                              
           {data.listing.length>0?(   
           <View>
              {                            
@@ -75,7 +76,7 @@ const StaffScreen = (props) => {
                     </Text>
                 </View>
                 <View style={{ flexDirection: 'row', padding:3, margin: 1, width: '100%',borderBottomWidth:1,borderBottomColor:'#C1C1C1' }}>
-                <Text style={{ width: '40%' }}>
+                <Text style={{ width: '60%' }}>
                   <View style={styles.dateRow}>
                     <Text style={styles.innerText}><Text style={styles.label_trick}>Email:</Text> {records.email}</Text>
                   </View>
@@ -105,8 +106,10 @@ const StaffScreen = (props) => {
           </View>                              
           ):(
             <View style={[styles.messagesEmptyCard, styles.elevation]}>
-                <Text style={{textAlign:'center',padding:10,fontSize:18}}>No message(s) found.</Text>                
-            </View> 
+                <Text style={{textAlign:'center',padding:10,fontSize:17}}>No staff member(s) was added.</Text>           
+                <Text style={{textAlign:'center',fontSize:11}}>(Pull down for refresh this screen.)</Text> 
+            </View>
+            
           )}
           </ScrollView>
           <BottomTabNavigationScreen navigation={props.navigation} route={props.route} /> 
@@ -176,7 +179,7 @@ const styles = StyleSheet.create
         paddingVertical: 10,
         paddingHorizontal: 10,
         width: '100%',
-        height:'50%',
+        height:'100%',
         marginVertical: 2,
         shadowOpacity: 1,
         shadowRadius: 3,

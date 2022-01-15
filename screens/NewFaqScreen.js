@@ -1,8 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput, Platform, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput, Platform, ActivityIndicator,LogBox } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+LogBox.ignoreAllLogs();
+
 class NewFaqScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -31,8 +33,9 @@ class NewFaqScreen extends React.Component {
                             })
                                 .then(res => {
                                     if (res.data.status == "OK") {
-                                        this.setState({ isButtonLoader: false });
                                         alert("FAQ information has been successfully saved.")
+                                        this.setState({ isButtonLoader: false });
+                                        this.props.navigation.navigate('My Faq')
                                     }
                                     else {
                                         alert(res.data.status)

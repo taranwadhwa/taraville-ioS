@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput,Platform,ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, StatusBar,ScrollView,TouchableOpacity, SafeAreaView, Image,TextInput,Platform,ActivityIndicator,KeyboardAvoidingView } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
@@ -31,11 +31,11 @@ class StaffScreen extends React.Component {
                         const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/staff.php", {
                             full_name,position,email,phone,uid,user_token
                         })
-                        .then(res => {
-                            console.log(res)
+                        .then(res => {                            
                             if (res.data.status == "OK") {
                                 this.setState({isButtonLoading:false});  
-                                alert("Staff information has been successfully saved.")
+                                alert("Staff information has been successfully saved.");
+                                this.props.navigation.navigate('My Staff');                                
                             } 
                             else if(res.data.status == "EXISTS"){
                                 this.setState({isButtonLoading:false});  
@@ -73,13 +73,15 @@ class StaffScreen extends React.Component {
     render() {
         const{isButtonLoading}=this.state;
         return (
-            <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container}>
                 <StatusBar backgroundColor="#271933" barStyle="light-content" />
                 <View style={styles.logo}>
                     <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
                 </View>
+                
+                <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',flexDirection:'column'}}> 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Staff Information</Text>
+                    <Text style={styles.heading}>Add new staff information</Text>
                     <TextInput style={styles.input} placeholder="Full name:*" onChangeText={(full_name) => this.setState({ full_name: full_name })} />
                     <TextInput style={styles.input} placeholder="Position:" onChangeText={(position) => this.setState({ position: position })} />
                     <TextInput style={styles.input} placeholder="E-mail:*" onChangeText={(email) => this.setState({ email: email })} />
@@ -94,8 +96,12 @@ class StaffScreen extends React.Component {
                         }   
                     </TouchableOpacity>
                 </View>
+                <View style={styles.blank_view}>
+                    <Text></Text>
+                </View> 
+                </ScrollView> 
                 <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
-            </View>
+            </KeyboardAvoidingView>
 
         );
     }
@@ -104,11 +110,9 @@ export default StaffScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'stretch',
-        justifyContent: 'flex-start',
-        backgroundColor: '#271933',
-        flexDirection: 'column',
-
+        alignContent:'center',        
+        justifyContent: 'center',
+        backgroundColor: '#271933',        
     },
     inputCard: {
         backgroundColor: '#F1F1F1',
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
         width: '100%',
-        height: Platform.OS === 'ios' ? '60%' : '52%'
+        height: Platform.OS === 'ios' ? '80%' : '82%'
 
     },
     elevation: {
@@ -141,9 +145,7 @@ const styles = StyleSheet.create({
         margin: 7,
 
     },
-
-
-    input: {
+   input: {
         width: "95%",
         borderColor: '#271833',
         padding: 10,
@@ -167,6 +169,12 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: 'white',
     },
-
+    heading:{
+        paddingLeft:11,
+        fontSize:20
+    },
+    blank_view:{
+        marginTop: Platform.OS === 'ios' ? 30 : 30
+    },
 
 });

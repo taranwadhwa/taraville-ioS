@@ -1,7 +1,7 @@
 import React,{ useEffect,useState  } from 'react';
 import {
     StyleSheet, Text, View, StatusBar, Image,
-    TextInput, TouchableOpacity, ScrollView, Modal, Pressable, Platform,KeyboardAvoidingView,ActivityIndicator
+    TextInput, TouchableOpacity, ScrollView, Modal, Pressable, Platform,KeyboardAvoidingView,ActivityIndicator,LogBox
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
@@ -10,6 +10,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
+LogBox.ignoreAllLogs();
 
 const EditPreStatusScreen = (props) => {
 

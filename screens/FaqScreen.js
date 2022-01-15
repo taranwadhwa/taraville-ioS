@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, 
-    TextInput, Platform, ActivityIndicator,ScrollView } from 'react-native';
+    TextInput, Platform, ActivityIndicator,ScrollView,RefreshControl } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -9,7 +9,8 @@ class FaqScreen extends React.Component {
         super(props);
         this.state = {
             listing: [],
-            isButtonLoader: false
+            isButtonLoader: false,
+            screenLoader:false
         }
 
 
@@ -35,7 +36,8 @@ class FaqScreen extends React.Component {
                         if(res.data.status=="OK"){                    
                           this.setState({
                             isButtonLoader: true,
-                            listing: res.data.listing
+                            listing: res.data.listing,
+                            screenLoader:true
                           });                           
                         }
                         else{
@@ -65,7 +67,7 @@ class FaqScreen extends React.Component {
                 <View style={styles.logo}>
                     <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
                 </View>
-                <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
+                <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!this.state.screenLoader} onRefresh={this.fetchFaq} />}>
                 {listing.length>0?(                                      
                     <View style={[styles.messagesCard, styles.elevation]}>
                         {                            
@@ -90,7 +92,8 @@ class FaqScreen extends React.Component {
                      </View>
                 ):(
                 <View style={[styles.messagesEmptyCard, styles.elevation]}>
-                    <Text style={{textAlign:'center',padding:25,fontSize:18}}>No record(s) found.</Text>                
+                    <Text style={{textAlign:'center',padding:5,fontSize:18}}>No record(s) found.</Text>
+                    <Text style={{textAlign:'center',fontSize:11}}>(Pull down for refresh this screen.)</Text>                 
                 </View> 
                 )}    
                                                                     
