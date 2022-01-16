@@ -191,11 +191,7 @@ class DashboardScreen extends React.Component{
     if(isLoading){
     return(                  
       <KeyboardAvoidingView  style={styles.container}>                                   
-        <StatusBar backgroundColor="#271933" barStyle="light-content"/>          
-        <View style={styles.logo}>
-          <Image source = {require("../assets/logo.png")} style={{resizeMode:'contain',marginTop:10,width:170,height:55}}/>
-        </View>            
-
+        <StatusBar backgroundColor="#271933" barStyle="light-content"/>                             
         <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>                                      
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            

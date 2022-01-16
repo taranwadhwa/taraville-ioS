@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image, TextInput, Platform, ActivityIndicator,LogBox } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Image,ScrollView,TextInput, Platform, ActivityIndicator,LogBox,KeyboardAvoidingView, Keyboard } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -17,7 +17,8 @@ class NewFaqScreen extends React.Component {
 
     }
 
-    handleFaq() {    
+    handleFaq() {
+        Keyboard.dismiss();    
         this.setState({ isButtonLoader: true });    
         const { question, answer } = this.state;
         if (question && answer) {
@@ -34,12 +35,13 @@ class NewFaqScreen extends React.Component {
                                 .then(res => {
                                     if (res.data.status == "OK") {
                                         alert("FAQ information has been successfully saved.")
-                                        this.setState({ isButtonLoader: false });
+                                        this.setState({ isButtonLoader: false,question:'',answer:'' });
                                         this.props.navigation.navigate('My Faq')
                                     }
                                     else {
                                         alert(res.data.status)
-                                    }
+                                        this.setState({ isButtonLoader: false,question:'',answer:'' });
+                                    }                                    
 
                                 })
 
@@ -66,27 +68,26 @@ class NewFaqScreen extends React.Component {
     render() {
         const { isButtonLoader } = this.state;
         return (
-            <View style={styles.container}>
-                <StatusBar backgroundColor="#271933" barStyle="light-content" />
-                <View style={styles.logo}>
-                    <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-                </View>
-                <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>FAQ Information</Text>
-                    <TextInput style={styles.input} placeholder="Enter your question:*" onChangeText={(question) => this.setState({ question: question })} />
-                    <TextInput style={styles.input} placeholder="Enter answer:*" onChangeText={(answer) => this.setState({ answer: answer })} />
-                </View>
-
-                <View>
-                    <TouchableOpacity onPress={this.handleFaq} style={styles.btnTouch}>
-                        {isButtonLoader ? (<ActivityIndicator animating={isButtonLoader} size="large" color="white" />
-                        ) : (
-                            <Text style={styles.btnText}>SUBMIT</Text>
-                        )}
-                    </TouchableOpacity>
-                </View>
-                <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
-            </View>
+            <><KeyboardAvoidingView style={styles.container}>
+                <StatusBar backgroundColor="#271933" barStyle="light-content" />  
+                <View> 
+                    <View style={[styles.inputCard, styles.elevation]}>
+                        <Text style={styles.heading}>Add New Question</Text>                    
+                        <Text style={styles.innerSmallText}>Please enter new faq question and answer.</Text>
+                        <Text style={{marginTop:5}}></Text>
+                        <TextInput value={this.state.question} style={styles.input} multiline={true} numberOfLines={5} placeholder="Enter question:*" onChangeText={(question) => this.setState({ question: question })} />
+                        <TextInput  value={this.state.answer} style={styles.input} multiline={true} numberOfLines={5} placeholder="Enter answer:*" onChangeText={(answer) => this.setState({ answer: answer })} />
+                        <TouchableOpacity onPress={this.handleFaq} style={styles.btnTouch}>
+                            {isButtonLoader ? (<ActivityIndicator animating={isButtonLoader} size="large" color="white" />
+                            ) : (
+                                <Text style={styles.btnText}>SUBMIT</Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>               
+                </View>                                                              
+            </KeyboardAvoidingView>
+            <View><Text><BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} /></Text></View></>
+            
 
         );
     }
@@ -98,12 +99,12 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         justifyContent: 'flex-start',
         backgroundColor: '#271933',
-        flexDirection: 'column',
+        flexDirection: 'column',                
 
     },
     inputCard: {
         backgroundColor: '#F1F1F1',
-        borderRadius: 8,
+        borderRadius: 2,
         paddingVertical: 20,
         paddingHorizontal: 20,
         padding: 10,
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
         width: '100%',
-        height: Platform.OS === 'ios' ? '60%' : '52%'
+        minHeight: Platform.OS === 'ios' ? '60%' : '70%'
 
     },
     elevation: {
@@ -130,27 +131,25 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         height: 65,
         margin: 7,
-
     },
-
-
     input: {
-        width: "95%",
-        borderColor: '#271833',
-        padding: 10,
-        margin: 8,
+        width: "98%",
+        borderColor: '#C1C1C1',
+        padding: 7,
+        margin: 4,
+        marginBottom: 5,
         borderRadius: 5,
         fontSize: 18,
-        borderWidth: 1
-
+        borderWidth: 1,
+        textAlignVertical:'top',
     },
     btnTouch: {
         backgroundColor: '#1BB467',
         height: 45,
         padding: 10,
-        width: '95%',
-        margin: 10,
-        borderRadius: 50,
+        width: '98%',
+        margin: 5,
+        borderRadius: 5,
     },
     btnText: {
         fontSize: 18,
@@ -158,6 +157,17 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: 'white',
     },
-
+    heading: {                
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        paddingLeft:8
+      },
+      innerSmallText:{
+        color:'#C1C1C1',
+        fontSize: 14,
+        paddingLeft: 8,
+        paddingTop: 5
+      },
 
 });

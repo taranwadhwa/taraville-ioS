@@ -109,14 +109,10 @@ const InsightScreen = (props) => {
       style={styles.container}>
          <StatusBar backgroundColor="#271933" barStyle="light-content"/> 
       <View style={styles.topHeader}>
-        <Text style={styles.header_txt}>Insight</Text>
-      </View>
-       
-      <View style={styles.logo}>
-        <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 5, width: 170, height: 55 }} />
-      </View>
-      <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
-        <View style={[styles.messagesCard, styles.elevation]}>
+        <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
+      </View>             
+      
+      <View style={[styles.messagesCard, styles.elevation]}>
           <View style={{ flexDirection: 'row',justifyContent:'flex-start'}}>                       
             <Picker  mode='dropdown'
               selectedValue={data.selectedFilter}
@@ -131,6 +127,8 @@ const InsightScreen = (props) => {
             </Picker>                          
           </View>
         </View>
+      <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
+        
         <View style={[styles.messagesCard, styles.elevation]}>
           {chartConfigs.map(chartConfig => {
             const labelStyle = {
@@ -274,5 +272,16 @@ const styles = StyleSheet.create({
   },
   blank_view:{
     marginTop: Platform.OS === 'ios' ? 55 : 30
+  },
+  topHeader: {
+    flexDirection:'row',
+    margin: 1,
+    borderRadius: 1,
+    backgroundColor: '#1BB467',        
+    height: Platform.OS === 'ios' ? 60 : 60,
+    borderColor: '#1BB467',
+    top:5,
+    borderWidth:1,        
+    alignContent:'flex-start'
   },
 });

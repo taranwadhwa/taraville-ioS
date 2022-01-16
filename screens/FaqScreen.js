@@ -63,11 +63,8 @@ class FaqScreen extends React.Component {
         if(isButtonLoader){
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor="#271933" barStyle="light-content" />
-                <View style={styles.logo}>
-                    <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-                </View>
-                <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!this.state.screenLoader} onRefresh={this.fetchFaq} />}>
+                <StatusBar backgroundColor="#271933" barStyle="light-content" />                
+                <ScrollView  style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!this.state.screenLoader} onRefresh={this.fetchFaq} />}>
                 {listing.length>0?(                                      
                     <View style={[styles.messagesCard, styles.elevation]}>
                         {                            
@@ -96,7 +93,13 @@ class FaqScreen extends React.Component {
                     <Text style={{textAlign:'center',fontSize:11}}>(Pull down for refresh this screen.)</Text>                 
                 </View> 
                 )}    
-                                                                    
+
+              <View style={styles.blank_view}>
+                <Text style={styles.input}></Text>
+              </View>
+   
+
+
                 </ScrollView>                 
                 
                 <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
     },
     messagesCard: {
         backgroundColor: '#f1f1f1',
-        borderRadius: 8,
+        borderRadius: 2,
         paddingVertical: 10,
         paddingHorizontal: 10,
         width: '100%',
@@ -204,6 +207,9 @@ const styles = StyleSheet.create({
           width: 0
         },
   
+      },
+      blank_view: {
+        marginTop: Platform.OS === 'ios' ? 40 : 70
       },
 
 });

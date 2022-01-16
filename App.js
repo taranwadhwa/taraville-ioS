@@ -40,7 +40,7 @@ function App(props) {
   const DrawerRoute = (props) => {
 
     return (
-      <Drawer.Navigator initialRouteName={props.route.name} screenOptions={{
+      <Drawer.Navigator initialRouteName={props.route.name} screenOptions={{                        
         drawerStyle: {
           backgroundColor: '#FFF',
           padding: 10,
@@ -60,6 +60,8 @@ function App(props) {
         drawerContentStyle: {
           top: 50,
         },
+        
+
       }}>
 
         <Drawer.Screen name="Status" component={StatusScreen} options={{
@@ -248,6 +250,14 @@ function App(props) {
     );
   }
 
+  function LogoTitle(){
+    return (
+      <Image       
+        source={require('./assets/logo.png')}
+      />
+    );
+  }
+
   // ends //
   return (
     <AuthContext.Provider value={authContext}>
@@ -264,7 +274,7 @@ function App(props) {
           <Stack.Navigator initialRouteName="Status" screenOptions={{
             headerShown: false,
           }}>
-            <Stack.Screen name="Status" component={DrawerRoute} />
+            <Stack.Screen name="Status" component={DrawerRoute} options={{ headerTitle: (props) => <LogoTitle {...props} /> }} />
             <Stack.Screen name="Dashboard" component={DrawerRoute} />
             <Stack.Screen name="Message" component={MessageScreen} />
             <Stack.Screen name="Archive" component={ArchiveScreen} />

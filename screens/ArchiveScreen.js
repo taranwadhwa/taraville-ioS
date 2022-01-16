@@ -211,26 +211,10 @@ class ArchiveScreen extends React.Component {
 
           <StatusBar backgroundColor="#271933" barStyle="light-content"/> 
           <View style={styles.topHeader}>           
-            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 130, height: 49 }} />                
-            <Text style={styles.header_txt}>Archived Messages</Text>            
+          <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
           </View>                    
 
-          <View style={[styles.messagesCard, styles.elevation]}>
-            <View style={{ flexDirection: 'row' }}>
-              <TextInput style={styles.input} placeholder="Search with customer name or phone#:" onChangeText={(sval)=>this.setState({search_txt:sval})} />
-              <Text>
-                <TouchableOpacity onPress={this.handleSearch}>
-                  <IonicIcon name={'search'} color={'black'} size={25} style={{ paddingTop: 18 }} />
-                  
-                </TouchableOpacity>
-              </Text>
-              <Text>
-              <TouchableOpacity onPress={this.refreshScreen}>
-                 <IonicIcon name={'refresh'} color={'black'} size={25} style={{ paddingTop: 18,paddingLeft:8 }} />
-                 </TouchableOpacity>
-              </Text>
-            </View>
-          </View>
+          
         
           <View style={styles.tabMessagesCard}>
               <TouchableOpacity onPress={()=>this.props.navigation.navigate('Message')}  style={{textAlign:'center',width:'50%',padding:13,fontSize:16,backgroundColor:'#D3D3D3',borderRadius:5,color:'#A9A9A9'}}>

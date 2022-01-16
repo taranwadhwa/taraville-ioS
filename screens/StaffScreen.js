@@ -57,11 +57,7 @@ const StaffScreen = (props) => {
 
      return(
         <View style={styles.container}>
-          <StatusBar backgroundColor="#271933" barStyle="light-content" />
-          <View style={styles.logo}>
-            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-          </View>
-      
+          <StatusBar backgroundColor="#271933" barStyle="light-content" />          
           <ScrollView style={{ marginTop: 1, margin: 3, flex: 1, height: '100%' }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={handleListing} />}>                              
           {data.listing.length>0?(   
           <View>
@@ -111,6 +107,9 @@ const StaffScreen = (props) => {
             </View>
             
           )}
+          <View style={styles.blank_view}>
+                <Text style={styles.input}></Text>
+              </View>
           </ScrollView>
           <BottomTabNavigationScreen navigation={props.navigation} route={props.route} /> 
 
@@ -130,7 +129,7 @@ const styles = StyleSheet.create
     },
     messagesCard: {
         backgroundColor: '#f1f1f1',
-        borderRadius: 8,
+        borderRadius: 1,
         paddingVertical: 10,
         paddingHorizontal: 10,
         width: '100%',
@@ -188,5 +187,8 @@ const styles = StyleSheet.create
           width: 0
         },
   
+      },
+      blank_view: {
+        marginTop: Platform.OS === 'ios' ? 40 : 70
       },
 }); 

@@ -238,14 +238,11 @@ const EditPreStatusScreen = (props) => {
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
       style={styles.container}>    
             <View style={styles.topHeader}>
-                <TouchableOpacity onPress={()=>handleBack()}><Text style={styles.header_txt}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></Text></TouchableOpacity>
-                <Text style={styles.header_txt}>Edit Status</Text>
+                <TouchableOpacity style={{marginTop:15,paddingLeft:10}} onPress={()=>handleBack()}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></TouchableOpacity>
+                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
             </View>
 
-            <StatusBar backgroundColor="#271933" barStyle="light-content" />
-            <View style={styles.logo}>
-                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 5, width: 170, height: 55 }} />
-            </View>
+            <StatusBar backgroundColor="#271933" barStyle="light-content" />            
             <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
                 <View style={[styles.inputCard, styles.elevation]}>
                     <Text></Text>
@@ -297,7 +294,7 @@ const EditPreStatusScreen = (props) => {
                
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Additional Information<Text style={{fontSize:11}}> {data.labelOne?data.labelOne:null}</Text></Text>
+                    <Text style={styles.heading}>Why?<Text style={{fontSize:11}}> {data.labelOne?data.labelOne:null}</Text></Text>
                     <Picker mode='dropdown'                      
                          selectedValue={data.labelOne}
                          style={styles.picker} itemStyle={{height: 120}}
@@ -317,7 +314,7 @@ const EditPreStatusScreen = (props) => {
                 </View>
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Further Information <Text style={{fontSize:11}}> {data.labelTwo?data.labelTwo:null}</Text></Text>
+                    <Text style={styles.heading}>For how long? <Text style={{fontSize:11}}> {data.labelTwo?data.labelTwo:null}</Text></Text>
                     <Picker mode='dropdown'
                          selectedValue={data.labelTwo}
                          style={styles.picker} itemStyle={{height: 120}}
@@ -335,7 +332,7 @@ const EditPreStatusScreen = (props) => {
                 </View>
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Employee Information <Text style={{fontSize:11}}> {data.labelThree}</Text></Text>
+                    <Text style={styles.heading}>Transfer calls to who? <Text style={{fontSize:11}}> {data.labelThree}</Text></Text>
                     <Picker mode='dropdown'
                          selectedValue={data.labelThree}
                          value={data.labelThree}                        
@@ -351,8 +348,8 @@ const EditPreStatusScreen = (props) => {
                     </Picker>                                        
                 </View>
                 <View style={[styles.inputCard, styles.elevation]}>
-                <Text style={styles.heading}>Other Information </Text>
-                  <TextInput value={data.other_label} style={styles.input} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
+                <Text style={styles.heading}>Anything else? </Text>
+                  <TextInput multiline={true} numberOfLines={5} value={data.other_label} style={styles.input} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
                 </View>   
 
                 <View>                               
@@ -438,7 +435,7 @@ const styles = StyleSheet.create({
     },
     inputCard: {
         backgroundColor: 'white',
-        borderRadius: 4,
+        borderRadius: 1,
         paddingVertical: 5,
         paddingHorizontal: 5,
         width: '100%',
@@ -472,12 +469,12 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 20 : 10
       },
       btnTouch:{
-        backgroundColor:'#1BB467',
-        height:45,
-        padding:10,
-        width:'95%',
-        margin:10,       
-        borderRadius:50,
+        backgroundColor: '#1BB467',
+        height: 45,
+        padding: 10,
+        width: '98%',
+        margin: 5,
+        borderRadius: 5,
       },
       btnText:{
         fontSize:18,
@@ -492,7 +489,8 @@ const styles = StyleSheet.create({
         margin:8,
         borderRadius:5,
         fontSize:18,
-        borderWidth:1
+        borderWidth:1,
+        textAlignVertical:'top',
         
       },
       header_txt:{
@@ -502,14 +500,16 @@ const styles = StyleSheet.create({
         padding: 15,
         height:'100%'
       },
-      topHeader:{
-        flexDirection: 'row', 
-        margin:1, 
-        borderRadius:1, 
-        backgroundColor: '#1BB467', 
-        height: 70,
-        borderColor:'#1BB467',
-        top:6,
+      topHeader: {
+        flexDirection:'row',
+        margin: 1,
+        borderRadius: 1,
+        backgroundColor: '#1BB467',        
+        height: Platform.OS === 'ios' ? 60 : 60,
+        borderColor: '#1BB467',
+        top:5,
+        borderWidth:1,        
+        alignContent:'flex-start'
       },
 
 });

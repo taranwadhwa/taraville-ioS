@@ -376,6 +376,18 @@ class MessageScreen extends React.Component {
   refreshScreen() {
     this.props.navigation.replace('Message')
   }
+  dialCall(phone){
+    let phoneNumber = '';
+ 
+    if (Platform.OS === 'android') {
+      phoneNumber = 'tel:${'+phone+'}';
+    }
+    else {
+      phoneNumber = 'telprompt:${'+phone+'}';
+    }
+ 
+    Linking.openURL(phoneNumber);
+  }
   handleReminder() {
     this.setState({ isReminderButtonLoading: true });
     const { reminder_time, message_id } = this.state;
@@ -430,27 +442,26 @@ class MessageScreen extends React.Component {
 
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
           <View style={styles.topHeader}>           
-            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 130, height: 49 }} />                
-            <Text style={styles.header_txt}>Messages</Text>            
+            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
           </View>         
           <View style={[styles.messagesCard, styles.elevation]}>
             <View style={{ flexDirection: 'row' }}>
-              <TextInput style={styles.input} placeholder="Search with customer name or phone#:" onChangeText={(sval) => this.setState({ search_txt: sval })} />
-              <Text>
+              <TextInput onSubmitEditing={this.handleSearch} style={styles.input} placeholder="Search with customer name or phone#:" onChangeText={(sval) => this.setState({ search_txt: sval })} />
+              {/* <Text>
                 <TouchableOpacity onPress={this.handleSearch}>
                   <IonicIcon name={'search'} color={'black'} size={25} style={{ paddingTop: 18 }} />
 
                 </TouchableOpacity>
-              </Text>
+              </Text> */}
               <Text>
                 <TouchableOpacity onPress={this.refreshScreen}>
-                  <IonicIcon name={'refresh'} color={'black'} size={25} style={{ paddingTop: 18, paddingLeft: 8 }} />
+                  <IonicIcon name={'refresh'} color={'black'} size={25} style={{ paddingTop: 10, paddingLeft: 8 }} />
                 </TouchableOpacity>
               </Text>
             </View>
           </View>
 
-          <View style={styles.tabMessagesCard}>
+          {/* <View style={styles.tabMessagesCard}>
             <TouchableOpacity onPress={() => this.props.navigation.navigate('Message')} style={{ textAlign: 'center', width: '50%', padding: 13, fontSize: 16, backgroundColor: '#1BB467', borderRadius: 5, color: '#FFFFFF' }}>
               <Text style={{ color: '#FFFFFF' }}>
                 <IonicIcon name={'notifications'} color={'white'} size={15} /> New Messages </Text>
@@ -460,10 +471,9 @@ class MessageScreen extends React.Component {
               <Text style={{ color: '#A9A9A9' }}>
                 <IonicIcon name={'archive'} color={'#A9A9A9'} size={15} /> Archived Messages</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           <ScrollView style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!screenLoader} onRefresh={this.handleListing} />}>
-
             {listing.length > 0 ? (
               <View style={[styles.messagesCard, styles.elevation]}>
                 {
@@ -543,7 +553,10 @@ class MessageScreen extends React.Component {
                       <View style={{ flexDirection: 'row', padding: 3, margin: 1, width: '100%', borderBottomWidth: 1, borderBottomColor: '#C1C1C1' }}>
                         <Text style={{ width: '70%' }}>
                           <View style={styles.dateRow}>
-                            <Text style={styles.innerText}><Text style={styles.label_trick}>Phone #:</Text> {records.phone}</Text>
+                          <TouchableOpacity onPress={()=>this.dialCall(records.phone)}>
+                            <Text style={styles.innerText}><Text style={styles.label_trick}>Phone #:</Text> {records.phone} <IonicIcon name={'call-outline'} color={'black'} size={15} />                                                                
+                            </Text>
+                            </TouchableOpacity>
                           </View>
                         </Text>
                       </View>
@@ -569,7 +582,7 @@ class MessageScreen extends React.Component {
                         records.numberOfComments > 0 ? (
                           <View style={{ flexDirection: 'row', justifyContent:'space-between',marginTop:5 }}>
                             <Text style={{ paddingLeft: 3, fontSize: 14,textAlignVertical:'center' }}>
-                              {records.numberOfComments} Comment(s).
+                              {records.numberOfComments} Comment(s)
                             </Text>
                             <TouchableOpacity onPress={()=>this.props.navigation.navigate('ViewCommentsScreen')}>
                               <Text style={{ textAlign: 'right', borderRadius:5, alignItems: 'flex-end', backgroundColor:'#F14646',padding: 5, color: '#FFFFFF',fontSize:10}}>
@@ -581,7 +594,7 @@ class MessageScreen extends React.Component {
                       }
                       <View style={{ flexDirection: 'row', justifyContent:'space-between', marginTop:10}}>
                         {records.message_call_status?(
-                        <Text style={{ textAlign: 'left', alignContent:'flex-start',alignItems:'flex-start', backgroundColor:'#58181F',  padding: 8, color:'#FFFFFF',borderRadius:5  }}>
+                        <Text style={{ textAlign: 'left', alignContent:'flex-start',alignItems:'flex-start', backgroundColor:'#'  + records.message_call_color,  padding: 8, color:'#FFFFFF',borderRadius:5  }}>
                           {records.message_call_status}
                         </Text>
                         ):(
@@ -809,10 +822,10 @@ const styles = StyleSheet.create
       paddingTop: 5
     },
     input: {
-      width: "78%",
+      width: "82%",
       borderColor: '#271833',
-      padding: 7,
-      margin: 8,
+      padding: 5,
+      margin: 4,
       borderRadius: 5,
       fontSize: 16,
       borderWidth: 1
@@ -871,7 +884,7 @@ const styles = StyleSheet.create
     },
     messagesCard: {
       backgroundColor: '#f1f1f1',
-      borderRadius: 5,
+      borderRadius: 2,
       paddingVertical: 10,
       paddingHorizontal: 10,
       width: '100%',
@@ -887,7 +900,7 @@ const styles = StyleSheet.create
     tabMessagesCard: {
       flexDirection: 'row',
       backgroundColor: '#f1f1f1',
-      borderRadius: 5,
+      borderRadius: 2,
       paddingVertical: 10,
       paddingHorizontal: 10,
       width: '100%',

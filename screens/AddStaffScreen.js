@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar,ScrollView,TouchableOpacity, SafeAreaView, Image,TextInput,Platform,ActivityIndicator,KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, StatusBar,ScrollView,TouchableOpacity, SafeAreaView, Image,TextInput,Platform,ActivityIndicator,KeyboardAvoidingView, Keyboard } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
@@ -17,7 +17,8 @@ class StaffScreen extends React.Component {
 
     }
 
-    handleStaff(){      
+    handleStaff(){     
+        Keyboard.dismiss() ;
         this.setState({isButtonLoading:true});  
         const{full_name,position,email,phone} = this.state;   
         if(email && full_name){        
@@ -33,16 +34,16 @@ class StaffScreen extends React.Component {
                         })
                         .then(res => {                            
                             if (res.data.status == "OK") {
-                                this.setState({isButtonLoading:false});  
+                                this.setState({isButtonLoading:false,full_name:'',position:'',email:'',phone:''});  
                                 alert("Staff information has been successfully saved.");
                                 this.props.navigation.navigate('My Staff');                                
                             } 
                             else if(res.data.status == "EXISTS"){
-                                this.setState({isButtonLoading:false});  
+                                this.setState({isButtonLoading:false,full_name:'',position:'',email:'',phone:''});  
                                 alert("Entered staff information already exists. This can not be added again.")   
                             }
                             else {       
-                                this.setState({isButtonLoading:false});                           
+                                this.setState({isButtonLoading:false,full_name:'',position:'',email:'',phone:''});                           
                                 alert(res.data.status)
                             }
 
@@ -73,35 +74,26 @@ class StaffScreen extends React.Component {
     render() {
         const{isButtonLoading}=this.state;
         return (
-            <KeyboardAvoidingView style={styles.container}>
+            <><KeyboardAvoidingView style={styles.container}>
                 <StatusBar backgroundColor="#271933" barStyle="light-content" />
-                <View style={styles.logo}>
-                    <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
+                <View>
+                    <View style={[styles.inputCard, styles.elevation]}>
+                        <Text style={styles.heading}>Add new staff information</Text>
+                        <TextInput value={this.state.full_name} style={styles.input} placeholder="Full name:*" onChangeText={(full_name) => this.setState({ full_name: full_name })} />
+                        <TextInput value={this.state.position} style={styles.input} placeholder="Position:" onChangeText={(position) => this.setState({ position: position })} />
+                        <TextInput value={this.state.email} style={styles.input} placeholder="E-mail:*" onChangeText={(email) => this.setState({ email: email })} />
+                        <TextInput value={this.state.phone} style={styles.input} placeholder="Phone #:" onChangeText={(phone) => this.setState({ phone: phone })} />
+                        <TouchableOpacity onPress={this.handleStaff} style={styles.btnTouch}>
+                            {isButtonLoading ? (
+                                <ActivityIndicator animating={isButtonLoading} size="large" color="white" />
+                            ) : (<Text style={styles.btnText}>SUBMIT</Text>)}
+                        </TouchableOpacity>
+
+                    </View>
                 </View>
                 
-                <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',flexDirection:'column'}}> 
-                <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Add new staff information</Text>
-                    <TextInput style={styles.input} placeholder="Full name:*" onChangeText={(full_name) => this.setState({ full_name: full_name })} />
-                    <TextInput style={styles.input} placeholder="Position:" onChangeText={(position) => this.setState({ position: position })} />
-                    <TextInput style={styles.input} placeholder="E-mail:*" onChangeText={(email) => this.setState({ email: email })} />
-                    <TextInput style={styles.input} placeholder="Phone #:" onChangeText={(phone) => this.setState({ phone: phone })} />
-                </View>
-
-                <View>
-                    <TouchableOpacity onPress={this.handleStaff} style={styles.btnTouch}>
-                        {isButtonLoading? (
-                        <ActivityIndicator animating={isButtonLoading} size="large" color="white"/>
-                        ) : (<Text style={styles.btnText}>SUBMIT</Text>)
-                        }   
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.blank_view}>
-                    <Text></Text>
-                </View> 
-                </ScrollView> 
-                <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} />
             </KeyboardAvoidingView>
+            <View><Text><BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} /></Text></View></>
 
         );
     }
@@ -111,15 +103,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignContent:'center',        
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         backgroundColor: '#271933',        
     },
     inputCard: {
         backgroundColor: '#F1F1F1',
-        borderRadius: 8,
+        borderRadius: 2,
         paddingVertical: 20,
         paddingHorizontal: 20,
-        padding: 10,
+        padding: 5,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -129,11 +121,11 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
         width: '100%',
-        height: Platform.OS === 'ios' ? '80%' : '82%'
+        minHeight: Platform.OS === 'ios' ? '60%' : '70%'
 
     },
     elevation: {
-        elevation: 20,
+        elevation: 10,
         shadowColor: '#FFF',
     },
 
@@ -159,9 +151,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#1BB467',
         height: 45,
         padding: 10,
-        width: '95%',
-        margin: 10,
-        borderRadius: 50,
+        width: '98%',
+        margin: 5,
+        borderRadius: 5,
     },
     btnText: {
         fontSize: 18,

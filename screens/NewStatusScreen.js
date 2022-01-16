@@ -219,10 +219,7 @@ const NewStatusScreen = (props) => {
   
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
       style={styles.container}>                                 
-            <StatusBar backgroundColor="#271933" barStyle="light-content" />
-            <View style={styles.logo}>
-                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-            </View>
+            <StatusBar backgroundColor="#271933" barStyle="light-content" />            
             <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
                 <View style={[styles.inputCard, styles.elevation]}>
                     <Text style={styles.heading}>Add status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
@@ -421,7 +418,7 @@ const styles = StyleSheet.create({
     },
     inputCard: {
         backgroundColor: 'white',
-        borderRadius: 4,
+        borderRadius: 2,
         paddingVertical: 5,
         paddingHorizontal: 5,
         width: '100%',
@@ -454,15 +451,15 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
       },
       blank_view:{
-        marginTop: Platform.OS === 'ios' ? 20 : 30
+        marginTop: Platform.OS === 'ios' ? 20 : 20
       },
       btnTouch:{
         backgroundColor:'#1BB467',
         height:45,
         padding:10,
-        width:'95%',
-        margin:10,       
-        borderRadius:50,
+        width:'98%',
+        margin:5,       
+        borderRadius:5,
       },
       btnText:{
         fontSize:18,

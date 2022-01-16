@@ -37,7 +37,7 @@ const ViewCommentsScreen = ({ navigation }) => {
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
             <View style={styles.topHeader}>              
                 <TouchableOpacity onPress={()=>navigation.navigate('Message')} style={{marginTop:15,paddingLeft:10}}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></TouchableOpacity>
-                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 130, height: 49 }} />                
+                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
             </View>          
 
           <View style={[styles.messagesCard, styles.elevation]}>
@@ -49,8 +49,7 @@ const ViewCommentsScreen = ({ navigation }) => {
                  Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
                 </Text>
                 <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text>
-                <Text style={{borderBottomWidth: 1, borderBottomColor: '#C1C1C1'}}></Text>
+                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text>                
             </View>           
           </View> 
 
@@ -65,30 +64,10 @@ const ViewCommentsScreen = ({ navigation }) => {
                  Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
                 </Text>   
                 <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text> 
+                <Text style={styles.innerSmallText}>Date Posted: Jan 15,2021</Text> 
               </View>
-                <View style={{flexDirection:'row',borderBottomWidth:1,borderBottomColor:'#C1C1C1'}}><Text></Text></View>
-              <View style={{ flexDirection: 'column' }}>                
-                <Text style={styles.long_text_comments}>
-                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
-                </Text>   
-                <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text> 
-              </View>
-              <View style={{flexDirection:'row',borderBottomWidth:1,borderBottomColor:'#C1C1C1'}}><Text></Text></View>
-              <View style={{ flexDirection: 'column' }}>                
-                <Text style={styles.long_text_comments}>
-                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
-                </Text>   
-                <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text> 
-              </View>
+                <View style={{marginTop:2,borderBottomWidth:1,borderBottomColor:'#CCCCCC'}}><Text></Text></View>
 
-              <View style={{flexDirection:'row',borderBottomWidth:1,borderBottomColor:'#C1C1C1'}}><Text></Text></View>
               <View style={{ flexDirection: 'column' }}>                
                 <Text style={styles.long_text_comments}>
                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
@@ -96,7 +75,29 @@ const ViewCommentsScreen = ({ navigation }) => {
                  Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
                 </Text>   
                 <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text> 
+                <Text style={styles.innerSmallText}>Date Posted: Jan 15,2021</Text> 
+              </View>
+              <View style={{marginTop:2,borderBottomWidth:1,borderBottomColor:'#CCCCCC'}}><Text></Text></View>
+              
+              <View style={{ flexDirection: 'column' }}>                
+                <Text style={styles.long_text_comments}>
+                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
+                </Text>   
+                <Text style={styles.innerSmallText}>Posted By: You</Text>                
+                <Text style={styles.innerSmallText}>Date Posted: Jan 15,2021</Text> 
+              </View>
+              <View style={{marginTop:2,borderBottomWidth:1,borderBottomColor:'#CCCCCC'}}><Text></Text></View>
+              
+              <View style={{ flexDirection: 'column' }}>                
+                <Text style={styles.long_text_comments}>
+                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
+                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
+                </Text>   
+                <Text style={styles.innerSmallText}>Posted By: You</Text>                
+                <Text style={styles.innerSmallText}>Date Posted: Jan 15,2021</Text> 
               </View>
 
             </View>
@@ -167,8 +168,8 @@ const styles = StyleSheet.create({
       },
       long_text_comments: {
         padding: 2,
-        lineHeight: 28,
-        fontSize: 13,
+        lineHeight: 30,
+        fontSize: 14,
         textAlign: 'justify'
       },
       head_message:{
@@ -179,10 +180,7 @@ const styles = StyleSheet.create({
       innerSmallText:{
         color:'#000000',
         fontSize: 16,
-        paddingLeft: 4,
-        paddingTop: 5,        
-        borderBottomWidth:1,
-        borderBottomColor:'#CCCCCC',
+        padding:4,              
         fontWeight:'bold'
       },
   

@@ -89,12 +89,7 @@ const StatusScreen = (props) => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <StatusBar backgroundColor="#271933" barStyle="light-content" />
-
-      <View style={styles.logo}>
-        <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 10, width: 170, height: 55 }} />
-      </View>
-
+      <StatusBar backgroundColor="#271933" barStyle="light-content" />     
       <View style={[styles.messagesCard, styles.elevation]}>
 
         <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
@@ -227,7 +222,7 @@ const styles = StyleSheet.create({
   },
   messagesCard: {
     backgroundColor: '#f1f1f1',
-    borderRadius: 8,
+    borderRadius: 2,
     width: '100%',
     marginVertical: 2,
     shadowOpacity: 1,
