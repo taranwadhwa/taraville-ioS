@@ -4,7 +4,7 @@ import React,{ useEffect } from 'react';
 import { NavigationContainer,useRoute } from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
 import { createDrawerNavigator,DrawerButton } from '@react-navigation/drawer';
-import { StyleSheet, Text, View,ActivityIndicator,LogBox } from 'react-native';
+import { StyleSheet, Text, View,ActivityIndicator,LogBox,SafeAreaView,Image } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import StatusScreen from './screens/StatusScreen';
@@ -25,6 +25,7 @@ import  AsyncStorage  from "@react-native-async-storage/async-storage";
 import axios  from 'axios';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import CustomDrawer from './screens/CustomDrawer';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 //LogBox.ignoreAllLogs();
@@ -35,8 +36,7 @@ function App(props) {
     userToken: null,
   };
 
-
-
+  
   const DrawerRoute = (props) => {
 
     return (
@@ -61,9 +61,16 @@ function App(props) {
           top: 50,
         },
         
+      }}
+      drawerContentOptions={{
+        activeTintColor: '#e91e63',
+        itemStyle: {marginVertical: 5},
 
-      }}>
-
+      }}
+      drawerContent={props=><CustomDrawer {...props}/>}
+      
+                    
+      >         
         <Drawer.Screen name="Status" component={StatusScreen} options={{
           drawerActiveBackgroundColor: '#1BB467',
           drawerActiveTintColor: '#FFF',
@@ -254,6 +261,7 @@ function App(props) {
     return (
       <Image       
         source={require('./assets/logo.png')}
+        style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} 
       />
     );
   }

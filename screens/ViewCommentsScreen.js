@@ -11,24 +11,69 @@ import {
     ActivityIndicator,ScrollView,RefreshControl
 }
     from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';    
 import axios from 'axios';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 
-const ViewCommentsScreen = ({ navigation }) => {
+const ViewCommentsScreen = ({ navigation,route }) => {
 
     const [data, setData] = React.useState({        
         screenLoader: false,
+        listing: [],
+        original_message:'',
+        original_dp:'',
+        total_comments:'',
+
       })
 
-      const handleAllComments=()=>{        
-        setData({
-            ...data,                        
-            screenLoader:true
-          });  
+      const handleAllComments=(messageID)=>{     
+        if(messageID)
+        {
+          try {
+            const syncUserInfo = AsyncStorage.getItem("user_info")
+              .then(syncResponse => {
+                let parseObject = JSON.parse(syncResponse);
+                var uid = parseObject.id;
+                var user_token = parseObject.token;
+                if (uid != null) {
+                  try {
+                    const signInRes = axios.post("https://iosapi.taraville.com/api/v1/messages/comments.php", {
+                      uid, user_token,messageID
+                    })
+                      .then(res => {
+                        if (res.data.status == "OK") {
+                          setData({...data,screenLoader: true,
+                          listing: res.data.comment_listing,
+                          original_message:res.data.org_message.call_notes,
+                          original_dp:res.data.org_message.date_submitted, 
+                          total_comments:res.data.numComments
+                          });  
+
+                         
+                        }
+                        else {
+                          this.setState({ screenLoader: true });
+                        }
+                      })
+                  }
+                  catch (error) {
+                    console.log("Error while fetching comments on comments screen=" + error)
+                  }
+                }
+      
+              });
+          }
+          catch (e) {
+            console.log("Error while fetching comments on comment screen=" + e)
+          }
+
+
+        }
+       
     }        
     
-    useEffect(() => {
-        handleAllComments();
+    useEffect(() => {      
+        handleAllComments(route.params.messageID);
      }, []);
 
 
@@ -44,63 +89,36 @@ const ViewCommentsScreen = ({ navigation }) => {
             <View style={{ flexDirection: 'column' }}>
                <Text style={styles.head_message}>Message</Text>                
                 <Text style={styles.long_text}>
-                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
+                  {data.original_message}
                 </Text>
-                <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan,15,2021</Text>                
+                             
+                <Text style={styles.innerSmallText}>Date Posted: {data.original_dp}</Text>                
             </View>           
           </View> 
 
 
            <ScrollView style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={handleAllComments} />}>                          
+           {data.listing.length > 0 ? (
             <View style={[styles.messagesCard, styles.elevation]}>
-            <Text style={styles.head_message}>Comments (4)</Text> 
+            <Text style={styles.head_message}>Comments ({data.total_comments})</Text> 
+                { 
+              data.listing.map((records, index) => (           
+              <View>  
               <View style={{ flexDirection: 'column' }}>              
                 <Text style={styles.long_text_comments}>
-                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
-                </Text>   
-                <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan 15,2021</Text> 
+                 {records.comments}
+                </Text>                               
+                <Text style={styles.innerSmallText}>Posted by: {records.uname}</Text> 
+                <Text style={styles.innerSmallText}>Date posted: {records.date_added_comments}</Text> 
               </View>
-                <View style={{marginTop:2,borderBottomWidth:1,borderBottomColor:'#CCCCCC'}}><Text></Text></View>
-
-              <View style={{ flexDirection: 'column' }}>                
-                <Text style={styles.long_text_comments}>
-                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
-                </Text>   
-                <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan 15,2021</Text> 
+              <View style={{marginTop:2,borderBottomWidth:1,borderBottomColor:'#CCCCCC'}}><Text></Text></View>                                                    
               </View>
-              <View style={{marginTop:2,borderBottomWidth:1,borderBottomColor:'#CCCCCC'}}><Text></Text></View>
-              
-              <View style={{ flexDirection: 'column' }}>                
-                <Text style={styles.long_text_comments}>
-                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
-                </Text>   
-                <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan 15,2021</Text> 
-              </View>
-              <View style={{marginTop:2,borderBottomWidth:1,borderBottomColor:'#CCCCCC'}}><Text></Text></View>
-              
-              <View style={{ flexDirection: 'column' }}>                
-                <Text style={styles.long_text_comments}>
-                Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolar Lorem ipsum dolar Lorem ipsum dolar
-                 Lorem ipsum dolarLorem ipsum dolarLorem ipsum dolar
-                </Text>   
-                <Text style={styles.innerSmallText}>Posted By: You</Text>                
-                <Text style={styles.innerSmallText}>Date Posted: Jan 15,2021</Text> 
-              </View>
-
+               ))
+              }  
+                           
             </View>
+           ):(null)
+           }
            </ScrollView> 
         </View>
     )

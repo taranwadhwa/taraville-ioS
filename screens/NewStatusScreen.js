@@ -217,15 +217,15 @@ const NewStatusScreen = (props) => {
 
     return (
   
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} 
+      <KeyboardAvoidingView 
       style={styles.container}>                                 
             <StatusBar backgroundColor="#271933" barStyle="light-content" />            
-            <ScrollView style={{ marginTop: 2, margin: 3, flex: 1, height: '100%', }}>
+            <ScrollView style={{ marginTop: 1, margin: 3, flex: 1, height: '100%', }}>
                 <View style={[styles.inputCard, styles.elevation]}>
                     <Text style={styles.heading}>Add status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
                     <Picker  mode='dropdown'                                               
                          selectedValue={data.status}
-                         style={{width: '90%', height: 150}} itemStyle={{height: 150,}}
+                         style={{width: '90%'}} itemStyle={{height: 130,}}
                          value={data.status}
                          onValueChange={(itemValue, itemIndex) => { selectedIndex(itemValue) }}
                     >
@@ -275,7 +275,7 @@ const NewStatusScreen = (props) => {
                     <Text style={styles.heading}>Additional Information<Text style={{fontSize:11}}> {data.labelOne?data.labelOne:null}</Text></Text>
                     <Picker mode='dropdown'                      
                          selectedValue={data.labelOne}
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}
+                         style={{width: '90%'}} itemStyle={{height: 130}}
                          value={data.labelOne}
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelOne(itemValue) }}
                          >       
@@ -295,7 +295,7 @@ const NewStatusScreen = (props) => {
                     <Text style={styles.heading}>Further Information <Text style={{fontSize:11}}> {data.labelTwo?data.labelTwo:null}</Text></Text>
                     <Picker mode='dropdown'
                          selectedValue={data.labelTwo}
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}
+                         style={{width: '90%'}} itemStyle={{height: 130,}}
                          value={data.labelTwo}
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelTwo(itemValue) }}
                         
@@ -314,7 +314,7 @@ const NewStatusScreen = (props) => {
                     <Picker mode='dropdown'
                          selectedValue={data.labelThree}
                          value={data.labelThree}                        
-                         style={{width: '90%', height: 130}} itemStyle={{height: 130,}}                    
+                         style={{width: '90%'}} itemStyle={{height: 130,}}                    
                          onValueChange={(itemValue, itemIndex) => { selectedIndexLabelThree(itemValue) }}                        
                     >
                        <Picker.Item label="Select Employee" value="" />                        
@@ -327,7 +327,7 @@ const NewStatusScreen = (props) => {
                 </View>
                 <View style={[styles.inputCard, styles.elevation]}>
                 <Text style={styles.heading}>Other Information </Text>
-                  <TextInput style={styles.input} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
+                  <TextInput style={styles.input} multiline={true} numberOfLines={5} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
                 </View>   
 
                 <View>                               
@@ -358,7 +358,7 @@ const NewStatusScreen = (props) => {
                     mode="time"
                     onConfirm={handleTimeConfirm}
                     onCancel={hideTimePicker}                                      
-                    is24Hour={true}
+                    is24Hour={false}
                     display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
                     style={styles.datePicker}
                     
@@ -369,7 +369,7 @@ const NewStatusScreen = (props) => {
                 mode="time"
                 onConfirm={handleToTimeConfirm}
                 onCancel={hideToTimePicker}                                      
-                is24Hour={true}
+                is24Hour={false}
                 display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
                 style={styles.datePicker}
 
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginTop: 2,
-        marginLeft:10,        
+        marginLeft:7,        
     },
     inputCard: {
         backgroundColor: 'white',
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
       },
       blank_view:{
-        marginTop: Platform.OS === 'ios' ? 20 : 20
+        marginTop: Platform.OS === 'ios' ? 20 : 10
       },
       btnTouch:{
         backgroundColor:'#1BB467',
@@ -474,7 +474,8 @@ const styles = StyleSheet.create({
         margin:8,
         borderRadius:5,
         fontSize:18,
-        borderWidth:1
+        borderWidth:1,
+        textAlignVertical:'top'
         
       },
 

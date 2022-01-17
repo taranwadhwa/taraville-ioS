@@ -375,7 +375,7 @@ const EditPreStatusScreen = (props) => {
                     mode="time"
                     onConfirm={handleTimeConfirm}
                     onCancel={hideTimePicker}                                      
-                    is24Hour={true}
+                    is24Hour={false}
                     display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
                     style={styles.datePicker}
                     
@@ -386,7 +386,7 @@ const EditPreStatusScreen = (props) => {
                 mode="time"
                 onConfirm={handleToTimeConfirm}
                 onCancel={hideToTimePicker}                                      
-                is24Hour={true}
+                is24Hour={false}
                 display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
                 style={styles.datePicker}
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import {
   StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity, ScrollView,
-  Modal, Pressable, Platform, ActivityIndicator, KeyboardAvoidingView, LogBox
+  Modal, Pressable, Platform, ActivityIndicator, KeyboardAvoidingView, LogBox,RefreshControl
 } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
@@ -19,7 +19,8 @@ const StatusScreen = (props) => {
     pslist: [],
     cslist_len: '',
     pslist_len: '',
-    isLoading: true
+    isLoading: true,
+    screenLoader: false,
   });
 
   const handleEditStatus = () => {
@@ -50,7 +51,8 @@ const StatusScreen = (props) => {
                       cslist_len: res.data.csstatus_len,
                       psstatus_len: res.data.psstatus_len,
                       pslist: res.data.psstatus,
-                      isLoading: false
+                      isLoading: false,
+                      screenLoader: true,
                     });
 
 
@@ -100,7 +102,7 @@ const StatusScreen = (props) => {
 
         </View>
       </View>
-      <ScrollView style={{ marginTop: 2, flex: 1 }}>
+      <ScrollView style={{ marginTop: 1, flex: 1 }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={fetchStatus} />}>
 
         <View style={[styles.messagesCard, styles.elevation]}>
 

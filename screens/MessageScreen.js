@@ -584,7 +584,7 @@ class MessageScreen extends React.Component {
                             <Text style={{ paddingLeft: 3, fontSize: 14,textAlignVertical:'center' }}>
                               {records.numberOfComments} Comment(s)
                             </Text>
-                            <TouchableOpacity onPress={()=>this.props.navigation.navigate('ViewCommentsScreen')}>
+                            <TouchableOpacity onPress={()=>this.props.navigation.navigate('ViewCommentsScreen',{ messageID: records.id })}>
                               <Text style={{ textAlign: 'right', borderRadius:5, alignItems: 'flex-end', backgroundColor:'#F14646',padding: 5, color: '#FFFFFF',fontSize:10}}>
                                 <IonicIcon name={'eye'} color={'#FFFFFF'} size={12} /> View All Comments 
                             </Text>
