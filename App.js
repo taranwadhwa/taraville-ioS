@@ -4,7 +4,7 @@ import React,{ useEffect } from 'react';
 import { NavigationContainer,useRoute } from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
 import { createDrawerNavigator,DrawerButton } from '@react-navigation/drawer';
-import { StyleSheet, Text, View,ActivityIndicator,LogBox,SafeAreaView,Image } from 'react-native';
+import { StyleSheet, Text, View,ActivityIndicator,LogBox,SafeAreaView,Image,ImageBackground } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import StatusScreen from './screens/StatusScreen';
@@ -44,7 +44,7 @@ function App(props) {
         drawerStyle: {
           backgroundColor: '#FFF',
           padding: 10,
-          width: 250,
+          width: 320,
         },
         headerStyle: {
           height: 60,
@@ -67,9 +67,7 @@ function App(props) {
         itemStyle: {marginVertical: 5},
 
       }}
-      drawerContent={props=><CustomDrawer {...props}/>}
-      
-                    
+      drawerContent={props=><CustomDrawer {...props}/>}                          
       >         
         <Drawer.Screen name="Status" component={StatusScreen} options={{
           drawerActiveBackgroundColor: '#1BB467',
@@ -201,13 +199,14 @@ function App(props) {
 
   const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
   const authContext = React.useMemo(() => ({
-    signIn: async (userAuthToken, userID) => {
+    signIn: async (userAuthToken, userID,buisnessName) => {
       let userToken;
       userToken = null;
       if (userAuthToken && userID) {
         let user_object = {
           id: userID,
           token: userAuthToken,
+          bname:buisnessName
         };
         userToken = userAuthToken;
         AsyncStorage.setItem("token", userToken);

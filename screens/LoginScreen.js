@@ -52,7 +52,7 @@ const SignInScreen = ({ navigation }) => {
         })
           .then(res => {
             if (res.data.status == "OK") {              
-              signIn(res.data.rem_token,res.data.id);
+              signIn(res.data.rem_token,res.data.id,res.data.bname);
             }
             else {
               alert(res.data.status)
