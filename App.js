@@ -19,6 +19,7 @@ import NewFaqScreen from './screens/NewFaqScreen';
 import NewStaffScreen from './screens/AddStaffScreen';
 import ArchiveScreen from './screens/ArchiveScreen';
 import ViewCommentsScreen from './screens/ViewCommentsScreen';
+import ViewRequestStatusScreen from './screens/ViewRequestStatusScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import { AuthContext } from './components/context';
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
@@ -162,6 +163,19 @@ function App(props) {
           ),
         }} />
 
+        <Drawer.Screen name="Archive" component={ArchiveScreen} options={{
+          drawerLabel: 'Archived Messages',
+          drawerActiveBackgroundColor: '#1BB467',
+          drawerActiveTintColor: '#FFF',
+          drawerInactiveTintColor: '#000',
+          drawerIcon: ({ focused, size }) => (
+            <IonicIcon
+              name="archive-outline"
+              size={20}
+              color={'#271933'} />
+          ),
+        }} />
+
 
       </Drawer.Navigator>
     );
@@ -283,12 +297,12 @@ function App(props) {
           }}>
             <Stack.Screen name="Status" component={DrawerRoute} options={{ headerTitle: (props) => <LogoTitle {...props} /> }} />
             <Stack.Screen name="Dashboard" component={DrawerRoute} />
-            <Stack.Screen name="Message" component={MessageScreen} />
-            <Stack.Screen name="Archive" component={ArchiveScreen} />
+            <Stack.Screen name="Message" component={MessageScreen} />            
             <Stack.Screen name="Insight" component={InsightScreen} />
             <Stack.Screen name="EditStatus" component={EditStatusScreen} />
             <Stack.Screen name="EditPreStatusScreen" component={EditPreStatusScreen} />
             <Stack.Screen name="ViewCommentsScreen" component={ViewCommentsScreen} />
+            <Stack.Screen name="ViewRequestStatusScreen" component={ViewRequestStatusScreen} />
           </Stack.Navigator>}
 
       </NavigationContainer>

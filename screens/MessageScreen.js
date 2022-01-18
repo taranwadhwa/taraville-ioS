@@ -594,18 +594,27 @@ class MessageScreen extends React.Component {
                       }
                       <View style={{ flexDirection: 'row', justifyContent:'space-between', marginTop:10}}>
                         {records.message_call_status?(
-                        <Text style={{ textAlign: 'left', alignContent:'flex-start',alignItems:'flex-start', backgroundColor:'#'  + records.message_call_color,  padding: 8, color:'#FFFFFF',borderRadius:5  }}>
-                          {records.message_call_status}
-                        </Text>
+                        <Text style={{ textAlign: 'left', alignContent: 'flex-start', alignItems: 'flex-start', backgroundColor: '#' + records.message_call_color, padding: 8, color: '#FFFFFF', borderRadius: 5 }}>
+                            {records.message_call_status}
+                          </Text>
                         ):(
                           <Text style={{ textAlign: 'left', alignContent:'flex-start',alignItems:'flex-start', padding: 8, color:'#FFFFFF',borderRadius:5  }}>                          
                           </Text>
 
                         )}
+                         
                         <Text style={{ textAlign: 'right', borderRadius:5, alignItems: 'flex-end', backgroundColor: '#' + records.color_code, padding: 8, color: '#' + records.font_color_code }}>
                           {records.action_taken}
                         </Text>
                       </View>
+                     {records.message_call_status && records.message_call_status=="Assist call completed"?
+                     (
+                        <View style={{flexDirection:'row',marginTop:2}}>
+                          <TouchableOpacity onPress={()=>this.props.navigation.navigate('ViewRequestStatusScreen',{ messageID: records.id })}>
+                            <Text style={{ textAlign: 'left', borderRadius:5, alignItems: 'flex-end', backgroundColor:'#271933',padding: 10, color: '#FFFFFF',fontSize:11}}>View request status</Text>
+                          </TouchableOpacity>  
+                      </View>):(null)
+                     }
 
                       <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, marginTop: 6 }}><Text></Text></View>
                     </View>
@@ -648,14 +657,15 @@ class MessageScreen extends React.Component {
                   </TouchableOpacity>
                 </View>
 
-                <View style={{ flexDirection: 'column', alignItems: 'flex-end', marginTop: 15 }}>
-                  <Pressable
+               
+                  <TouchableOpacity
                     style={styles.buttonPopupClose}
                     onPress={() => this.setModalVisible('', !modalVisible)}
                   >
-                    <Text style={{ color: 'white', padding: 5 }}>CLOSE</Text>
-                  </Pressable>
-                </View>
+                    <View>
+                    <Text style={{ color: 'white', padding: 3,textAlign:'center',alignContent:'center' }}>CLOSE</Text>
+                    </View>
+                  </TouchableOpacity>                
               </View>
             </View>
           </Modal>

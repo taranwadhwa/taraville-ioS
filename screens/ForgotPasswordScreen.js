@@ -70,7 +70,7 @@ return (
     <View style={styles.logo}>
       <Image source={require("../assets/logo.png")} />
     </View>
-    <TextInput autoCapitalize='none' autoCorrect={false} style={styles.input} placeholder="Email-address:" onChangeText={(email) => textInputChange(email)} />       
+    <TextInput autoCapitalize='none' autoCorrect={false} style={styles.input} placeholder="Email-address:*" onChangeText={(email) => textInputChange(email)} />       
       <TouchableOpacity activeOpacity={0.8} onPress={() => { passwordHandle(data.email) }} style={styles.touchBtn}>
       <View style={styles.userBtn}>
         {
@@ -122,10 +122,12 @@ const styles = StyleSheet.create({
     borderRadius: 3
   },
   userBtn: {
-    padding: 15,    
+    padding: 10,    
     backgroundColor: '#32DD87',
     width: "90%",
-    borderRadius: 3
+    borderRadius: 3,
+    justifyContent:'center',
+    flexDirection:'row'
   },
   btnContainer: {
     flexDirection: "row",
@@ -134,9 +136,10 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: 18,
-    textAlign: "center",
-    fontWeight: "bold",
-    color: '#FFF'
+    textAlign: "center",    
+    color: '#FFF',
+    alignContent:'center',
+    paddingLeft:20
   },
   passwordContainer: {
     flexDirection: "row-reverse",

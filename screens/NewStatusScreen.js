@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
       },
       blank_view:{
-        marginTop: Platform.OS === 'ios' ? 20 : 10
+        marginTop: Platform.OS === 'ios' ? 40 : 10
       },
       btnTouch:{
         backgroundColor:'#1BB467',

@@ -15,12 +15,16 @@ import axios from 'axios';
 import configData from "../components/config.json";
 import { AuthContext } from '../components/context';
 
+
+
+
 const SignInScreen = ({ navigation }) => {
   const [data, setData] = React.useState({
     email: '',
     password: '',
     validation_status: true,
     loading: false,
+    deviceId:''
   });
 
   
@@ -43,6 +47,8 @@ const SignInScreen = ({ navigation }) => {
   }
 
   const loginHandle = (email, password) => {
+    
+
     if (email && password) {
       setData({ ...data, loading: true })
       try {
