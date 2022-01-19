@@ -31,7 +31,8 @@ const StatusScreen = (props) => {
     props.navigation.navigate('EditPreStatusScreen', { statusID: id })
   }
 
-  function fetchStatus() {
+  function fetchStatus() {       
+
     try {
       const syncUserInfo = AsyncStorage.getItem("user_info")
         .then(syncResponse => {
@@ -57,8 +58,10 @@ const StatusScreen = (props) => {
 
 
                   }
-                  else {
-                    alert(res.data.status)
+                  else {                    
+                    alert(res.data.status)  
+                    props.navigation.navigate('UnauthScreen');
+                   
                   }
                 })
             }

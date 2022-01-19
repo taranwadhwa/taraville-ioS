@@ -8,7 +8,7 @@ import {
     Image,
     StatusBar,
     Keyboard,
-    ActivityIndicator,ScrollView,RefreshControl
+    ActivityIndicator,ScrollView,RefreshControl,Platform
 }
     from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';    
@@ -23,6 +23,7 @@ const ViewCommentsScreen = ({ navigation,route }) => {
         original_message:'',
         original_dp:'',
         total_comments:'',
+        IsLoading:true
 
       })
 
@@ -46,13 +47,14 @@ const ViewCommentsScreen = ({ navigation,route }) => {
                           listing: res.data.comment_listing,
                           original_message:res.data.org_message.call_notes,
                           original_dp:res.data.org_message.date_submitted, 
-                          total_comments:res.data.numComments
+                          total_comments:res.data.numComments,
+                          IsLoading:false
                           });  
 
                          
                         }
                         else {
-                          this.setState({ screenLoader: true });
+                          this.setState({ screenLoader: true,IsLoading:false });
                         }
                       })
                   }
@@ -77,6 +79,15 @@ const ViewCommentsScreen = ({ navigation,route }) => {
      }, []);
 
 
+     if (data.IsLoading) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator animating={true} size="large" color="#000" />
+          <Text style={{ color: 'black', textAlign: 'center', alignItems: 'center' }}>Please wait... while we are fetching data.</Text>
+        </View>
+      )
+    }
+
     return (
         <View style={styles.container}>                    
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
@@ -99,11 +110,11 @@ const ViewCommentsScreen = ({ navigation,route }) => {
 
            <ScrollView style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={handleAllComments} />}>                          
            {data.listing.length > 0 ? (
-            <View style={[styles.messagesCard, styles.elevation]}>
+            <View  style={[styles.messagesCard, styles.elevation]}>
             <Text style={styles.head_message}>Comments ({data.total_comments})</Text> 
                 { 
               data.listing.map((records, index) => (           
-              <View>  
+              <View key={records.id}>  
               <View style={{ flexDirection: 'column' }}>              
                 <Text style={styles.long_text_comments}>
                  {records.comments}

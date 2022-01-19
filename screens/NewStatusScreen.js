@@ -217,8 +217,7 @@ const NewStatusScreen = (props) => {
 
     return (
   
-      <KeyboardAvoidingView 
-      style={styles.container}>                                 
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>                                 
             <StatusBar backgroundColor="#271933" barStyle="light-content" />            
             <ScrollView style={{ marginTop: 1, margin: 3, flex: 1, height: '100%', }}>
                 <View style={[styles.inputCard, styles.elevation]}>
@@ -328,7 +327,7 @@ const NewStatusScreen = (props) => {
                 <View style={[styles.inputCard, styles.elevation]}>
                 <Text style={styles.heading}>Other Information </Text>
                   <TextInput style={styles.input} multiline={true} numberOfLines={5} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
-                </View>   
+                </View>                     
 
                 <View>                               
                 <TouchableOpacity style={styles.btnTouch} onPress={()=>handleSaveStatus()}>
@@ -451,7 +450,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
       },
       blank_view:{
-        marginTop: Platform.OS === 'ios' ? 40 : 10
+        marginTop: Platform.OS === 'ios' ? 10 : 10
       },
       btnTouch:{
         backgroundColor:'#1BB467',
@@ -475,7 +474,8 @@ const styles = StyleSheet.create({
         borderRadius:5,
         fontSize:18,
         borderWidth:1,
-        textAlignVertical:'top'
+        textAlignVertical:'top',
+        
         
       },
 

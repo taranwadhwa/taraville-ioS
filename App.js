@@ -21,6 +21,7 @@ import ArchiveScreen from './screens/ArchiveScreen';
 import ViewCommentsScreen from './screens/ViewCommentsScreen';
 import ViewRequestStatusScreen from './screens/ViewRequestStatusScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import UnauthScreen from './screens/UnauthScreen';
 import { AuthContext } from './components/context';
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
 import axios  from 'axios';
@@ -303,6 +304,7 @@ function App(props) {
             <Stack.Screen name="EditPreStatusScreen" component={EditPreStatusScreen} />
             <Stack.Screen name="ViewCommentsScreen" component={ViewCommentsScreen} />
             <Stack.Screen name="ViewRequestStatusScreen" component={ViewRequestStatusScreen} />
+            <Stack.Screen name="UnauthScreen" component={UnauthScreen} />
           </Stack.Navigator>}
 
       </NavigationContainer>

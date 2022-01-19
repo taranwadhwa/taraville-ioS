@@ -12,6 +12,7 @@ import {
 }
   from 'react-native';
 import axios from 'axios';
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 
 const ForgotPasswordScreen = ({ navigation }) => {
   const [data, setData] = React.useState({
@@ -67,8 +68,10 @@ const ForgotPasswordScreen = ({ navigation }) => {
 return (
   <View style={styles.container}>
     <StatusBar backgroundColor="#271933" barStyle="light-content" />
+    <View style={styles.login_container}> 
+    <View style={styles.login_inner_container}>  
     <View style={styles.logo}>
-      <Image source={require("../assets/logo.png")} />
+      <Image source={require("../assets/tara_green_logo.png")} style={{width:200,height:50,resizeMode:'contain'}} />
     </View>
     <TextInput autoCapitalize='none' autoCorrect={false} style={styles.input} placeholder="Email-address:*" onChangeText={(email) => textInputChange(email)} />       
       <TouchableOpacity activeOpacity={0.8} onPress={() => { passwordHandle(data.email) }} style={styles.touchBtn}>
@@ -81,10 +84,11 @@ return (
     
     <View style={styles.passwordContainer}>
       <TouchableOpacity onPress={()=>handleBackLogin()}>
-        <Text style={styles.forgot_button}>Back to Login</Text>
+        <Text style={styles.forgot_button}> <IonicIcon name={'chevron-back-outline'} color={'black'} size={15}  /> Back to Login</Text>
       </TouchableOpacity>
     </View>
-
+    </View>
+    </View>
   </View>
 )
 
@@ -113,7 +117,9 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 10,
     borderRadius: 3,
-    fontSize: 18
+    fontSize: 18,
+    borderWidth:1,
+    borderColor:'#271833'
 
   },
   touchBtn:{
@@ -151,7 +157,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'right',
     fontWeight: "normal",
-    color: '#fff',
+    color: '#271833',
 
   },
   half_width: {
@@ -163,5 +169,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 3,
     fontSize: 18
+  },
+  login_container:{    
+    backgroundColor:'#FFFFFF',
+    flexDirection:'column',    
+    alignContent:'center',    
+    borderRadius:6, 
+    width:'95%',
+    minHeight:'40%',
+    shadowOpacity:1,
+    
+  },
+  login_inner_container:{        
+    alignContent:'center',
+    margin:10,
+    justifyContent: 'center',
+    alignItems: 'center',        
   },
 });

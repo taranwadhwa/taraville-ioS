@@ -8,7 +8,7 @@ import {
     Image,
     StatusBar,
     Keyboard,
-    ActivityIndicator,ScrollView,RefreshControl
+    ActivityIndicator,ScrollView,RefreshControl,Platform
 }
     from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';    
