@@ -221,7 +221,7 @@ const NewStatusScreen = (props) => {
             <StatusBar backgroundColor="#271933" barStyle="light-content" />            
             <ScrollView style={{ marginTop: 1, margin: 3, flex: 1, height: '100%', }}>
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Add status Information <Text style={{fontSize:11}}>({data.status})</Text></Text>
+                    <Text style={styles.heading}>Status type? <Text style={{fontSize:11}}>({data.status})</Text></Text>
                     <Picker  mode='dropdown'                                               
                          selectedValue={data.status}
                          style={{width: '90%'}} itemStyle={{height: 130,}}
@@ -271,7 +271,7 @@ const NewStatusScreen = (props) => {
                 ):(null)}
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Additional Information<Text style={{fontSize:11}}> {data.labelOne?data.labelOne:null}</Text></Text>
+                    <Text style={styles.heading}>Why?<Text style={{fontSize:11}}> {data.labelOne?data.labelOne:null}</Text></Text>
                     <Picker mode='dropdown'                      
                          selectedValue={data.labelOne}
                          style={{width: '90%'}} itemStyle={{height: 130}}
@@ -280,6 +280,7 @@ const NewStatusScreen = (props) => {
                          >       
                     
                         <Picker.Item label="Select day status" value="" />
+                        <Picker.Item label="Taking calls" value="Taking calls" />                        
                         <Picker.Item label="Not taking calls" value="Not taking calls" />
                         <Picker.Item label="Out of office" value="Out of office" />
                         <Picker.Item label="In a meeting" value="In a meeting" />
@@ -291,7 +292,7 @@ const NewStatusScreen = (props) => {
                 </View>
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Further Information <Text style={{fontSize:11}}> {data.labelTwo?data.labelTwo:null}</Text></Text>
+                    <Text style={styles.heading}>For how long? <Text style={{fontSize:11}}> {data.labelTwo?data.labelTwo:null}</Text></Text>
                     <Picker mode='dropdown'
                          selectedValue={data.labelTwo}
                          style={{width: '90%'}} itemStyle={{height: 130,}}
@@ -309,7 +310,7 @@ const NewStatusScreen = (props) => {
                 </View>
 
                 <View style={[styles.inputCard, styles.elevation]}>
-                    <Text style={styles.heading}>Employee Information <Text style={{fontSize:11}}> {data.labelThree}</Text></Text>
+                    <Text style={styles.heading}>Transfer Calls to who? <Text style={{fontSize:11}}> {data.labelThree}</Text></Text>
                     <Picker mode='dropdown'
                          selectedValue={data.labelThree}
                          value={data.labelThree}                        
@@ -325,7 +326,7 @@ const NewStatusScreen = (props) => {
                     </Picker>                                        
                 </View>
                 <View style={[styles.inputCard, styles.elevation]}>
-                <Text style={styles.heading}>Other Information </Text>
+                <Text style={styles.heading}>Anything else? </Text>
                   <TextInput style={styles.input} multiline={true} numberOfLines={5} onChangeText={(other)=>{setData({...data,other_label:other})}}  placeholder="Any other information"/>          
                 </View>                     
 

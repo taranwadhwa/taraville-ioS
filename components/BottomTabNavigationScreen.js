@@ -20,7 +20,8 @@ const BottomTab=(props)=>
               {                
                 data.croute =='Status'?
                   <><IonicIcon name={'options'} size={20} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
-                  <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Status</Text></>
+                  <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Status  
+                  </Text></>
                   :
                   <><IonicIcon name={'options-outline'} size={20} color={'#9E9E9E'} style={{ paddingBottom: 2 }} />
                   <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Status</Text></>
@@ -36,10 +37,10 @@ const BottomTab=(props)=>
             {                
                 data.croute=='Message'? 
             <><IonicIcon name={'ios-mail'} size={22} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
-             <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Message</Text></>
+             <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Messages</Text></>
             :
             <><IonicIcon name={'ios-mail-outline'} size={22} backgroundColor={'#9E9E9E'} color={'#6E6865'} style={{ paddingBottom: 2 }} />
-            <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Message</Text></>
+            <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Messages</Text></>
             }
 
             </View>
@@ -54,10 +55,10 @@ const BottomTab=(props)=>
             {                
                 data.croute=='Insight'?   
             <><IonicIcon name={'analytics'} size={22} color={'#3E2B2C'} style={{ paddingBottom: 2 }} />
-                      <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Insight</Text></>
+                      <Text style={{ paddingLeft:8,color:'#3E2B2C' }}>Insights</Text></>
               :
               <><IonicIcon name={'analytics-outline'} size={22} color={'#9E9E9E'} style={{ paddingBottom: 2 }} />
-              <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Insight</Text></>
+              <Text style={{ paddingLeft:8,color:'#9E9E9E'}}>Insights</Text></>
             }
              
             </View>

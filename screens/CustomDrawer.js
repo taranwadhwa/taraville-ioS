@@ -1,7 +1,8 @@
 import React from 'react'
-import { StyleSheet, Text, View,LogBox,SafeAreaView,Image,ImageBackground } from 'react-native';
-import { createDrawerNavigator,DrawerContentScrollView,DrawerItemList } from '@react-navigation/drawer';
+import { StyleSheet, Text, View,LogBox,SafeAreaView,Image,ImageBackground,Linking } from 'react-native';
+import { createDrawerNavigator,DrawerContentScrollView,DrawerItemList,DrawerItem  } from '@react-navigation/drawer';
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 
 const CustomDrawer=(props)=>{
     const [data, setData] = React.useState({
@@ -33,9 +34,22 @@ const CustomDrawer=(props)=>{
             <View style={{backgroundColor:'#FFFFFF',paddingTop:10}}>
                 <DrawerItemList {...props} />
             </View>
-        </DrawerContentScrollView>
-       
+
+            <DrawerItem
+            label="Support"
+            inactiveTintColor={'#000'}
+            activeTintColor={'#1BB467'} 
+            icon={()=> <IonicIcon
+                name="headset-outline"
+                size={20}
+                color={'#271933'} />}                             
+            onPress={() => Linking.openURL('https://tarasoffice.com/all-the-details.php')}
+        />
+
+        </DrawerContentScrollView>       
+     
         </View>
+     
     )
 
 }

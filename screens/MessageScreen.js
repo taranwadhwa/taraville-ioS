@@ -405,6 +405,8 @@ class MessageScreen extends React.Component {
                 .then(res => {
                   if (res.data.status == "OK") {
                     alert("Reminder for this message has been successfully set.");
+                    this.setReminderVisible(message_id, false);
+                    this.handleListing();
                   }
                   else {
                     alert(res.data.status)
@@ -444,9 +446,9 @@ class MessageScreen extends React.Component {
           <View style={styles.topHeader}>           
             <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
           </View>         
-          <View style={[styles.messagesCard, styles.elevation]}>
+          <View style={[styles.messagesCard, styles.elevation,{backgroundColor:'#FFFFFF'}]}>
             <View style={{ flexDirection: 'row' }}>
-              <TextInput onSubmitEditing={this.handleSearch} style={styles.input} placeholder="Search with customer name or phone#:" onChangeText={(sval) => this.setState({ search_txt: sval })} />
+              <TextInput onSubmitEditing={this.handleSearch} style={styles.input} placeholder="Search Customer Name or Number" onChangeText={(sval) => this.setState({ search_txt: sval })} />
               {/* <Text>
                 <TouchableOpacity onPress={this.handleSearch}>
                   <IonicIcon name={'search'} color={'black'} size={25} style={{ paddingTop: 18 }} />
@@ -489,8 +491,8 @@ class MessageScreen extends React.Component {
                         <TouchableOpacity onPress={() => this.setCallModalVisible(records.id, true)}>
                           <Text style={{ width: '100%', borderWidth: 0, paddingRight: 10 }}>
                             <View style={styles.dateRow}>
-                              <Text style={styles.innerText}>
-                              <IonicIcon name={'call-outline'} color={'black'} size={20} /></Text>
+                              <Text style={styles.innerText}>                              
+                              <IonicIcon name={'headset-outline'} color={'black'} size={20} /></Text>
                             </View>
                           </Text>
                         </TouchableOpacity>
@@ -551,14 +553,39 @@ class MessageScreen extends React.Component {
                       </View>
 
                       <View style={{ flexDirection: 'row', padding: 3, margin: 1, width: '100%', borderBottomWidth: 1, borderBottomColor: '#C1C1C1' }}>
-                        <Text style={{ width: '70%' }}>
+                        <Text style={{ width: '65%' }}>
                           <View style={styles.dateRow}>
                           <TouchableOpacity onPress={()=>this.dialCall(records.phone)}>
                             <Text style={styles.innerText}><Text style={styles.label_trick}>Phone #:</Text> {records.phone} <IonicIcon name={'call-outline'} color={'black'} size={15} />                                                                
                             </Text>
                             </TouchableOpacity>
                           </View>
+                         
                         </Text>
+                        <Text style={{ width: '30%' }}>
+                        <View style={{ flexDirection: 'row', justifyContent:'space-between'}}>
+                        {records.message_call_status?(
+                        <Text style={{ textAlign: 'left', alignContent: 'flex-start', alignItems: 'flex-start', backgroundColor: '#' + records.message_call_color, padding: 3, color: '#FFFFFF', borderRadius: 3,fontSize:10 }}>
+                            {records.message_call_status}
+                          </Text>
+                        ):(
+                          <Text style={{ textAlign: 'left', alignContent:'flex-start',alignItems:'flex-start', padding: 8, color:'#FFFFFF',borderRadius:5  }}>                          
+                          </Text>
+
+                        )}                         
+                        
+                      </View>
+                     {records.message_call_status && records.message_call_status=="Assist request completed"?
+                     (
+                        <View style={{flexDirection:'row',marginTop:2}}>
+                          <TouchableOpacity onPress={()=>this.props.navigation.navigate('ViewRequestStatusScreen',{ messageID: records.id })}>
+                            <Text style={{ textAlign: 'left', alignItems: 'flex-end',padding: 5, color: '#000000',fontSize:11}}>Assist Details</Text>
+                          </TouchableOpacity>  
+                      </View>):(null)
+                     }
+                        
+                        </Text>
+
                       </View>
 
 
@@ -592,29 +619,11 @@ class MessageScreen extends React.Component {
                           </View>)
                           : (null)
                       }
-                      <View style={{ flexDirection: 'row', justifyContent:'space-between', marginTop:10}}>
-                        {records.message_call_status?(
-                        <Text style={{ textAlign: 'left', alignContent: 'flex-start', alignItems: 'flex-start', backgroundColor: '#' + records.message_call_color, padding: 8, color: '#FFFFFF', borderRadius: 5 }}>
-                            {records.message_call_status}
-                          </Text>
-                        ):(
-                          <Text style={{ textAlign: 'left', alignContent:'flex-start',alignItems:'flex-start', padding: 8, color:'#FFFFFF',borderRadius:5  }}>                          
-                          </Text>
-
-                        )}
-                         
+                      <View style={{ flexDirection: 'row', justifyContent:'flex-end', marginTop:10}}>                        
                         <Text style={{ textAlign: 'right', borderRadius:5, alignItems: 'flex-end', backgroundColor: '#' + records.color_code, padding: 8, color: '#' + records.font_color_code }}>
                           {records.action_taken}
                         </Text>
-                      </View>
-                     {records.message_call_status && records.message_call_status=="Assist call completed"?
-                     (
-                        <View style={{flexDirection:'row',marginTop:2}}>
-                          <TouchableOpacity onPress={()=>this.props.navigation.navigate('ViewRequestStatusScreen',{ messageID: records.id })}>
-                            <Text style={{ textAlign: 'left', borderRadius:5, alignItems: 'flex-end', backgroundColor:'#271933',padding: 10, color: '#FFFFFF',fontSize:11}}>View request status</Text>
-                          </TouchableOpacity>  
-                      </View>):(null)
-                     }
+                      </View>                    
 
                       <View style={{ borderBottomWidth: 1, borderBottomColor: '#C1C1C1', marginBottom: 6, marginTop: 6 }}><Text></Text></View>
                     </View>
@@ -632,7 +641,7 @@ class MessageScreen extends React.Component {
             }
 
             <View style={styles.blank_view}>
-              <Text style={styles.input}></Text>
+              <Text></Text>
             </View>
 
           </ScrollView>
@@ -677,8 +686,8 @@ class MessageScreen extends React.Component {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>CALL REQUEST <IonicIcon name={'call-outline'} color={'black'} size={20} /></Text>
-                <Text style={styles.innerSmallText}>Type your outbound call request here, our staff will assist you quickly.</Text>
+                <Text style={styles.innerModalText}>ASSIST REQUEST <IonicIcon name={'headset-outline'} color={'black'} size={20} /></Text>
+                <Text style={styles.innerSmallText}>No time to call? No problem!. Type your request here and we'll get right on it.</Text>
                 <TextInput value={this.state.call_input} onChangeText={(val) => this.setState({ call_request: val, call_input: val })} style={styles.modalInput} numberOfLines={8} multiline={true} />
                 <View>
                   <TouchableOpacity onPress={() => this.handleCallRequest()} style={styles.buttonClose}>
@@ -689,11 +698,11 @@ class MessageScreen extends React.Component {
                   </TouchableOpacity>
                 </View>
                 
-                  <TouchableOpacity style={styles.buttonPopupClose} onPress={() => this.setCallModalVisible('', !callModalVisible)}>
+                  {/* <TouchableOpacity style={styles.buttonPopupClose} onPress={() => this.setCallModalVisible('', !callModalVisible)}>
                     <View>
                       <Text style={{ color: 'white', padding: 3,textAlign:'center',alignContent:'center' }}>CLOSE</Text>
                     </View>                 
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                
               </View>
             </View>
@@ -720,11 +729,11 @@ class MessageScreen extends React.Component {
                   </TouchableOpacity>
                 </View>
                
-                  <TouchableOpacity style={styles.buttonPopupClose} onPress={() => this.setNotesModalVisible('', !notesModalVisible)}>
+                  {/* <TouchableOpacity style={styles.buttonPopupClose} onPress={() => this.setNotesModalVisible('', !notesModalVisible)}>
                      <View>
                        <Text style={{ color: 'white', padding: 3,textAlign:'center',alignContent:'center' }}>CLOSE</Text>
                       </View>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 
               </View>
             </View>
@@ -737,8 +746,8 @@ class MessageScreen extends React.Component {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>Set Reminder <IonicIcon name={'ios-notifications'} color={'black'} size={15} /> {this.state.reminder_time}</Text>
-                <Text style={styles.innerSmallText}>Please set reminder for this message and you will get the notification.</Text>
+                <Text style={styles.innerModalText}>Need A Reminder? <IonicIcon name={'ios-notifications'} color={'black'} size={15} /> {this.state.reminder_time}</Text>
+                <Text style={styles.innerSmallText}>Set a reminder time and get notified. It’s that easy!</Text>
                 <View style={{ borderWidth: 1, borderColor: '#C1C1C1', width: "100%", marginTop: 10 }}>
                   <Picker
                     mode='dropdown'
@@ -762,16 +771,16 @@ class MessageScreen extends React.Component {
 
                     {this.state.isReminderButtonLoading ? (<ActivityIndicator animating={this.state.isReminderButtonLoading} size="large" color="white" />)
                       : (
-                        <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>SUBMIT</Text>
+                        <Text style={{ color: 'white', padding: 5, alignSelf: 'center', textAlign: 'center', fontSize: 16 }}>REMIND ME</Text>
                       )}
                   </TouchableOpacity>
                 </View>
                 
-                  <TouchableOpacity style={styles.buttonPopupClose} onPress={() => this.setReminderVisible('', !reminderVisible)}>
+                  {/* <TouchableOpacity style={styles.buttonPopupClose} onPress={() => this.setReminderVisible('', !reminderVisible)}>
                     <View>
                     <Text style={{ color: 'white', padding: 3,textAlign:'center',alignContent:'center' }}>CLOSE</Text>
                     </View>                   
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                
               </View>
             </View>
@@ -784,7 +793,9 @@ class MessageScreen extends React.Component {
       return (
         <View style={styles.activity_container}>
           <ActivityIndicator animating={true} size="large" color="#FFF" />
-          <Text style={{ color: 'white', textAlign: 'center', alignItems: 'center' }}>Please wait... while we are fetching your messages.</Text>
+            
+            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', width: 110, height: 49 }} />                            
+            
         </View>
       )
     }
@@ -833,7 +844,7 @@ const styles = StyleSheet.create
     },
     input: {
       width: "82%",
-      borderColor: '#271833',
+      borderColor: '#1BB467',
       padding: 5,
       margin: 4,
       borderRadius: 5,
@@ -893,7 +904,7 @@ const styles = StyleSheet.create
       textAlign: 'left'
     },
     messagesCard: {
-      backgroundColor: '#f1f1f1',
+      backgroundColor: '#D3D3D3',
       borderRadius: 2,
       paddingVertical: 10,
       paddingHorizontal: 10,
@@ -949,7 +960,7 @@ const styles = StyleSheet.create
     },
     innerText: {
       fontSize: 17,
-      padding: 1,
+      padding: 1,      
     },
     btnTouch: {
       backgroundColor: '#1BB467',
@@ -1009,11 +1020,10 @@ const styles = StyleSheet.create
       flexDirection:'row',
       margin: 1,
       borderRadius: 1,
-      backgroundColor: '#1BB467',        
+      backgroundColor: '#271933',        
       height: Platform.OS === 'ios' ? 60 : 60,
-      borderColor: '#1BB467',
-      top:5,
-      borderWidth:1,        
+      borderColor: '#8658A5',
+      top:5,      
       alignContent:'flex-start'
     },
   });

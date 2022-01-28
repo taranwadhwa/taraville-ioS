@@ -1,5 +1,14 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/bell_icon.png",
+          "color": "#ffffff"         
+        }
+      ]
+    ],    
     "name": "taraville",
     "slug": "taraville",
     "version": "1.0.0",

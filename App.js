@@ -22,6 +22,7 @@ import ViewCommentsScreen from './screens/ViewCommentsScreen';
 import ViewRequestStatusScreen from './screens/ViewRequestStatusScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import UnauthScreen from './screens/UnauthScreen';
+import ContactScreen from './screens/ContactScreen';
 import { AuthContext } from './components/context';
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
 import axios  from 'axios';
@@ -50,7 +51,7 @@ function App(props) {
         },
         headerStyle: {
           height: 60,
-          backgroundColor: '#1BB467',
+          backgroundColor: '#271933',
         },
         overlayColor: 'transparent',
         headerTintColor: '#FFF',
@@ -175,8 +176,19 @@ function App(props) {
               size={20}
               color={'#271933'} />
           ),
-        }} />
-
+        }} />         
+         <Drawer.Screen name="Contact Us" component={ContactScreen} options={{
+          drawerLabel: 'Contact Us',
+          drawerActiveBackgroundColor: '#1BB467',
+          drawerActiveTintColor: '#FFF',
+          drawerInactiveTintColor: '#000',
+          drawerIcon: ({ focused, size }) => (
+            <IonicIcon
+              name="call-outline"
+              size={20}
+              color={'#271933'} />
+          ),
+        }} />            
 
       </Drawer.Navigator>
     );

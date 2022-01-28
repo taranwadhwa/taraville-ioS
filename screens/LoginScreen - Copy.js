@@ -1,4 +1,4 @@
-import React,{useEffect,useState,useRef } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,11 +19,6 @@ import * as Permissions from 'expo-permissions';
 import Constants from "expo-constants";
 
 const SignInScreen = ({ navigation }) => {
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-  
   const [data, setData] = React.useState({
     email: '',
     password: '',
@@ -32,18 +27,7 @@ const SignInScreen = ({ navigation }) => {
     expoToken:''
   });
 
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(token =>setData({...data,expoToken:token}) );
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
-
-  }, []);
   async function registerForPushNotificationsAsync() {
     let token;
     if (Constants.isDevice) {
@@ -94,39 +78,48 @@ const SignInScreen = ({ navigation }) => {
     navigation.navigate('ForgotPassword');
   }
 
-  const loginHandle = (email, password,push_token) => {       
-          
+  const loginHandle = (email, password) => {   
     if (email && password) 
-    {             
-      setData({ ...data, loading: true })    
-      try {        
-        const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/login.php", {
-          email,
-          password,
-          push_token
-        })
-          .then(res => {
-            if (res.data.status == "OK") {              
-              signIn(res.data.rem_token,res.data.id,res.data.bname);
-            }
-            else {                
-              alert(res.data.status)
-              setData({ ...data, loading:false })
-            }
-            
+    { 
+      setData({ ...data, loading: true })           
+    try {
+      registerForPushNotificationsAsync().then(token => {        
+        // start //        
+        let push_token=token;
+        try {        
+          const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/login.php", {
+            email,
+            password,
+            push_token
           })
-          .catch(error => {
-            throw error;
-          })
+            .then(res => {
+              if (res.data.status == "OK") {              
+                signIn(res.data.rem_token,res.data.id,res.data.bname);
+              }
+              else {                
+                alert(res.data.status)
+                setData({ ...data, loading:false })
+              }
+              
+            })
+            .catch(error => {
+              throw error;
+            })
+  
+        }
+        catch (error) { console.log("error inside sign in" + error) } 
 
-      }
-      catch (error) { console.log("error inside sign in" + error) } 
+        // end //
+      })
 
-    
     }
-    else{
-      alert("Please enter valid email and password.")
-    } 
+    catch (error) {
+      console.log("Error while getting expo token request login screen=" + error);
+    }
+  }
+  else{
+    alert("Please enter valid email and password.")
+  } 
 
   }
 
@@ -142,7 +135,7 @@ return (
     <TextInput autoCapitalize = 'none' style={styles.input} placeholder="Password:*" onChangeText={(password) => handlePasswordChange(password)} secureTextEntry={true} />
 
     <View style={styles.btnContainer}>
-      <TouchableOpacity activeOpacity={0.8} onPress={() => { loginHandle(data.email, data.password,data.expoToken) }}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => { loginHandle(data.email, data.password) }}>
         {
           data.loading ? (<ActivityIndicator size="large" color="white" />) : (<Text style={styles.btnText}>SIGN IN</Text>)
         }

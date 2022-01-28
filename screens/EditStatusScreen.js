@@ -194,6 +194,7 @@ const EditStatusScreen = (props) => {
                          >       
                     
                         <Picker.Item label="Select day status" value="" />
+                        <Picker.Item label="Taking calls" value="Taking calls" />
                         <Picker.Item label="Not taking calls" value="Not taking calls" />
                         <Picker.Item label="Out of office" value="Out of office" />
                         <Picker.Item label="In a meeting" value="In a meeting" />

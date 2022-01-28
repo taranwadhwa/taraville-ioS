@@ -30,6 +30,49 @@ const StatusScreen = (props) => {
   const handlePreStatus = (id) => {
     props.navigation.navigate('EditPreStatusScreen', { statusID: id })
   }
+  const handleQuickStatus = ()=> {
+    try {
+      const syncUserInfo = AsyncStorage.getItem("user_info")
+        .then(syncResponse => {
+          let parseObject = JSON.parse(syncResponse);
+          var uid = parseObject.id;
+          var user_token = parseObject.token;
+          if (uid != null) {
+            try {
+              const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/quick-status.php", {
+                uid, user_token,
+              })
+                .then(res => {
+                  if (res.data.status == "OK") {
+                    setData({
+                      ...data,
+                      cslist: res.data.csstatus,
+                      cslist_len: res.data.csstatus_len,                    
+                      isLoading: false,
+                      screenLoader: true,
+                    });
+
+
+                  }
+                  else {                    
+                    alert(res.data.status)  
+                    props.navigation.navigate('UnauthScreen');
+                   
+                  }
+                })
+            }
+            catch (error) {
+              console.log("Error while fetching quick status on status screen=" + error)
+            }
+          }
+
+        });
+    }
+    catch (e) {
+      console.log("Error while fetching quick status on status screen=" + e)
+    }
+    
+  }
 
   function fetchStatus() {       
 
@@ -85,9 +128,9 @@ const StatusScreen = (props) => {
 
   if (data.isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.activity_container}>
         <ActivityIndicator animating={true} size="large" color="#000" />
-        <Text style={{ color: 'black', textAlign: 'center', alignItems: 'center' }}>Please wait... while we are fetching your status information.</Text>
+        <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', width: 110, height: 49 }} />                            
       </View>
     )
   }
@@ -198,11 +241,19 @@ const StatusScreen = (props) => {
           ) : (
             null
           )}
-        </View>        
+        
+
+        </View>              
+
       </ScrollView>
-        <View style={styles.blank_view}>
-             <Text></Text> 
-        </View>
+       
+        <View style={{flexDirection:'column',justifyContent:'center',height:250}}>
+        <TouchableOpacity onPress={()=>handleQuickStatus()}>
+          <Text style={{textAlign:'center',alignContent:'center'}}>
+            <IonicIcon name={'sync'} size={50} color={'#008080'} />
+          </Text>
+          </TouchableOpacity>
+        </View>  
       <BottomTabNavigationScreen navigation={props.navigation} route={props.route} />
     </KeyboardAvoidingView>
   )
@@ -225,6 +276,13 @@ const styles = StyleSheet.create({
     height: 65,
     margin: 7,
   },
+  activity_container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#271933',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
   messagesCard: {
     backgroundColor: '#f1f1f1',
     borderRadius: 2,
@@ -236,8 +294,8 @@ const styles = StyleSheet.create({
       height: 0,
       width: 0
     },
-    padding: 15
-
+    padding: 15,    
+    
 
   },
   btnTouch: {
