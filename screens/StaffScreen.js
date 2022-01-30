@@ -58,7 +58,7 @@ const StaffScreen = (props) => {
      return(
         <View style={styles.container}>
           <StatusBar backgroundColor="#271933" barStyle="light-content" />          
-          <ScrollView style={{ marginTop: 1, margin: 3, flex: 1, height: '100%' }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={handleListing} />}>                              
+          <ScrollView style={{ marginTop: 1, margin: 3, flex: 1, height: '100%' }} refreshControl={<RefreshControl refreshing={!data.screenLoader} tintColor="#fff" onRefresh={handleListing} />}>                              
           {data.listing.length>0?(   
           <View>
              {                            
@@ -102,7 +102,7 @@ const StaffScreen = (props) => {
           </View>                              
           ):(
             <View style={[styles.messagesEmptyCard, styles.elevation]}>
-                <Text style={{textAlign:'center',padding:10,fontSize:17}}>No staff member(s) was added.</Text>           
+                <Text style={{textAlign:'center',padding:8,fontSize:17}}>No staff member(s) was added.</Text>           
                 <Text style={{textAlign:'center',fontSize:11}}>(Pull down for refresh this screen.)</Text> 
             </View>
             

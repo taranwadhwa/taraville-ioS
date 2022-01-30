@@ -64,7 +64,7 @@ class FaqScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor="#271933" barStyle="light-content" />                
-                <ScrollView  style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!this.state.screenLoader} onRefresh={this.fetchFaq} />}>
+                <ScrollView  style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!this.state.screenLoader} tintColor="#fff" onRefresh={this.fetchFaq} />}>
                 {listing.length>0?(                                      
                     <View style={[styles.messagesCard, styles.elevation]}>
                         {                            
@@ -111,7 +111,7 @@ class FaqScreen extends React.Component {
             return (
             <View style={styles.activity_container}>
                 <ActivityIndicator animating={true} size="large" color="#FFF" />
-                <Text style={{ color: 'white', textAlign: 'center', alignItems: 'center' }}>Please wait... while we are fetching your records.</Text>
+                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', width: 110, height: 49 }} />                            
             </View>
             );
         }

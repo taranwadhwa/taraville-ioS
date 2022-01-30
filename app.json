@@ -4,8 +4,8 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/bell_icon.png",
-          "color": "#ffffff"         
+          "icon": "assets/bell_icon.png",
+          "color": "#311b92"         
         }
       ]
     ],    

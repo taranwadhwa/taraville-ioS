@@ -444,7 +444,7 @@ class MessageScreen extends React.Component {
 
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
           <View style={styles.topHeader}>           
-            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
           </View>         
           <View style={[styles.messagesCard, styles.elevation,{backgroundColor:'#FFFFFF'}]}>
             <View style={{ flexDirection: 'row' }}>
@@ -475,7 +475,7 @@ class MessageScreen extends React.Component {
             </TouchableOpacity>
           </View> */}
 
-          <ScrollView style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!screenLoader} onRefresh={this.handleListing} />}>
+          <ScrollView style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!screenLoader}  tintColor="#fff" onRefresh={this.handleListing} />}>
             {listing.length > 0 ? (
               <View style={[styles.messagesCard, styles.elevation]}>
                 {
@@ -548,6 +548,14 @@ class MessageScreen extends React.Component {
                         <Text style={{ width: '80%' }}>
                           <View style={styles.dateRow}>
                             <Text style={styles.innerText}><Text style={styles.label_trick}>Customer name:</Text> {records.name}</Text>
+                          </View>
+                        </Text>
+                      </View>
+
+                      <View style={{ flexDirection: 'row', padding: 3, margin: 1, width: '100%', borderBottomWidth: 1, borderBottomColor: '#C1C1C1' }}>
+                        <Text style={{ width: '80%' }}>
+                          <View style={styles.dateRow}>
+                            <Text style={styles.innerText}><Text style={styles.label_trick}>Customer email:</Text> {records.name}</Text>
                           </View>
                         </Text>
                       </View>

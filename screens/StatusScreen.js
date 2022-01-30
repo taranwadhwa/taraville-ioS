@@ -129,7 +129,7 @@ const StatusScreen = (props) => {
   if (data.isLoading) {
     return (
       <View style={styles.activity_container}>
-        <ActivityIndicator animating={true} size="large" color="#000" />
+        <ActivityIndicator animating={true} size="large" color="#fff" />
         <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', width: 110, height: 49 }} />                            
       </View>
     )

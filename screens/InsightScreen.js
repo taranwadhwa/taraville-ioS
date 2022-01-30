@@ -1,5 +1,6 @@
 import React,{ useEffect,useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, Platform, KeyboardAvoidingView,Dimensions,StatusBar,ActivityIndicator,LogBox } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, Platform, 
+  KeyboardAvoidingView,Dimensions,StatusBar,ActivityIndicator,LogBox,TouchableOpacity } from 'react-native';
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import {
   LineChart,
@@ -97,9 +98,9 @@ const InsightScreen = (props) => {
 
   if (data.isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator animating={true} size="large" color="#000" />
-        <Text style={{ color: 'black', textAlign: 'center', alignItems: 'center' }}>Please wait... while we are fetching insight information.</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor:'#271933' }}>
+        <ActivityIndicator animating={true} size="large" color="#fff" />
+        <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', width: 110, height: 49 }} />                            
       </View>
     )
   }
@@ -109,7 +110,7 @@ const InsightScreen = (props) => {
       style={styles.container}>
          <StatusBar backgroundColor="#271933" barStyle="light-content"/> 
       <View style={styles.topHeader}>
-        <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
+      <TouchableOpacity onPress={()=>props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
       </View>             
       
       <View style={[styles.messagesCard, styles.elevation]}>
@@ -277,9 +278,9 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     margin: 1,
     borderRadius: 1,
-    backgroundColor: '#1BB467',        
-    height: Platform.OS === 'ios' ? 60 : 60,
-    borderColor: '#1BB467',
+    backgroundColor: '#271933',        
+    height: Platform.OS === 'ios' ? 60 : 65,
+    borderColor: '#271933',
     top:5,
     borderWidth:1,        
     alignContent:'flex-start'

@@ -23,12 +23,14 @@ import ViewRequestStatusScreen from './screens/ViewRequestStatusScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import UnauthScreen from './screens/UnauthScreen';
 import ContactScreen from './screens/ContactScreen';
+import SettingScreen from './screens/SettingsScreen';
 import { AuthContext } from './components/context';
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
 import axios  from 'axios';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import CustomDrawer from './screens/CustomDrawer';
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 //LogBox.ignoreAllLogs();
@@ -50,18 +52,18 @@ function App(props) {
           width: 320,
         },
         headerStyle: {
-          height: 60,
+          height: 50,
           backgroundColor: '#271933',
         },
         overlayColor: 'transparent',
         headerTintColor: '#FFF',
         drawerItemStyle: {
-          padding: 3,
+          padding: 2,
           borderBottomWidth: 1,
           borderBottomColor: '#1BB467'
         },
         drawerContentStyle: {
-          top: 50,
+          top: 40,
         },
         
       }}
@@ -185,6 +187,19 @@ function App(props) {
           drawerIcon: ({ focused, size }) => (
             <IonicIcon
               name="call-outline"
+              size={20}
+              color={'#271933'} />
+          ),
+        }} /> 
+
+        <Drawer.Screen name="Push Notification Settings" component={SettingScreen} options={{
+          drawerLabel: 'Settings',
+          drawerActiveBackgroundColor: '#1BB467',
+          drawerActiveTintColor: '#FFF',
+          drawerInactiveTintColor: '#000',
+          drawerIcon: ({ focused, size }) => (
+            <IonicIcon
+              name="settings-outline"
               size={20}
               color={'#271933'} />
           ),
@@ -316,7 +331,7 @@ function App(props) {
             <Stack.Screen name="EditPreStatusScreen" component={EditPreStatusScreen} />
             <Stack.Screen name="ViewCommentsScreen" component={ViewCommentsScreen} />
             <Stack.Screen name="ViewRequestStatusScreen" component={ViewRequestStatusScreen} />
-            <Stack.Screen name="UnauthScreen" component={UnauthScreen} />
+            <Stack.Screen name="UnauthScreen" component={UnauthScreen} />            
           </Stack.Navigator>}
 
       </NavigationContainer>

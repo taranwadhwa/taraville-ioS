@@ -256,9 +256,9 @@ class DashboardScreen extends React.Component{
     }
     else{
       return(
-          <View style={styles.container}>
+        <View style={styles.activity_container}>
             <ActivityIndicator animating={true} size="large" color="#FFF"/>
-            <Text style={{color:'white',textAlign:'center',alignItems:'center'}}>Please wait... while we are fetching your profile information.</Text>
+            <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', width: 110, height: 49 }} />                            
           </View>
       )
     }    
@@ -274,6 +274,13 @@ const styles = StyleSheet.create({
     backgroundColor:'#271933',
     flexDirection:'column'
   },  
+  activity_container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#271933',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
 
   centeredView: {
     justifyContent: "center",
