@@ -28,7 +28,7 @@ const CustomDrawer=(props)=>{
         source={require('../assets/menu-bg.jpg')} 
         style={{padding:20}}>
             <Image source={require('../assets/user-profile.jpg')} style={{height:80,width:80,borderRadius:40,marginBottom:10}}/>
-        <Text style={{color:'#FFF',fontSize:12,fontFamily:'Roboto-Medium'}}>Buisness name: {data.userBuisness}</Text>
+        <Text style={{color:'#FFF',fontSize:12,fontFamily:'Roboto-Medium'}}>{data.userBuisness}</Text>
         <Text style={{color:'#FFF',fontSize:12,fontFamily:'Roboto-Medium'}}>Account #: {data.userID}</Text>
         </ImageBackground> 
             <View style={{backgroundColor:'#FFFFFF',paddingTop:10}}>
@@ -36,7 +36,7 @@ const CustomDrawer=(props)=>{
             </View>
 
             <DrawerItem
-            label="Support"
+            label="Questions"
             inactiveTintColor={'#000'}
             activeTintColor={'#1BB467'} 
             icon={()=> <IonicIcon

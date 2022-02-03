@@ -179,20 +179,20 @@ function App(props) {
               color={'#271933'} />
           ),
         }} />         
-         <Drawer.Screen name="Contact Us" component={ContactScreen} options={{
-          drawerLabel: 'Contact Us',
+         <Drawer.Screen name="Get In Touch" component={ContactScreen} options={{
+          drawerLabel: 'Get In Touch',
           drawerActiveBackgroundColor: '#1BB467',
           drawerActiveTintColor: '#FFF',
           drawerInactiveTintColor: '#000',
           drawerIcon: ({ focused, size }) => (
             <IonicIcon
-              name="call-outline"
+              name="chatbox-outline"
               size={20}
               color={'#271933'} />
           ),
         }} /> 
 
-        <Drawer.Screen name="Push Notification Settings" component={SettingScreen} options={{
+        <Drawer.Screen name="Account Settings" component={SettingScreen} options={{
           drawerLabel: 'Settings',
           drawerActiveBackgroundColor: '#1BB467',
           drawerActiveTintColor: '#FFF',

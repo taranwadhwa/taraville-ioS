@@ -4,6 +4,8 @@ import {
     Modal, Pressable, Platform, ActivityIndicator, Switch, LogBox, RefreshControl
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
  
 const SettingScreen = (props) => {
@@ -12,6 +14,12 @@ const SettingScreen = (props) => {
     const [requestIsEnabled,setRequestEnabled] = useState(true);
     const [planIsEnabled,setPlanEnabled] = useState(true);
     const [billingIsEnabled,setBillingEnabled] = useState(true);
+
+    const [data, setData] = React.useState({        
+      IsLoading:true,
+      isButtonLoading:false,
+      secureCode:''      
+    })
 
     const handleSettings=()=>{
         
@@ -27,7 +35,8 @@ const SettingScreen = (props) => {
                       uid, user_token
                     })
                       .then(res => {
-                        if (res.data.status == "OK") {                            
+                        if (res.data.status == "OK") { 
+                            setData({IsLoading:false});
                             if(res.data.status_type=="new_message")
                             {
                                 if(res.data.isEnabled==1){
@@ -304,11 +313,68 @@ const SettingScreen = (props) => {
 
         setBillingEnabled(previousState => !previousState);
     }
+    const save_secure_code=()=>{
+        if(data.secureCode==""){
+          alert("Please enter your 6 digit secure code.");
+        }
+        else{
+          // start //
+          try {
+            const syncUserInfo = AsyncStorage.getItem("user_info")
+              .then(syncResponse => {
+                let parseObject = JSON.parse(syncResponse);
+                var uid = parseObject.id;
+                var user_token = parseObject.token;
+                var secure_lock_code =  data.secureCode;              
+                if (uid != null) {
+                  try {
+                    const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/secure-code.php", {
+                      uid,user_token,secure_lock_code
+                    })
+                      .then(res => {
+                        if (res.data.status == "OK") {                          
+                           setData({...data,
+                            secureCode: res.data.secure_code,                           
+                            IsLoading:false
+                            });  
+      
+                        }
+                        else {                    
+                          alert(res.data.status)  
+                          props.navigation.navigate('UnauthScreen');
+                         
+                        }
+                      })
+                  }
+                  catch (error) {
+                    console.log("Error while fetching secure code settings on settings screen=" + error)
+                  }
+                }
+      
+              });
+          }
+          catch (e) {
+            console.log("Error while fetching secure code settings  settings on settings screen=" + e)
+          } 
+        
+        
+        // end //
+        }
+    }
 
     useEffect(() => {      
         handleSettings();
      }, []);
 
+
+     if (data.IsLoading) {
+      return (
+        <View style={styles.activity_container}>
+          <ActivityIndicator animating={true} size="large" color="#FFF" />
+          <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', width: 110, height: 49 }} />                            
+        </View>
+      )
+    }
 
     return(
         <View style={styles.container}>
@@ -377,11 +443,39 @@ const SettingScreen = (props) => {
                 />
                 </Text>
                 </View>
+                <View style={{flexDirection:'row'}}>
+                  <Text style={styles.inner_text}>6 digit secure code</Text>
+                  <Text style={styles.toggleButton}>
+                    {
+                     data.secureCode ? 
+                     (                      
+                       data.secureCode
+                      
+                     ):('-')
+                    }
+                  </Text>
+                </View>
 
 
              </View>
 
+             <View style={[styles.messagesCard, styles.elevation]}>
+              <Text style={styles.heading}>Your 6 digit code to access secure messages. </Text>  
+              <TextInput maxLength={6} style={styles.input} placeholder="Please enter 6 digit code:*" onChangeText={(secureCode)=>setData({...data,secureCode:secureCode})}/>          
 
+              <TouchableOpacity style={styles.btnTouch} onPress={()=>save_secure_code()}>
+              {
+                data.isButtonLoading ? (
+                <ActivityIndicator animating={data.isButtonLoading} size="large" color="white"/>
+                ):(               
+              <Text style={styles.btnText}>SUBMIT</Text>
+               )}
+
+          </TouchableOpacity>    
+
+             </View>
+
+             <BottomTabNavigationScreen navigation={props.navigation} route={props.route} />
              
         </View>
     )
@@ -394,9 +488,17 @@ const styles = StyleSheet.create
       backgroundColor: '#271933',
       flexDirection: 'column'
     },
+    activity_container: {
+      flex: 1,
+      alignItems: 'center',
+      backgroundColor: '#271933',
+      flexDirection: 'column',
+      justifyContent: 'center',
+    },
+
     messagesCard: {
         backgroundColor: '#FFF',
-        borderRadius: 2,
+        borderRadius: 4,
         paddingVertical: 10,
         paddingHorizontal: 10,
         width: '100%',
@@ -419,6 +521,38 @@ const styles = StyleSheet.create
       toggleButton:{
         borderBottomColor:'#CCCCCC',
         borderBottomWidth:1,
-      }
+      },
+      input:{
+        width:"95%",    
+        borderColor:'#271833',
+        padding:10,
+        margin:8,
+        borderRadius:5,
+        fontSize:18,
+        borderWidth:1
+        
+      },
+      heading:{
+        backgroundColor: 'white',        
+        width: '100%',
+        marginVertical: 2,
+        paddingLeft:10,
+        fontSize:16,
+        fontWeight:'bold'
+      },
+      btnTouch:{
+        backgroundColor:'#1BB467',
+        height:45,
+        padding:10,
+        width:'95%',
+        margin:10,       
+        borderRadius:5,
+      },
+      btnText:{
+        fontSize:18,
+        textAlign:"center",
+        fontWeight:"bold",
+        color:'#FFF'
+      },
   })    
 export default SettingScreen;

@@ -148,7 +148,7 @@ const StatusScreen = (props) => {
 
         </View>
       </View>
-      <ScrollView style={{ marginTop: 1, flex: 1 }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={fetchStatus} />}>
+      <ScrollView style={{ marginTop: 1, flex: 1 }} refreshControl={<RefreshControl refreshing={!data.screenLoader} onRefresh={fetchStatus} tintColor={'#FFFFFF'} />}>
 
         <View style={[styles.messagesCard, styles.elevation]}>
 
@@ -247,7 +247,7 @@ const StatusScreen = (props) => {
 
       </ScrollView>
        
-        <View style={{flexDirection:'column',justifyContent:'center',height:250}}>
+        <View style={styles.quick_status_loader}>
         <TouchableOpacity onPress={()=>handleQuickStatus()}>
           <Text style={{textAlign:'center',alignContent:'center'}}>
             <IonicIcon name={'sync'} size={50} color={'#008080'} />
@@ -396,4 +396,9 @@ const styles = StyleSheet.create({
   blank_view: {
     marginTop: Platform.OS === 'ios' ? 55 : 30,
   },
+  quick_status_loader:{
+    flexDirection:'column',
+    justifyContent:'center',
+    minHeight:Platform.OS === 'ios' ? 180 : 230,
+  }
 });

@@ -555,7 +555,7 @@ class MessageScreen extends React.Component {
                       <View style={{ flexDirection: 'row', padding: 3, margin: 1, width: '100%', borderBottomWidth: 1, borderBottomColor: '#C1C1C1' }}>
                         <Text style={{ width: '80%' }}>
                           <View style={styles.dateRow}>
-                            <Text style={styles.innerText}><Text style={styles.label_trick}>Customer email:</Text> {records.name}</Text>
+                            <Text style={styles.innerText}><Text style={styles.label_trick}>Customer email:</Text> {records.email}</Text>
                           </View>
                         </Text>
                       </View>
@@ -570,7 +570,7 @@ class MessageScreen extends React.Component {
                           </View>
                          
                         </Text>
-                        <Text style={{ width: '30%' }}>
+                        <Text style={{ width: '40%' }}>
                         <View style={{ flexDirection: 'row', justifyContent:'space-between'}}>
                         {records.message_call_status?(
                         <Text style={{ textAlign: 'left', alignContent: 'flex-start', alignItems: 'flex-start', backgroundColor: '#' + records.message_call_color, padding: 3, color: '#FFFFFF', borderRadius: 3,fontSize:10 }}>
@@ -664,7 +664,13 @@ class MessageScreen extends React.Component {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>Please enter 6 digit code to unlock this message.</Text>
+              <View style={{flexDirection:'row',margin:0,padding:0}}>
+
+              <Text style={styles.innerModalText,{width:'90%',margin:0,paddingTop:20,paddingLeft:8,fontSize:20}}>UNLOCK MESSAGE <IonicIcon name={'headset-outline'} color={'black'} size={20} /></Text>                                
+                <TouchableOpacity  onPress={() => this.setModalVisible('', !modalVisible)}><Text><IonicIcon name={'close-outline'} color={'#F14646'} size={40} /></Text>
+                </TouchableOpacity>
+            </View>
+                <Text style={styles.innerSmallText}>Please enter 6 digit code to unlock this message.</Text>
                 <TextInput style={styles.modalInput} onChangeText={(private_code) => this.setState({ private_code: private_code })} placeholder="Enter code:" />
 
 
@@ -675,14 +681,14 @@ class MessageScreen extends React.Component {
                 </View>
 
                
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={styles.buttonPopupClose}
                     onPress={() => this.setModalVisible('', !modalVisible)}
                   >
                     <View>
                     <Text style={{ color: 'white', padding: 3,textAlign:'center',alignContent:'center' }}>CLOSE</Text>
                     </View>
-                  </TouchableOpacity>                
+                  </TouchableOpacity>                 */}
               </View>
             </View>
           </Modal>
@@ -694,7 +700,11 @@ class MessageScreen extends React.Component {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>ASSIST REQUEST <IonicIcon name={'headset-outline'} color={'black'} size={20} /></Text>
+                <View style={{flexDirection:'row',margin:0,padding:0}}>
+                <Text style={styles.innerModalText,{width:'90%',margin:0,paddingTop:20,paddingLeft:8,fontSize:20}}>ASSIST REQUEST <IonicIcon name={'headset-outline'} color={'black'} size={20} /></Text>                                
+                <TouchableOpacity onPress={() => this.setCallModalVisible('', !callModalVisible)}><Text><IonicIcon name={'close-outline'} color={'#F14646'} size={40} /></Text>
+                </TouchableOpacity>
+          </View>
                 <Text style={styles.innerSmallText}>No time to call? No problem!. Type your request here and we'll get right on it.</Text>
                 <TextInput value={this.state.call_input} onChangeText={(val) => this.setState({ call_request: val, call_input: val })} style={styles.modalInput} numberOfLines={8} multiline={true} />
                 <View>
@@ -724,7 +734,12 @@ class MessageScreen extends React.Component {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>Comments <IonicIcon name={'document-text-outline'} color={'black'} size={20} /></Text>
+              <View style={{flexDirection:'row',margin:0,padding:0}}>
+                <Text style={styles.innerModalText,{width:'90%',margin:0,paddingTop:20,paddingLeft:8,fontSize:20}}>Comments <IonicIcon name={'document-text-outline'} color={'black'} size={20} /></Text>               
+                <TouchableOpacity onPress={() => this.setNotesModalVisible('', !notesModalVisible)}><Text><IonicIcon name={'close-outline'} color={'#F14646'} size={40} /></Text>
+            </TouchableOpacity>
+          </View>
+               
                 <Text style={styles.innerSmallText}>Please enter your comments.</Text>
                 <TextInput value={this.state.notes_input} onChangeText={(notes) => this.setState({ notes: notes, notes_input: notes })} style={styles.modalInput} multiline={true} numberOfLines={8} />
                 <View>
@@ -754,7 +769,11 @@ class MessageScreen extends React.Component {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.innerModalText}>Need A Reminder? <IonicIcon name={'ios-notifications'} color={'black'} size={15} /> {this.state.reminder_time}</Text>
+              <View style={{flexDirection:'row',margin:0,padding:0}}>
+                <Text style={styles.innerModalText,{width:'90%',margin:0,paddingTop:20,paddingLeft:8,fontSize:20}}>Need A Reminder? <IonicIcon name={'ios-notifications'} color={'black'} size={15} /> {this.state.reminder_time}</Text>
+                <TouchableOpacity onPress={() => this.setReminderVisible('', !reminderVisible)}><Text><IonicIcon name={'close-outline'} color={'#F14646'} size={40} /></Text>
+            </TouchableOpacity> 
+              </View>  
                 <Text style={styles.innerSmallText}>Set a reminder time and get notified. It’s that easy!</Text>
                 <View style={{ borderWidth: 1, borderColor: '#C1C1C1', width: "100%", marginTop: 10 }}>
                   <Picker
@@ -842,7 +861,7 @@ const styles = StyleSheet.create
       color: 'black',
       fontSize: 20,
       paddingLeft: 8,
-      paddingTop: 5
+      paddingTop: 5,      
     },
     innerSmallText:{
       color:'#C1C1C1',
@@ -912,7 +931,7 @@ const styles = StyleSheet.create
       textAlign: 'left'
     },
     messagesCard: {
-      backgroundColor: '#D3D3D3',
+      backgroundColor: '#F2F1F6',
       borderRadius: 2,
       paddingVertical: 10,
       paddingHorizontal: 10,

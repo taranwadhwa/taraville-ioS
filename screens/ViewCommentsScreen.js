@@ -93,7 +93,7 @@ const ViewCommentsScreen = ({ navigation,route }) => {
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
             <View style={styles.topHeader}>              
                 <TouchableOpacity onPress={()=>navigation.navigate('Message')} style={{marginTop:15,paddingLeft:10}}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></TouchableOpacity>
-                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
+                <TouchableOpacity onPress={()=>navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
             </View>          
 
           <View style={[styles.messagesCard, styles.elevation]}>
