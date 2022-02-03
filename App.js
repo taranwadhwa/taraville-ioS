@@ -87,7 +87,7 @@ function App(props) {
           ),
         }} />
 
-        <Drawer.Screen name="New Status" component={NewStatusScreen} options={{
+        {/* <Drawer.Screen name="New Status" component={NewStatusScreen} options={{
           drawerActiveBackgroundColor: '#1BB467',
           drawerActiveTintColor: '#FFF',
           drawerInactiveTintColor: '#000',
@@ -98,7 +98,7 @@ function App(props) {
               size={20}
               color={'#271933'} />
           ),
-        }} />
+        }} /> */}
 
         <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{
           drawerActiveBackgroundColor: '#1BB467',
@@ -125,7 +125,7 @@ function App(props) {
           ),
         }} />
 
-        <Drawer.Screen name="Add New Staff" component={NewStaffScreen} options={{
+        {/* <Drawer.Screen name="Add New Staff" component={NewStaffScreen} options={{
           drawerLabel: 'New Staff',
           drawerActiveBackgroundColor: '#1BB467',
           drawerActiveTintColor: '#FFF',
@@ -137,7 +137,7 @@ function App(props) {
               size={20}
               color={'#271933'} />
           ),
-        }} />
+        }} /> */}
 
 
         <Drawer.Screen name="My Faq" component={FaqScreen} options={{
@@ -154,7 +154,7 @@ function App(props) {
           ),
         }} />
 
-        <Drawer.Screen name="Add New Question" component={NewFaqScreen} options={{
+        {/* <Drawer.Screen name="Add New Question" component={NewFaqScreen} options={{
           drawerLabel: 'New FAQ',
           drawerActiveBackgroundColor: '#1BB467',
           drawerActiveTintColor: '#FFF',
@@ -165,7 +165,7 @@ function App(props) {
               size={20}
               color={'#271933'} />
           ),
-        }} />
+        }} /> */}
 
         <Drawer.Screen name="Archive" component={ArchiveScreen} options={{
           drawerLabel: 'Archived Messages',
@@ -331,7 +331,10 @@ function App(props) {
             <Stack.Screen name="EditPreStatusScreen" component={EditPreStatusScreen} />
             <Stack.Screen name="ViewCommentsScreen" component={ViewCommentsScreen} />
             <Stack.Screen name="ViewRequestStatusScreen" component={ViewRequestStatusScreen} />
-            <Stack.Screen name="UnauthScreen" component={UnauthScreen} />            
+            <Stack.Screen name="UnauthScreen" component={UnauthScreen} />  
+            <Stack.Screen name="NewStaffScreen" component={NewStaffScreen} />
+            <Stack.Screen name="NewFaqScreen" component={NewFaqScreen} />  
+                      
           </Stack.Navigator>}
 
       </NavigationContainer>

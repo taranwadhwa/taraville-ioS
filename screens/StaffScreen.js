@@ -57,7 +57,11 @@ const StaffScreen = (props) => {
 
      return(
         <View style={styles.container}>
-          <StatusBar backgroundColor="#271933" barStyle="light-content" />          
+          <StatusBar backgroundColor="#271933" barStyle="light-content" />
+          <View style={[styles.topEmptyCard]}>                
+                <TouchableOpacity onPress={()=>props.navigation.navigate('NewStaffScreen')}><Text style={{textAlign:'center',padding:8}}><IonicIcon name={'add-outline'} color={'green'} size={50} /></Text></TouchableOpacity>                        
+            </View>
+
           <ScrollView style={{ marginTop: 1, margin: 3, flex: 1, height: '100%' }} refreshControl={<RefreshControl refreshing={!data.screenLoader} tintColor="#fff" onRefresh={handleListing} />}>                              
           {data.listing.length>0?(   
           <View>
@@ -101,7 +105,7 @@ const StaffScreen = (props) => {
             
           </View>                              
           ):(
-            <View style={[styles.messagesEmptyCard, styles.elevation]}>
+            <View style={[styles.messagesEmptyCard, styles.elevation]}>                                
                 <Text style={{textAlign:'center',padding:8,fontSize:17}}>No staff member(s) was added.</Text>           
                 <Text style={{textAlign:'center',fontSize:11}}>(Pull down for refresh this screen.)</Text> 
             </View>
@@ -171,6 +175,12 @@ const styles = StyleSheet.create
         paddingBottom:5,      
             
       },
+      topEmptyCard:{
+        backgroundColor: '#f1f1f1',
+        borderRadius: 4,
+        width: '100%',
+        height:'9%',
+      },
 
       messagesEmptyCard:{
         backgroundColor: '#f1f1f1',
@@ -178,7 +188,7 @@ const styles = StyleSheet.create
         paddingVertical: 10,
         paddingHorizontal: 10,
         width: '100%',
-        height:'100%',
+        height:'70%',
         marginVertical: 2,
         shadowOpacity: 1,
         shadowRadius: 3,

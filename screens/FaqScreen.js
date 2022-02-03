@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, StatusBar, TouchableOpacity, SafeAreaView, Imag
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 class FaqScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -63,7 +64,10 @@ class FaqScreen extends React.Component {
         if(isButtonLoader){
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor="#271933" barStyle="light-content" />                
+                <StatusBar backgroundColor="#271933" barStyle="light-content" />
+                <View style={[styles.topEmptyCard]}>                
+                  <TouchableOpacity onPress={()=>this.props.navigation.navigate('NewFaqScreen')}><Text style={{textAlign:'center',padding:8}}><IonicIcon name={'add-outline'} color={'green'} size={50} /></Text></TouchableOpacity>                        
+                </View>                
                 <ScrollView  style={{ marginTop: 1, margin: 1, flex: 1, height: '100%', }} refreshControl={<RefreshControl refreshing={!this.state.screenLoader} tintColor="#fff" onRefresh={this.fetchFaq} />}>
                 {listing.length>0?(                                      
                     <View style={[styles.messagesCard, styles.elevation]}>
@@ -88,8 +92,8 @@ class FaqScreen extends React.Component {
                         }
                      </View>
                 ):(
-                <View style={[styles.messagesEmptyCard, styles.elevation]}>
-                    <Text style={{textAlign:'center',padding:5,fontSize:18}}>No record(s) found.</Text>
+                <View style={[styles.messagesEmptyCard, styles.elevation]}>                  
+                    <Text style={{textAlign:'center',paddingTop:15,fontSize:18}}>No record(s) found.</Text>
                     <Text style={{textAlign:'center',fontSize:11}}>(Pull down for refresh this screen.)</Text>                 
                 </View> 
                 )}    
@@ -198,7 +202,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         width: '100%',
-        height:'100%',
+        height:'70%',
         marginVertical: 2,
         shadowOpacity: 1,
         shadowRadius: 3,
@@ -210,6 +214,12 @@ const styles = StyleSheet.create({
       },
       blank_view: {
         marginTop: Platform.OS === 'ios' ? 40 : 70
+      },
+      topEmptyCard:{
+        backgroundColor: '#f1f1f1',
+        borderRadius: 4,
+        width: '100%',
+        height:'9%',
       },
 
 });

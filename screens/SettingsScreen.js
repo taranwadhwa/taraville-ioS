@@ -18,7 +18,8 @@ const SettingScreen = (props) => {
     const [data, setData] = React.useState({        
       IsLoading:true,
       isButtonLoading:false,
-      secureCode:''      
+      secureCode:'',
+      secureEntryCode:''      
     })
 
     const handleSettings=()=>{
@@ -36,7 +37,7 @@ const SettingScreen = (props) => {
                     })
                       .then(res => {
                         if (res.data.status == "OK") { 
-                            setData({IsLoading:false});
+                            setData({IsLoading:false,secureEntryCode:res.data.secure_code,secureCode:''});
                             if(res.data.status_type=="new_message")
                             {
                                 if(res.data.isEnabled==1){
@@ -314,11 +315,13 @@ const SettingScreen = (props) => {
         setBillingEnabled(previousState => !previousState);
     }
     const save_secure_code=()=>{
+      
         if(data.secureCode==""){
           alert("Please enter your 6 digit secure code.");
         }
         else{
           // start //
+          setData({isButtonLoading:true});
           try {
             const syncUserInfo = AsyncStorage.getItem("user_info")
               .then(syncResponse => {
@@ -332,12 +335,16 @@ const SettingScreen = (props) => {
                       uid,user_token,secure_lock_code
                     })
                       .then(res => {
-                        if (res.data.status == "OK") {                          
+                        if (res.data.status == "OK") {        
+
                            setData({...data,
-                            secureCode: res.data.secure_code,                           
-                            IsLoading:false
+                            secureCode: '',
+                            secureEntryCode:res.data.secure_code,                           
+                            IsLoading:false,
+                            isButtonLoading:false
                             });  
-      
+                            alert("Your security code has been successfully saved.")
+
                         }
                         else {                    
                           alert(res.data.status)  
@@ -445,11 +452,11 @@ const SettingScreen = (props) => {
                 </View>
                 <View style={{flexDirection:'row'}}>
                   <Text style={styles.inner_text}>6 digit secure code</Text>
-                  <Text style={styles.toggleButton}>
+                  <Text style={styles.toggleButton,{paddingTop:15}}>
                     {
-                     data.secureCode ? 
+                     data.secureEntryCode ? 
                      (                      
-                       data.secureCode
+                       data.secureEntryCode
                       
                      ):('-')
                     }
@@ -461,7 +468,7 @@ const SettingScreen = (props) => {
 
              <View style={[styles.messagesCard, styles.elevation]}>
               <Text style={styles.heading}>Your 6 digit code to access secure messages. </Text>  
-              <TextInput maxLength={6} style={styles.input} placeholder="Please enter 6 digit code:*" onChangeText={(secureCode)=>setData({...data,secureCode:secureCode})}/>          
+              <TextInput value={data.secureCode} maxLength={6} style={styles.input} placeholder="Please enter 6 digit code:*" onChangeText={(secureCode)=>setData({...data,secureCode:secureCode})}/>          
 
               <TouchableOpacity style={styles.btnTouch} onPress={()=>save_secure_code()}>
               {

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, StatusBar,ScrollView,TouchableOpacity, SafeArea
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 class StaffScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -76,6 +77,10 @@ class StaffScreen extends React.Component {
         return (
             <><KeyboardAvoidingView style={styles.container}>
                 <StatusBar backgroundColor="#271933" barStyle="light-content" />
+                <View style={styles.topHeader}>
+                    <TouchableOpacity onPress={()=>this.props.navigation.navigate('My Staff')} style={{marginTop:15,paddingLeft:10}}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></TouchableOpacity>           
+                    <TouchableOpacity onPress={()=>this.props.navigation.replace('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
+                </View>   
                 <View>
                     <View style={[styles.inputCard, styles.elevation]}>
                         <Text style={styles.heading}>Add new staff information</Text>
@@ -93,7 +98,7 @@ class StaffScreen extends React.Component {
                 </View>
                 
             </KeyboardAvoidingView>
-            <View><Text><BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} /></Text></View></>
+            <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route} /></>
 
         );
     }
@@ -168,5 +173,22 @@ const styles = StyleSheet.create({
     blank_view:{
         marginTop: Platform.OS === 'ios' ? 30 : 30
     },
+    header_txt: {
+        color: '#FFF',
+        fontSize: 20,
+        marginTop: Platform.OS === 'ios' ? 5 : 10,
+        padding: 10,
+        alignContent:'space-around',      
+      },
+      topHeader: {
+        flexDirection:'row',
+        margin: 1,
+        borderRadius: 1,
+        backgroundColor: '#271933',        
+        height: Platform.OS === 'ios' ? 60 : 60,
+        borderColor: '#8658A5',
+        top:5,      
+        alignContent:'flex-start'
+      },
 
 });
