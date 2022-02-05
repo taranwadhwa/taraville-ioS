@@ -211,10 +211,9 @@ class ArchiveScreen extends React.Component {
 
           <StatusBar backgroundColor="#271933" barStyle="light-content"/> 
           <View style={styles.topHeader}>           
-          <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
+          <TouchableOpacity onPress={()=>this.props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
           </View>                    
-
-          
+        
         
           <View style={styles.tabMessagesCard}>
               <TouchableOpacity onPress={()=>this.props.navigation.navigate('Message')}  style={{textAlign:'center',width:'50%',padding:13,fontSize:16,backgroundColor:'#D3D3D3',borderRadius:5,color:'#A9A9A9'}}>
@@ -559,11 +558,10 @@ const styles = StyleSheet.create
       flexDirection:'row',
       margin: 1,
       borderRadius: 1,
-      backgroundColor: '#1BB467',        
+      backgroundColor: '#271933',        
       height: Platform.OS === 'ios' ? 60 : 60,
-      borderColor: '#1BB467',
-      top:5,
-      borderWidth:1,        
+      borderColor: '#8658A5',
+      top:5,      
       alignContent:'flex-start'
     },
   });

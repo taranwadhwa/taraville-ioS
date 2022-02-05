@@ -162,9 +162,9 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         margin: 1,
         borderRadius: 1,
-        backgroundColor: '#1BB467',        
+        backgroundColor: '#271933',        
         height: Platform.OS === 'ios' ? 60 : 60,
-        borderColor: '#1BB467',
+        borderColor: '#271933',
         top:5,
         borderWidth:1,        
         alignContent:'flex-start'

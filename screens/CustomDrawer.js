@@ -23,7 +23,7 @@ const CustomDrawer=(props)=>{
    
     return(
         <View style={{flex:1}}>
-        <DrawerContentScrollView {...props}>
+        <DrawerContentScrollView {...props}>        
         <ImageBackground 
         source={require('../assets/menu-bg.jpg')} 
         style={{padding:20}}>

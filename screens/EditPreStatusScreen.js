@@ -239,7 +239,7 @@ const EditPreStatusScreen = (props) => {
       style={styles.container}>    
             <View style={styles.topHeader}>
                 <TouchableOpacity style={{marginTop:15,paddingLeft:10}} onPress={()=>handleBack()}><IonicIcon name={'arrow-back-outline'} color={'white'} size={25} /></TouchableOpacity>
-                <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} />                            
+                <TouchableOpacity onPress={()=>props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
             </View>
 
             <StatusBar backgroundColor="#271933" barStyle="light-content" />            
@@ -504,9 +504,9 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         margin: 1,
         borderRadius: 1,
-        backgroundColor: '#1BB467',        
+        backgroundColor: '#271933',        
         height: Platform.OS === 'ios' ? 60 : 60,
-        borderColor: '#1BB467',
+        borderColor: '#271933',
         top:5,
         borderWidth:1,        
         alignContent:'flex-start'

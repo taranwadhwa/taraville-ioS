@@ -23,6 +23,8 @@ import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
 import configData from "../components/config.json";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from 'moment';
 
 LogBox.ignoreAllLogs();
 
@@ -49,16 +51,17 @@ class DashboardScreen extends React.Component{
       plan_name:'',
       modalVisible: false,
       isButtonLoading:false,
-      isLoading:false             
+      isLoading:false,
+      fromDate:'',
+      toDate:'',      
+      isDatePickerVisible:false, 
+      isToDatePickerVisible:false,            
   }
   
   this._updateInfo = this._updateInfo.bind(this);  
   }
    
-  //loadNewStaff()
-  //{     
-    //this.setState({staffVisible:true})    
-  //}
+ 
   triggerStaffModal()
   {   
     this.props.navigation.navigate('Staff')
@@ -72,7 +75,37 @@ class DashboardScreen extends React.Component{
   setModalVisible = (visible) => {
     this.setState({ modalVisible: visible });
   }
- 
+  toggleDrawer = () => {    
+    this.props.navigation.openDrawer()
+      
+    }
+
+    showToDatePicker=()=>{
+      this.setState({ isToDatePickerVisible: true });
+    }
+
+    hideToDatePicker=()=>{
+      this.setState({ isToDatePickerVisible: false });
+    }
+
+    handleToConfirm = (date) => {                      
+      this.setState({toDate:moment(date).format('dddd hh:mm A')})            
+      this.hideToDatePicker();
+    };
+
+
+    showDatePicker=()=>{      
+      this.setState({ isDatePickerVisible: true });
+    }
+
+    hideDatePicker=()=>{
+      this.setState({ isDatePickerVisible: false });
+    }
+
+    handleConfirm = (date) => {                      
+      this.setState({fromDate:moment(date).format('dddd hh:mm A')})            
+      this.hideDatePicker();
+    };
   
   handleFetchdata(){    
     try{
@@ -100,12 +133,13 @@ class DashboardScreen extends React.Component{
                   website:res.data.user_records.website,
                   address:res.data.user_records.address,  
                   description:res.data.user_records.description, 
-                  hooperations:res.data.user_records.hooperations,
+                  fromDate:res.data.user_records.hooperations,
                   plan_name:res.data.user_records.plan_name,    
                   ccnumber:res.data.user_records.cc_number,
                   expiryMonth:res.data.user_records.expiryMonth,
                   expiryYear:res.data.user_records.expiryYear,
-                  cvv:res.data.user_records.cvv      
+                  cvv:res.data.user_records.cvv,
+                  toDate:res.data.user_records.hours_of_operations_to,      
                 })
                 
               }
@@ -138,7 +172,7 @@ class DashboardScreen extends React.Component{
     const{
       fname,lname,email,password,phone,ccnumber,
       expiryMonth,expiryYear,cvv,buisness_name,
-      website,address,description,hooperations,plan_name
+      website,address,description,plan_name,fromDate,toDate
     } = this.state;
 
     try{
@@ -151,7 +185,7 @@ class DashboardScreen extends React.Component{
             try{
             const signInRes = axios.post("https://iosapi.taraville.com/api/v1/users/update.php", {
               fname,lname,phone,ccnumber,expiryMonth,expiryYear,cvv,buisness_name,
-              website,address,description,hooperations,plan_name,uid,user_token              
+              website,address,description,fromDate,plan_name,uid,user_token,toDate              
             })
             .then(res=>{
                 if(res.data.status == "OK"){
@@ -159,6 +193,7 @@ class DashboardScreen extends React.Component{
                   alert("Profile information has been successfully saved.")
                 }else{
                   alert(res.data.status)
+                  this.setState({isButtonLoading:false});    
                 }
                
             })
@@ -186,12 +221,21 @@ class DashboardScreen extends React.Component{
     let iconColor = '#271833'   
     let staffIconName='person-add-outline';
     const { modalVisible,fname,lname,email,phone,buisness_name,website,
-    address,description,hooperations,plan_name,ccnumber,expiryMonth,expiryYear,cvv} = this.state;       
+    address,description,hooperations,plan_name,ccnumber,expiryMonth,expiryYear,cvv,isDatePickerVisible,
+    isToDatePickerVisible,fromDate,toDate  
+  
+  } = this.state;       
     
     if(isLoading){
     return(                  
       <KeyboardAvoidingView  style={styles.container}>                                   
-        <StatusBar backgroundColor="#271933" barStyle="light-content"/>                             
+        <StatusBar backgroundColor="#271933" barStyle="light-content"/>
+        <View style={styles.topHeader}>
+          <TouchableOpacity onPress={this.toggleDrawer.bind(this)} style={{marginTop:10,padding:5}}>
+                <IonicIcon name={'menu-outline'} color={'white'} size={30} />
+          </TouchableOpacity>           
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
+          </View>                                  
         <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>                                      
          <View style={[styles.inputCard, styles.elevation]}>  
            <Text style={styles.heading}>Personal Information</Text>            
@@ -206,14 +250,46 @@ class DashboardScreen extends React.Component{
           <TextInput value={website} style={styles.input} placeholder="Website:" onChangeText={(website)=>this.setState({website:website})}/>          
           <TextInput value={address} style={styles.input} placeholder="Address:" onChangeText={(address)=>this.setState({address:address})}/>          
           <TextInput value={description} multiline={true}  numberOfLines={4} style={styles.input} placeholder="Description:" onChangeText={(description)=>this.setState({description:description})}/>
-          <TextInput value={hooperations} style={styles.input} placeholder="Hours of operations:" onChangeText={(hooperations)=>this.setState({hooperations:hooperations})}/>                   
+          
+          
+          
+          
+          
+          
+          {/* <TextInput value={hooperations} style={styles.input} placeholder="Hours of operations:" onChangeText={(hooperations)=>this.setState({hooperations:hooperations})}/>                    */}
         </View> 
+
+        <View style={[styles.inputCard, styles.elevation]}>
+          <Text style={styles.heading}>Hours of operations Information</Text>    
+          <View style={{flexDirection:'row',padding:1}}>
+            <Text style={{fontSize:16,paddingLeft:10,marginVertical:2}}>From date and time: <Text style={{fontSize:15}}>{fromDate}</Text></Text>            
+          </View>
+
+          <View style={{marginTop:1,flexDirection:'row'}}>
+            <TouchableOpacity onPress={this.showDatePicker} style={{width:'48%'}}>
+              <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                                  
+            </TouchableOpacity>        
+          </View>
+
+          <View style={{flexDirection:'row',padding:1}}>
+            <Text style={{fontSize:16,paddingLeft:10,marginVertical:2}}>To date and time: <Text style={{fontSize:15}}>{toDate}</Text></Text>            
+          </View>
+          <View style={{marginTop:1,flexDirection:'row'}}>
+            <TouchableOpacity onPress={this.showToDatePicker} style={{width:'48%'}}>
+              <Text style={{paddingLeft:5}}> <IonicIcon name={'calendar-outline'} color={'black'} size={25} /></Text>                                                  
+            </TouchableOpacity>        
+          </View>
+
+        </View>
+
+        
+
                      
         <View style={[styles.inputCard, styles.elevation]}>
           <Text style={styles.heading}>Billing Details</Text>  
 
           <TextInput value={plan_name}  editable = {false} style={styles.input} placeholder="Plan name:" onChangeText={(plan_name)=>this.setState({plan_name:plan_name})}/>          
-          <TextInput value={ccnumber} maxLength={16} keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(ccnumber)=>this.setState({ccnumber:ccnumber})}/>          
+          <TextInput value={ccnumber} secureTextEntry={true} maxLength={16} keyboardType="numeric" style={styles.input} placeholder="C.C.Number:" onChangeText={(ccnumber)=>this.setState({ccnumber:ccnumber})}/>          
           
           <View style={styles.text_container}>
             <TextInput value={expiryMonth} keyboardAppearance="light" keyboardType="numeric" 
@@ -232,6 +308,8 @@ class DashboardScreen extends React.Component{
           </View>
          <TextInput value={cvv} secureTextEntry={true} keyboardAppearance="light" keyboardType="numeric" maxLength={4} style={styles.input} placeholder="CVV:" onChangeText={(cvv)=>this.setState({cvv:cvv})}/>                                 
         </View>
+      
+
         <View>                     
           
           <TouchableOpacity style={styles.btnTouch} onPress={()=>this._updateInfo()}>
@@ -242,12 +320,40 @@ class DashboardScreen extends React.Component{
               <Text style={styles.btnText}>UPDATE</Text>
                )}
 
-          </TouchableOpacity>          
-        </View>
-        <View style={styles.blank_view}>
+          </TouchableOpacity>  
+
+          <View style={styles.blank_view}>
           <Text></Text>
-        </View>        
-        </ScrollView>              
+        </View>          
+        </View>
+                
+             
+
+        </ScrollView>  
+
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="datetime" 
+          onConfirm={this.handleConfirm}
+          onCancel={this.hideDatePicker}                            
+          is24Hour={false}
+          display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
+          style={styles.datePicker}
+          
+      />   
+
+      <DateTimePickerModal
+          isVisible={isToDatePickerVisible}
+          mode="datetime" 
+          onConfirm={this.handleToConfirm}
+          onCancel={this.hideToDatePicker}                            
+          is24Hour={false}
+          display={Platform.OS === 'ios' ? 'inline' : 'default'}                    
+          style={styles.datePicker}
+          
+      />        
+
+
       <BottomTabNavigationScreen navigation={this.props.navigation} route={this.props.route}/>            
       </KeyboardAvoidingView>  
                                       
@@ -327,7 +433,7 @@ const styles = StyleSheet.create({
   }, 
   input:{
     width:"95%",    
-    borderColor:'#271833',
+    borderColor:'#1BB467',
     padding:10,
     margin:8,
     borderRadius:5,
@@ -424,7 +530,7 @@ btnText:{
 },
 
 blank_view:{
-  marginTop: Platform.OS === 'ios' ? 30 : 30
+  marginTop: Platform.OS === 'ios' ? 30 : 80
 },
 modalText: {
   margin: 7,  
@@ -449,6 +555,16 @@ btnFaq:{
     margin:3,       
     borderRadius:5,     
     
-}
+},
+topHeader: {
+  flexDirection:'row',
+  margin: 1,
+  borderRadius: 1,
+  backgroundColor: '#271933',        
+  height: Platform.OS === 'ios' ? 60 : 60,
+  borderColor: '#8658A5',
+  top:5,      
+  alignContent:'flex-start'
+},
 
 });

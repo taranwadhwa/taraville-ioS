@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import React,{ useEffect } from 'react';
 import { NavigationContainer,useRoute } from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
-import { createDrawerNavigator,DrawerButton } from '@react-navigation/drawer';
+import { createDrawerNavigator,DrawerButton,DrawerContentScrollView, } from '@react-navigation/drawer';
 import { StyleSheet, Text, View,ActivityIndicator,LogBox,SafeAreaView,Image,ImageBackground } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
@@ -35,28 +35,44 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 //LogBox.ignoreAllLogs();
 
-function App(props) {
+function App(props) {  
   const initialLoginState = {
     isLoading: true,
     userToken: null,
   };
-
   
+  
+  function Feed({ navigation }) {
+    alert(navigation)
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Feed Screen</Text>
+        <Button title="Open drawer" onPress={() => navigation.openDrawer()} />
+        <Button title="Toggle drawer" onPress={() => navigation.toggleDrawer()} />
+      </View>
+    );
+  }
+
   const DrawerRoute = (props) => {
 
-    return (
+     return (
+      
+      
+
       <Drawer.Navigator initialRouteName={props.route.name} screenOptions={{                        
         drawerStyle: {
           backgroundColor: '#FFF',
           padding: 10,
           width: 320,
         },
+        headerShown:false,                      
         headerStyle: {
-          height: 50,
+          height: 50,          
           backgroundColor: '#271933',
+          borderColor:'#271933',         
         },
         overlayColor: 'transparent',
-        headerTintColor: '#FFF',
+        headerTintColor: '#FFF',                
         drawerItemStyle: {
           padding: 2,
           borderBottomWidth: 1,
@@ -79,6 +95,7 @@ function App(props) {
           drawerActiveTintColor: '#FFF',
           drawerInactiveTintColor: '#000',
           drawerLabel: 'Status',
+
           drawerIcon: ({ focused, size }) => (
             <IonicIcon
               name="caret-forward-outline"
@@ -209,6 +226,8 @@ function App(props) {
     );
   };
 
+  
+
   const loginReducer = (prevState, action) => {
     switch (action.type) {
       case 'RETRIEVE_TOKEN':
@@ -300,13 +319,23 @@ function App(props) {
 
   function LogoTitle(){
     return (
+      
+      
       <Image       
         source={require('./assets/logo.png')}
-        style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} 
+        style={{resizeMode:'contain', marginTop: 4, width: 110, height: 49 }} 
       />
+      
     );
   }
-
+  function showtoggle(props)
+  {
+    return(
+      <TouchableOpacity onPress={()=>props.navigation.openDrawer()}>
+              //   <IonicIcon name={'arrow-back-outline'} color={'white'} size={25} />
+              // </TouchableOpacity>
+    )
+  }
   // ends //
   return (
     <AuthContext.Provider value={authContext}>
@@ -322,18 +351,18 @@ function App(props) {
           :
           <Stack.Navigator initialRouteName="Status" screenOptions={{
             headerShown: false,
-          }}>
-            <Stack.Screen name="Status" component={DrawerRoute} options={{ headerTitle: (props) => <LogoTitle {...props} /> }} />
-            <Stack.Screen name="Dashboard" component={DrawerRoute} />
-            <Stack.Screen name="Message" component={MessageScreen} />            
-            <Stack.Screen name="Insight" component={InsightScreen} />
+          }}>            
+            <Stack.Screen name="Status" component={DrawerRoute}  />                                                                                     
+            <Stack.Screen name="Dashboard" component={DrawerRoute} options={{headerShown: false}} />
+            <Stack.Screen name="Message" options={{headerShown: false}} component={MessageScreen}  />            
+            <Stack.Screen name="Insight" component={InsightScreen} options={{headerShown: false}} />
             <Stack.Screen name="EditStatus" component={EditStatusScreen} />
             <Stack.Screen name="EditPreStatusScreen" component={EditPreStatusScreen} />
             <Stack.Screen name="ViewCommentsScreen" component={ViewCommentsScreen} />
             <Stack.Screen name="ViewRequestStatusScreen" component={ViewRequestStatusScreen} />
             <Stack.Screen name="UnauthScreen" component={UnauthScreen} />  
             <Stack.Screen name="NewStaffScreen" component={NewStaffScreen} />
-            <Stack.Screen name="NewFaqScreen" component={NewFaqScreen} />  
+            <Stack.Screen name="NewFaqScreen" component={NewFaqScreen}  />  
                       
           </Stack.Navigator>}
 

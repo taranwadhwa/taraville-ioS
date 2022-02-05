@@ -385,6 +385,12 @@ const SettingScreen = (props) => {
 
     return(
         <View style={styles.container}>
+          <View style={styles.topHeader}>           
+        <TouchableOpacity onPress={()=>props.navigation.openDrawer()} style={{marginTop:10,padding:5}}>
+                  <IonicIcon name={'menu-outline'} color={'white'} size={30} />
+        </TouchableOpacity>
+              <TouchableOpacity onPress={()=>props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
+      </View> 
              <View style={[styles.messagesCard, styles.elevation]}>
                  <View style={{flexDirection:'row'}}>
                   <Text style={styles.inner_text}>New Messages</Text>
@@ -560,6 +566,16 @@ const styles = StyleSheet.create
         textAlign:"center",
         fontWeight:"bold",
         color:'#FFF'
+      },
+      topHeader: {
+        flexDirection:'row',
+        margin: 1,
+        borderRadius: 1,
+        backgroundColor: '#271933',        
+        height: Platform.OS === 'ios' ? 60 : 60,
+        borderColor: '#8658A5',
+        top:5,      
+        alignContent:'flex-start'
       },
   })    
 export default SettingScreen;

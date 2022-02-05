@@ -4,6 +4,7 @@ import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
+import IonicIcon from 'react-native-vector-icons/Ionicons'
 LogBox.ignoreAllLogs();
 
 class ContactScreen extends React.Component {
@@ -23,6 +24,10 @@ class ContactScreen extends React.Component {
         this.handleContactUs = this.handleContactUs.bind(this);
 
     }
+    toggleDrawer = () => {    
+        this.props.navigation.openDrawer()
+          
+        };
 
     handleFetchdata(){    
 
@@ -142,11 +147,16 @@ class ContactScreen extends React.Component {
         return (
             <KeyboardAvoidingView style={styles.container}>
                 <StatusBar backgroundColor="#271933" barStyle="light-content" />  
-                
+                <View style={styles.topHeader}>           
+                <TouchableOpacity onPress={this.toggleDrawer.bind(this)} style={{marginTop:10,padding:5}}>
+                <IonicIcon name={'menu-outline'} color={'white'} size={30} />
+          </TouchableOpacity>  
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
+                 </View>
                 <ScrollView style={{marginTop:2,margin:3,flex: 1,height:'100%',}}>
                     <View style={[styles.inputCard, styles.elevation]}>
                         <Text style={styles.heading}>Contact Us</Text>                    
-                        <Text style={styles.innerSmallText}>Please enter below mandatory information.</Text>
+                        <Text style={styles.innerSmallText}>Need help? We're standing by Mon-Fri 8 -6 PM</Text>
                         <Text style={{marginTop:5}}></Text>
                         <TextInput editable = {false} value={fname} style={styles.input} placeholder="Name:*" onChangeText={(question) => this.setState({ question: question })} />
                         <TextInput editable = {false} value={email} style={styles.input} placeholder="Email:*" onChangeText={(answer) => this.setState({ answer: answer })} />
@@ -276,6 +286,16 @@ const styles = StyleSheet.create({
       },
       blank_view:{
         marginTop: Platform.OS === 'ios' ? 30 : 30
+      },
+      topHeader: {
+        flexDirection:'row',
+        margin: 1,
+        borderRadius: 1,
+        backgroundColor: '#271933',        
+        height: Platform.OS === 'ios' ? 60 : 60,
+        borderColor: '#8658A5',
+        top:5,      
+        alignContent:'flex-start'
       },
 
 });

@@ -18,7 +18,6 @@ import IonicIcon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-
 LogBox.ignoreAllLogs();
 
 class MessageScreen extends React.Component {
@@ -45,12 +44,11 @@ class MessageScreen extends React.Component {
       isCommentButtonLoading: false,
       isReminderButtonLoading: false,
 
-    }
-    //this.searchMessages = this.searchMessages.bind(this);
+    }    
     this.selectedIndex = this.selectedIndex.bind(this);
     this.unlockMessage = this.unlockMessage.bind(this);
-    this.refreshScreen = this.refreshScreen.bind(this);
-  }
+    this.refreshScreen = this.refreshScreen.bind(this);    
+  }  
 
   componentDidMount() {
     this.handleListing();
@@ -142,8 +140,7 @@ class MessageScreen extends React.Component {
     this.setState({ callModalVisible: false })
     this.setState({ reminderVisible: false })
   }
-
-
+  
   setCallModalVisible = (message_id, visible) => {
     this.setState({ callModalVisible: visible, message_id: message_id })
     this.setState({ modalVisible: false })
@@ -319,8 +316,7 @@ class MessageScreen extends React.Component {
     }
   }
 
-
-  handleCallRequest() {
+   handleCallRequest() {
     this.setState({ isCallButtonLoading: true });
     const { message_id, call_request } = this.state;
     if (call_request) {
@@ -435,6 +431,7 @@ class MessageScreen extends React.Component {
       this.setState({ isReminderButtonLoading: false });
     }
   }
+  
 
   render() {
     const { modalVisible, callModalVisible, notesModalVisible, reminderVisible, screenLoader, listing } = this.state;
@@ -443,7 +440,10 @@ class MessageScreen extends React.Component {
         <View style={styles.container}>
 
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
-          <View style={styles.topHeader}>           
+          <View style={styles.topHeader}>
+          {/* <TouchableOpacity onPress={this.toggleDrawer.bind(this)} style={{marginTop:10,padding:5}}>
+                <IonicIcon name={'menu-outline'} color={'white'} size={30} />
+          </TouchableOpacity>            */}
             <TouchableOpacity onPress={()=>this.props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
           </View>         
           <View style={[styles.messagesCard, styles.elevation,{backgroundColor:'#FFFFFF'}]}>

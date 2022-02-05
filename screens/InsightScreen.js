@@ -12,6 +12,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios  from 'axios';
+import IonicIcon from 'react-native-vector-icons/Ionicons'
 LogBox.ignoreAllLogs();
 
 //const width = Dimensions.get('window').width
@@ -108,8 +109,9 @@ const InsightScreen = (props) => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}>
-         <StatusBar backgroundColor="#271933" barStyle="light-content"/> 
-      <View style={styles.topHeader}>
+         <StatusBar backgroundColor="#271933" barStyle="light-content"/>
+
+      <View style={styles.topHeader}>     
       <TouchableOpacity onPress={()=>props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
       </View>             
       
@@ -283,6 +285,16 @@ const styles = StyleSheet.create({
     borderColor: '#271933',
     top:5,
     borderWidth:1,        
+    alignContent:'flex-start'
+  },
+  topHeader: {
+    flexDirection:'row',
+    margin: 1,
+    borderRadius: 1,
+    backgroundColor: '#271933',        
+    height: Platform.OS === 'ios' ? 60 : 60,
+    borderColor: '#8658A5',
+    top:5,      
     alignContent:'flex-start'
   },
 });

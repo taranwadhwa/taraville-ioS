@@ -58,6 +58,12 @@ const StaffScreen = (props) => {
      return(
         <View style={styles.container}>
           <StatusBar backgroundColor="#271933" barStyle="light-content" />
+          <View style={styles.topHeader}>
+          <TouchableOpacity onPress={()=>props.navigation.openDrawer()} style={{marginTop:10,padding:5}}>
+                <IonicIcon name={'menu-outline'} color={'white'} size={30} />
+          </TouchableOpacity>           
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
+          </View>  
           <View style={[styles.topEmptyCard]}>                
                 <TouchableOpacity onPress={()=>props.navigation.navigate('NewStaffScreen')}><Text style={{textAlign:'center',padding:8}}><IonicIcon name={'add-outline'} color={'green'} size={50} /></Text></TouchableOpacity>                        
             </View>
@@ -200,5 +206,15 @@ const styles = StyleSheet.create
       },
       blank_view: {
         marginTop: Platform.OS === 'ios' ? 40 : 70
+      },
+      topHeader: {
+        flexDirection:'row',
+        margin: 1,
+        borderRadius: 1,
+        backgroundColor: '#271933',        
+        height: Platform.OS === 'ios' ? 60 : 60,
+        borderColor: '#8658A5',
+        top:5,      
+        alignContent:'flex-start'
       },
 }); 

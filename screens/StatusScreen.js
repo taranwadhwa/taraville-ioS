@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import {
   StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity, ScrollView,
-  Modal, Pressable, Platform, ActivityIndicator, KeyboardAvoidingView, LogBox,RefreshControl
-} from 'react-native';
+  Modal, Pressable, Platform, ActivityIndicator, KeyboardAvoidingView, LogBox,RefreshControl,
+  Alert } from 'react-native';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import BottomTabNavigationScreen from '../components/BottomTabNavigationScreen';
 import { Picker } from '@react-native-picker/picker';
@@ -30,7 +30,7 @@ const StatusScreen = (props) => {
   const handlePreStatus = (id) => {
     props.navigation.navigate('EditPreStatusScreen', { statusID: id })
   }
-  const handleQuickStatus = ()=> {
+  const handleQuickStatus=()=>{
     try {
       const syncUserInfo = AsyncStorage.getItem("user_info")
         .then(syncResponse => {
@@ -57,7 +57,7 @@ const StatusScreen = (props) => {
                   else {                    
                     alert(res.data.status)  
                     props.navigation.navigate('UnauthScreen');
-                   
+                  
                   }
                 })
             }
@@ -70,7 +70,25 @@ const StatusScreen = (props) => {
     }
     catch (e) {
       console.log("Error while fetching quick status on status screen=" + e)
-    }
+    }    
+
+  }
+
+  const handleConfirmation = ()=> {
+
+    Alert.alert(
+      "Status Confirmation",
+      "Are you sure you want to change your current status?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        
+        { text: "OK", onPress: () => handleQuickStatus() }
+      ]
+    );              
     
   }
 
@@ -130,6 +148,7 @@ const StatusScreen = (props) => {
     return (
       <View style={styles.activity_container}>
         <ActivityIndicator animating={true} size="large" color="#fff" />
+        
         <Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', width: 110, height: 49 }} />                            
       </View>
     )
@@ -137,10 +156,19 @@ const StatusScreen = (props) => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <StatusBar backgroundColor="#271933" barStyle="light-content" />     
+      <StatusBar backgroundColor="#271933" barStyle="light-content" />
+      <View style={styles.topHeader}>           
+        <TouchableOpacity onPress={()=>props.navigation.openDrawer()} style={{marginTop:10,padding:5}}>
+                  <IonicIcon name={'menu-outline'} color={'white'} size={30} />
+        </TouchableOpacity>
+              <TouchableOpacity onPress={()=>props.navigation.navigate('Status')}><Image source={require("../assets/logo.png")} style={{ resizeMode: 'contain', marginTop: 4, width: 110, height: 49 }} /></TouchableOpacity>                            
+      </View> 
+
       <View style={[styles.messagesCard, styles.elevation]}>
 
         <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+        
+
           <Text style={{ color: '#3E2B2C', textAlign: 'center', fontSize: 22, fontWeight: 'bold' }}>
             Need to step away?
           </Text>
@@ -248,9 +276,9 @@ const StatusScreen = (props) => {
       </ScrollView>
        
         <View style={styles.quick_status_loader}>
-        <TouchableOpacity onPress={()=>handleQuickStatus()}>
+        <TouchableOpacity onPress={()=>handleConfirmation()}>
           <Text style={{textAlign:'center',alignContent:'center'}}>
-            <IonicIcon name={'sync'} size={50} color={'#008080'} />
+            <IonicIcon name={'sync'} size={70} color={'#008080'}  />
           </Text>
           </TouchableOpacity>
         </View>  
@@ -397,8 +425,21 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'ios' ? 55 : 30,
   },
   quick_status_loader:{
-    flexDirection:'column',
+    flexDirection:'row',
     justifyContent:'center',
-    minHeight:Platform.OS === 'ios' ? 180 : 230,
-  }
+    minHeight:Platform.OS === 'ios' ? 180 : 150,
+    backgroundColor:'#FFFFFF',
+    borderRadius:2,
+    marginBottom:10
+  },
+  topHeader: {
+    flexDirection:'row',
+    margin: 1,
+    borderRadius: 1,
+    backgroundColor: '#271933',        
+    height: Platform.OS === 'ios' ? 60 : 60,
+    borderColor: '#8658A5',
+    top:5,      
+    alignContent:'flex-start'
+  },
 });
