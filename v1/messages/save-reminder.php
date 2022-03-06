@@ -16,7 +16,14 @@ if(!empty($data->user_token))
 		if($data->message_id and $data->reminder_time)
 		{			
 
-			update('tbl_call_logs',array("reminder_time"=>$data->reminder_time,"reminder_date_time"=>date('Y-m-d h:i'),"reminder_sent"=>"No"),array("id"=>validation_post($data->message_id,$dbLink),"user_id"=>validation_post($data->uid,$dbLink)),$dbLink);			
+			update('tbl_call_logs',array("reminder_time"=>$data->reminder_time,"reminder_date_time"=>date('Y-m-d h:i'),"reminder_sent"=>"No","reminder_notes"=>$data->rnotes),array("id"=>validation_post($data->message_id,$dbLink),"user_id"=>validation_post($data->uid,$dbLink)),$dbLink);			
+			
+			
+			$file_name = '../logs/users-activity.txt';
+            $txt = "************Saving reminder**************".PHP_EOL."Saving reminder by user id : ".$data->uid." ".PHP_EOL."At: ".date('Y-m-d h:i a').PHP_EOL."Reminder Time: ".$data->reminder_time.PHP_EOL."Message ID: ".$data->message_id.PHP_EOL;
+            $myfile = file_put_contents($file_name, $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
+			
+			
 			echo json_encode(array("response"=>200,"status"=>"OK"));
 			exit;	
 						

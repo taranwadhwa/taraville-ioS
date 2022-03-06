@@ -35,6 +35,9 @@ if(!empty($data->user_token))
 		        
 		    }
 		    
+		    $sql_update_qry = "update tbl_call_logs set msg_read_status='Read' where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."'";
+		    mysqli_query($dbLink,$sql_update_qry);
+		    
 		    echo json_encode(array("response"=>200,"status"=>"OK","listing"=>$messages_listing,"number_of_records"=>count($messages_listing)));
 		    exit;
 		    

@@ -18,6 +18,12 @@ if(!empty($data->user_token))
 			// insert //
 			insert('tbl_message_comments',array('message_id',"user_id","comments","date_added"),
 			array(validation_post($data->message_id,$dbLink),validation_post($data->uid,$dbLink),validation_post($data->notes,$dbLink),date('Y-m-d')),$dbLink);				
+			
+			$file_name = '../logs/users-activity.txt';
+            $txt = "************Saving comments**************".PHP_EOL."Saving comments by user id : ".$data->uid." ".PHP_EOL."At: ".date('Y-m-d h:i a').PHP_EOL."Message ID: ".$data->message_id.PHP_EOL;
+            $myfile = file_put_contents($file_name, $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
+			
+			
 			echo json_encode(array("response"=>200,"status"=>"OK"));
 			exit;	
 						

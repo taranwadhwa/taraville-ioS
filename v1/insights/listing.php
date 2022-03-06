@@ -47,13 +47,12 @@ if(!empty($data->user_token))
 		// Plan information //		
 		$plan_info = fetchRow('tbl_plans','id',$user_rows->plan_id,$dbLink);
 		
-		
 		// Total calls taken //		
 		$count_calls = mysqli_query($dbLink,"select count(id)as calls_taken from tbl_call_logs where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' 
 		and date_added ".$check_operator." '".$date_added."'");
 		$row_count_calls = mysqli_fetch_object($count_calls);		
 		
-		if(isset($row_count_calls->calls_taken) and $row_count_calls->calls_taken>0){$calls_taken=$row_count_calls->calls_taken;}else{$calls_taken=0;}
+		if(isset($row_count_calls->calls_taken) and $row_count_calls->calls_taken>0){$calls_taken=(int)$row_count_calls->calls_taken;}else{$calls_taken=0;}
 		
 		// Calls left //
 		try{
@@ -67,14 +66,14 @@ if(!empty($data->user_token))
 		}
 		catch(Exception $e){echo 'Message: ' .$e->getMessage();}	
 		
-	
-		
+	  
 		// Most popular city //
 		$popular_city_query = mysqli_query($dbLink,"select tcl.city_id,c.name FROM tbl_call_logs tcl join cities c on(tcl.city_id=c.id) where 
-		user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' and date_added ".$check_operator." '".$date_added."'  GROUP  BY city_id HAVING COUNT(city_id) > 1");
+		user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' and date_added ".$check_operator." '".$date_added."' GROUP  BY city_id HAVING COUNT(city_id) > 1");
 		$popular_cty_rows = mysqli_fetch_object($popular_city_query);
 		
 		$city_name = (isset($popular_cty_rows->name)?$popular_cty_rows->name:'-');
+				
 				
 		//Total outbound calls //
 		$count_outboundcalls = mysqli_query($dbLink,"select count(id)as outbound_calls from tbl_message_call where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."'
@@ -82,11 +81,12 @@ if(!empty($data->user_token))
 		$row_count_obcalls = mysqli_fetch_object($count_outboundcalls);		
 		$calls_obtaken = $row_count_obcalls->outbound_calls;
 		
-		$outbound_calls = (isset($calls_obtaken)?$calls_obtaken:'0');
+		if($calls_obtaken>0){$outbound_calls=(int)$calls_obtaken;}else{$outbound_calls=0;}
+		//$outbound_calls = ($calls_obtaken>0?$calls_obtaken:0);
 		
 		// Most frequent caller //
 		$sql_query = mysqli_query($dbLink,"select name from tbl_call_logs where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' 
-		and date_added ".$check_operator." '".$date_added."'    GROUP  BY name HAVING COUNT(name) > 1");
+		and date_added ".$check_operator." '".$date_added."'  GROUP BY name HAVING COUNT(name) > 1");
 		$row_caller = mysqli_fetch_object($sql_query);	
 		
 		if(isset($row_caller->name) and $row_caller->name){$caller_name=$row_caller->name;}else{$caller_name="-";}
@@ -114,12 +114,24 @@ if(!empty($data->user_token))
 		if(isset($row_messages->numberMessages) and $row_messages->numberMessages>0){$numberOfMessages=$row_messages->numberMessages;}else{$numberOfMessages=0;}
 		
 	
+	    // Appointments scheduled //
+	    
+	    
+		$apts_query = mysqli_query($dbLink,"SELECT count(id)as numberAptScheduled FROM `tbl_call_logs` where action_taken='Appt Scheduled' 
+		and user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' and date_added ".$check_operator." '".$date_added."'");
+		$number_apts_row = mysqli_fetch_object($apts_query);
+		
+		if(isset($number_apts_row->numberAptScheduled) and $number_apts_row->numberAptScheduled>0){$apt_numbers=$number_apts_row->numberAptScheduled;}else{$apt_numbers=0;}
+	    
+	    
 		echo json_encode(array("response"=>200,"status"=>"OK","crecords"=>array(
-			array("name"=>"Calls taken","population"=>$calls_taken,"color"=>"#B33F40","legendFontColor"=>"#B33F40","legendFontSize"=>"14"),
-			array("name"=>"Messages","population"=>$numberOfMessages,"color"=>"#6577B3","legendFontColor"=>"#6577B3","legendFontSize"=>"14"),
-			array("name"=>"Calls left","population"=>$left_calls,"color"=>"#48A14D","legendFontColor"=>"#48A14D","legendFontSize"=>"14")),
+			array("name"=>"Calls taken","population"=>(int)$calls_taken,"color"=>"#0D4B72","legendFontColor"=>"#0D4B72","legendFontSize"=>"14"),
+			array("name"=>"Messages","population"=>(int)$numberOfMessages,"color"=>"#AE4A33","legendFontColor"=>"#AE4A33","legendFontSize"=>"14"),
+			array("name"=>"Calls left","population"=>(int)$left_calls,"color"=>"#2B5C43","legendFontColor"=>"#2B5C43","legendFontSize"=>"14"),
+			array("name"=>"Outbound Assists","population"=>(int)$outbound_calls,"color"=>"#A62A59","legendFontColor"=>"#A62A59","legendFontSize"=>"14"),
+			array("name"=>"Appointments Sch","population"=>(int)$apt_numbers,"color"=>"#602555","legendFontColor"=>"#602555","legendFontSize"=>"14")),
 			"other_records"=>array("outbound_calls"=>$outbound_calls,"popular_city"=>$city_name,"caller_name"=>$caller_name,
-			"spam_calls"=>$number_of_spam,"popular_day"=>$popular_day,"selected_filter"=>$data->filter)));
+			"spam_calls"=>$number_of_spam,"popular_day"=>$popular_day,"selected_filter"=>$data->filter,"average_res_time"=>"03:00 Sec.","average_call_duration"=>"3 Min 20 sec.")));
 		exit;
 		
 		

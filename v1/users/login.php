@@ -39,6 +39,12 @@ if(!empty($data->email) and !empty($data->password))
 					$new_token_query = mysqli_query($dbLink,"select token from tbl_registration where id='".mysqli_real_escape_string($dbLink,$row->id)."'");
 					$row_new_token = mysqli_fetch_object($new_token_query);
 					*/
+					
+                    $file_name = '../logs/users-activity.txt';
+                    $txt = "************Login Activity when expiry is greater than current time**************".PHP_EOL."Login Email: ".$data->email." ".PHP_EOL."Login at: ".date('Y-m-d h:i a').PHP_EOL;
+                    $myfile = file_put_contents($file_name, $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
+                    
+					
 					 
 					 echo json_encode(array("response"=>200,"status"=>"OK","rem_token"=>$row->token,"id"=>$row->id,"bname"=>$row->business,
 					"user_records"=>array("id"=>(int)$row->id,"name"=>stripslashes($row->name),"email"=>$row->email,"business"=>stripslashes($row->business),
@@ -58,6 +64,12 @@ if(!empty($data->email) and !empty($data->password))
 					where id='".mysqli_real_escape_string($dbLink,$row->id)."'";
 					mysqli_query($dbLink,$sql);
 					
+				
+				
+				    $file_name = '../logs/users-activity.txt';
+                    $txt = "************Login Activity**************".PHP_EOL."Login Email: ".$data->email." ".PHP_EOL."Login at: ".date('Y-m-d h:i a').PHP_EOL;
+                    $myfile = file_put_contents($file_name, $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
+				
 				
 					// New token //
 					 $ntoken_row = fetchRowColumn('tbl_registration','id',$row->id,$dbLink,

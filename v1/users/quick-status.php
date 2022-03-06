@@ -83,6 +83,11 @@ if(!empty($data->user_token))
 		    
 		    
 		}
+		
+		
+		$file_name = '../logs/users-activity.txt';
+        $txt = "************Fetch status**************".PHP_EOL."Change status by user id : ".$data->uid." ".PHP_EOL."Status changed at: ".date('Y-m-d h:i a').PHP_EOL."Status label: ".$label_one.PHP_EOL;
+        $myfile = file_put_contents($file_name, $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
 	
 		
 		$row_cdate = mysqli_query($dbLink,"select *,date_format(cdate,'%b %d, %Y')as fcdate from tbl_status where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' and schedule_type='Current Date' and cdate='".date('Y-m-d')."' limit 0,1");

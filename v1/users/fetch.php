@@ -14,7 +14,7 @@ if(!empty($data->user_token))
 	$chk = mysqli_num_rows($query_fire);
 	if($chk > 0)
 	{
-	    $row = fetchRowColumn('tbl_registration','id',$data->uid,$dbLink,array("id","name","email","address","last_name","business","phone","website","description","hooperations","token","plan_id","ccnumber","expiryYear","cvv","expiryMonth","hours_of_operations_to"));											
+	    $row = fetchRowColumn('tbl_registration','id',$data->uid,$dbLink,array("id","name","email","address","last_name","business","phone","website","description","hooperations","token","plan_id","ccnumber","expiryYear","cvv","expiryMonth","hours_of_operations_to","hours_of_operations_from"));											
 		
 	    $plan_info = fetchRowColumn('tbl_plans','id',$row->plan_id,$dbLink,array("name")); 
 	    
@@ -22,7 +22,7 @@ if(!empty($data->user_token))
 		"user_records"=>array("id"=>(int)$row->id,"first_name"=>stripslashes($row->name),"email"=>$row->email,"address"=>stripslashes($row->address),
 		"last_name"=>$row->last_name,"phone"=>$row->phone,"website"=>$row->website,"description"=>$row->description,"business"=>$row->business,
 		"plan_name"=>$plan_info->name,"cc_number"=>$row->ccnumber,"expiryMonth"=>$row->expiryMonth,"expiryYear"=>$row->expiryYear,"cvv"=>$row->cvv,
-		"hooperations"=>$row->hooperations,"hours_of_operations_to"=>$row->hours_of_operations_to)));
+		"hooperations"=>$row->hooperations,"hours_of_operations_to"=>$row->hours_of_operations_to,"hours_of_operations_from"=>$row->hours_of_operations_from)));
 		exit;					
 	
 	}
