@@ -124,6 +124,25 @@ if(!empty($data->user_token))
 		if(isset($number_apts_row->numberAptScheduled) and $number_apts_row->numberAptScheduled>0){$apt_numbers=$number_apts_row->numberAptScheduled;}else{$apt_numbers=0;}
 	    
 	    
+	    
+	    $chk_smc = mysqli_query($dbLink,"select IsAuthView from secure_messages_code where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' and IsAuthView='Yes'");
+		if(mysqli_num_rows($chk_smc)>0){
+		    $update_code = mysqli_query($dbLink,"update secure_messages_code set IsAuthView='No' where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."'");
+		    
+		}
+	    
+	    
+	    $average_call_duration_query = mysqli_query($dbLink,"select FORMAT(AVG(hours),0) as average_hours, FORMAT(AVG(min),0) as average_mins,FORMAT(AVG(seconds),0) as average_seconds 
+	    from tbl_call_logs where msg_read_status='Read' and user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' and date_added ".$check_operator."'".$date_added."'");
+	    $row_call_duration = mysqli_fetch_object($average_call_duration_query);
+	    
+	    if($row_call_duration->average_hours<10){$hours='0'.$row_call_duration->average_hours;}else{$hours=$row_call_duration->average_hours;}
+	    if($row_call_duration->average_mins<10){$minutes='0'.$row_call_duration->average_mins;}else{$minutes=$row_call_duration->average_mins;}
+	    if($row_call_duration->average_seconds<10){$seconds='0'.$row_call_duration->average_seconds;}else{$seconds=$row_call_duration->average_seconds;}
+	    
+	    $call_duration = $hours.':'.$minutes.':'.$seconds.' Sec.';
+	    
+	    
 		echo json_encode(array("response"=>200,"status"=>"OK","crecords"=>array(
 			array("name"=>"Calls taken","population"=>(int)$calls_taken,"color"=>"#0D4B72","legendFontColor"=>"#0D4B72","legendFontSize"=>"14"),
 			array("name"=>"Messages","population"=>(int)$numberOfMessages,"color"=>"#AE4A33","legendFontColor"=>"#AE4A33","legendFontSize"=>"14"),
@@ -131,7 +150,8 @@ if(!empty($data->user_token))
 			array("name"=>"Outbound Assists","population"=>(int)$outbound_calls,"color"=>"#A62A59","legendFontColor"=>"#A62A59","legendFontSize"=>"14"),
 			array("name"=>"Appointments Sch","population"=>(int)$apt_numbers,"color"=>"#602555","legendFontColor"=>"#602555","legendFontSize"=>"14")),
 			"other_records"=>array("outbound_calls"=>$outbound_calls,"popular_city"=>$city_name,"caller_name"=>$caller_name,
-			"spam_calls"=>$number_of_spam,"popular_day"=>$popular_day,"selected_filter"=>$data->filter,"average_res_time"=>"03:00 Sec.","average_call_duration"=>"3 Min 20 sec.")));
+			"spam_calls"=>$number_of_spam,"popular_day"=>$popular_day,"selected_filter"=>$data->filter,"average_res_time"=>"03:00 Sec.",
+			"average_call_duration"=>$call_duration)));
 		exit;
 		
 		

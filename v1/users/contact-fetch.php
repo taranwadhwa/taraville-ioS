@@ -16,6 +16,13 @@ if(!empty($data->user_token))
 	{
 	    $row = fetchRowColumn('tbl_registration','id',$data->uid,$dbLink,array("id","name","email","address","last_name","business","phone"));											
 		
+		$chk_smc = mysqli_query($dbLink,"select IsAuthView from secure_messages_code where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' and IsAuthView='Yes'");
+		if(mysqli_num_rows($chk_smc)>0){
+		    $update_code = mysqli_query($dbLink,"update secure_messages_code set IsAuthView='No' where user_id='".mysqli_real_escape_string($dbLink,$data->uid)."'");
+		    
+		}
+		
+		
 	    echo json_encode(array("response"=>200,"status"=>"OK",
 		"user_records"=>array("id"=>(int)$row->id,"first_name"=>stripslashes($row->name),"email"=>$row->email,
 		"last_name"=>$row->last_name,"phone"=>$row->phone,"business"=>$row->business)));
