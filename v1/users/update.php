@@ -6,6 +6,7 @@ $dbLink = connectDB();
 
 $data = json_decode(file_get_contents('php://input'));
 
+require_once '../../../../public_html/push_notifications/vendor/autoload.php';
 
 if(!empty($data->user_token))
 {	
@@ -28,6 +29,54 @@ if(!empty($data->user_token))
 		 $hoop = $days_array["Mon"].$days_array["Tue"].$days_array["Wed"].$days_array["Thu"].$days_array["Fri"].$days_array["Sat"].$days_array["Sun"];
 		 $trimmed_hoop = rtrim($hoop,",");
 		
+		
+		// fetch existing ccinfo //
+		   $sql_old_info = mysqli_query($dbLink,"select ccnumber from tbl_registration where id='".validation_post($data->uid,$dbLink)."'");
+		   $row_old_info = mysqli_fetch_object($sql_old_info); 
+		   
+		   /*if($row_old_info->ccnumber!=encrypt_string($data->ccnumber))
+		   {
+		 
+    		    // Push notifications starts //
+    			$user_info_push = mysqli_query($dbLink,"select id,name,device_id from tbl_registration where id='".mysqli_real_escape_string($dbLink,$data->uid)."'");
+    			$row_user_info = mysqli_fetch_object($user_info_push);
+    			
+    			$channelName = 'user_'.$row_user_info->id;
+    			$recipient= $row_user_info->device_id;//
+    			
+    			// You can quickly bootup an expo instance
+    			$expo = \ExponentPhpSDK\Expo::normalSetup();
+    			
+    			// Subscribe the recipient to the server
+    			$expo->subscribe($channelName, $recipient);
+    			
+    			$title="Taraville.";
+    			$body = "Your payment method was updated.";
+    			$subtitle = "payment method update Request";
+    			
+    			// Build the notification data
+    			$notification = ['title'=>$title,'body' => $body,'subtitle'=>$subtitle,'priority'=>'high','sound'=>'default'];
+    			
+    			// Notify an interest with a notification
+    			$expo->notify([$channelName], $notification);
+    						
+    			// Build the notification data			
+    			
+    			try {
+    			$instance = \ExponentPhpSDK\Expo::normalSetup();
+    			//echo 'Succeeded! We have created an Expo instance successfully';
+    			} catch (Exception $e) {
+    			//echo 'Test Failed';
+    			}
+		       
+		       // push notification ends //
+		   }*/
+	
+	    // fetch existing cc info ends //
+	    
+	    $isAuthorize=($data->isAuthCheckBox==true?'1':'0');
+	    $ccnumberLastFourDigits = substr($data->ccnumber, -4);
+	    $ccNewNumber=str_pad($ccnumberLastFourDigits,16,"*",STR_PAD_LEFT);
 	
 		$combine = array("name"=>validation_post($data->fname,$dbLink),
 		"last_name"=>validation_post($data->lname,$dbLink),
@@ -39,10 +88,12 @@ if(!empty($data->user_token))
 		"hooperations"=>$trimmed_hoop,
 		"hours_of_operations_to"=>$hot,
 		"hours_of_operations_from"=>$hof,
-		"expiryMonth"=>validation_post(encrypt_string($data->expiryMonth),$dbLink),
-		"expiryYear"=>validation_post(encrypt_string($data->expiryYear),$dbLink),
-		"ccnumber"=>validation_post($data->ccnumber,$dbLink),
-		"cvv"=>validation_post($data->cvv,$dbLink),
+		"expiryMonth"=>validation_post($data->expiryMonth,$dbLink),
+		"expiryYear"=>validation_post($data->expiryYear,$dbLink),
+		"ccnumber"=>$ccNewNumber,
+		"cvv"=>validation_post(encrypt_string($data->cvv),$dbLink),
+		"billing_zipcode"=>validation_post($data->zipcode,$dbLink),
+		"IAuthorizeChk"=>$isAuthorize
 		);
 		update('tbl_registration',$combine,array("id"=>validation_post($data->uid,$dbLink)),$dbLink);		
 		echo json_encode(array("response"=>200,"status"=>"OK"));

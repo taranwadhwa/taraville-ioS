@@ -1,12 +1,8 @@
-************Saving reminder**************
-Saving reminder by user id : 619 
-At: 2022-03-05 02:32 am
-Reminder Time: 4 hours
-Message ID: 7
+************Login Activity when expiry is greater than current time**************
+Login Email: taran.wadhwa1@gmail.com 
+Login at: 2022-03-16 01:39 am
 
-************Saving reminder**************
-Saving reminder by user id : 619 
-At: 2022-03-05 02:35 am
-Reminder Time: 7 days
-Message ID: 5
+************Login Activity when expiry is greater than current time**************
+Login Email: Dearsinn@gmail.com 
+Login at: 2022-03-16 01:55 am
 
