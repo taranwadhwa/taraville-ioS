@@ -1,8 +1,0 @@
-************Login Activity when expiry is greater than current time**************
-Login Email: taran.wadhwa1@gmail.com 
-Login at: 2022-03-16 01:39 am
-
-************Login Activity when expiry is greater than current time**************
-Login Email: Dearsinn@gmail.com 
-Login at: 2022-03-16 01:55 am
-

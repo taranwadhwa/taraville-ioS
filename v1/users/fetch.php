@@ -26,12 +26,31 @@ if(!empty($data->user_token))
 		}
 	    
 	    
-	    echo json_encode(array("response"=>200,"status"=>"OK","token"=>$row->token,
+	    // Time table information //
+	    $time_table_query = mysqli_query($dbLink,"select * from day_wise_time_table where uid='".mysqli_real_escape_string($dbLink,$data->uid)."'");
+	    $row_time_table = mysqli_fetch_object($time_table_query);
+	    $isCheckboxSelectedMonday = ($row_time_table->isCheckboxSelectedMonday==true?true:false);
+	    $isCheckboxSelectedTuesday = ($row_time_table->isCheckboxSelectedTuesday==true?true:false);
+	    $isCheckboxSelectedWednesday = ($row_time_table->isCheckboxSelectedWednesday==true?true:false);
+	    $isCheckboxSelectedThursday = ($row_time_table->isCheckboxSelectedThursday==true?true:false);
+	    $isCheckboxSelectedFriday = ($row_time_table->isCheckboxSelectedFriday==true?true:false);
+	    $isCheckboxSelectedSaturday = ($row_time_table->isCheckboxSelectedSaturday==true?true:false);
+	    $isCheckboxSelectedSunday = ($row_time_table->isCheckboxSelectedSunday==true?true:false);
+	    
+	     echo json_encode(array("response"=>200,"status"=>"OK","token"=>$row->token,
 		"user_records"=>array("id"=>(int)$row->id,"first_name"=>stripslashes($row->name),"email"=>$row->email,"address"=>stripslashes($row->address),
 		"last_name"=>$row->last_name,"phone"=>$row->phone,"website"=>$row->website,"description"=>$row->description,"business"=>$row->business,
 		"plan_name"=>$plan_info->name,"cc_number"=>$row->ccnumber,"expiryMonth"=>$row->expiryMonth,"expiryYear"=>$row->expiryYear,"cvv"=>$row->cvv,
 		"hooperations"=>$row->hooperations,"hours_of_operations_to"=>$row->hours_of_operations_to,"hours_of_operations_from"=>$row->hours_of_operations_from,
-		"biling_zipcode"=>$row->billing_zipcode,"IAuthorizeChk"=>$row->billing_zipcode)));
+		"biling_zipcode"=>$row->billing_zipcode,"IAuthorizeChk"=>$row->billing_zipcode,"isCheckboxSelectedMonday"=>$isCheckboxSelectedMonday,
+		"isCheckboxSelectedTuesday"=>$isCheckboxSelectedTuesday,"isCheckboxSelectedWednesday"=>$isCheckboxSelectedWednesday,
+		"isCheckboxSelectedThursday"=>$isCheckboxSelectedThursday,"isCheckboxSelectedFriday"=>$isCheckboxSelectedFriday,"isCheckboxSelectedSaturday"=>$isCheckboxSelectedSaturday,
+		"isCheckboxSelectedSunday"=>$isCheckboxSelectedSunday,"fromMondayDatePicker"=>$row_time_table->fromMondayDatePicker,"toMondaysDatePicker"=>$row_time_table->toMondaysDatePicker,
+		"fromTuesdayDatePicker"=>$row_time_table->fromTuesdayDatePicker,"toTuesdayDatePicker"=>$row_time_table->toTuesdayDatePicker,"fromWednesdayDatePicker"=>$row_time_table->fromWednesdayDatePicker,
+        "toWednesdayDatePicker"=>$row_time_table->toWednesdayDatePicker,"fromThursdayDatePicker"=>$row_time_table->fromThursdayDatePicker,"toTursdayDatePicker"=>$row_time_table->toTursdayDatePicker,        		
+        "fromFridayDatePicker"=>$row_time_table->fromFridayDatePicker,"toFridayDatePicker"=>$row_time_table->toFridayDatePicker,"fromSaturdayDatePicker"=>$row_time_table->fromSaturdayDatePicker,
+        "toSaturdayDatePicker"=>$row_time_table->toSaturdayDatePicker,"fromSundayDatePicker"=>$row_time_table->fromSundayDatePicker,"toSundayDatePicker"=>$row_time_table->toSundayDatePicker        
+		)));
 		exit;					
 	
 	}

@@ -142,6 +142,18 @@ if(!empty($data->user_token))
 	    
 	    $call_duration = $hours.':'.$minutes.':'.$seconds.' Sec.';
 	    
+	    // average response time //
+	    
+	    $average_call_response_query = mysqli_query($dbLink,"select FORMAT(AVG(res_hours),0) as average_hours, FORMAT(AVG(res_min),0) as average_mins,FORMAT(AVG(res_sec),0) as average_seconds 
+	    from tbl_call_logs where msg_read_status='Read' and user_id='".mysqli_real_escape_string($dbLink,$data->uid)."' and date_added ".$check_operator."'".$date_added."'");
+	    $row_call_response = mysqli_fetch_object($average_call_response_query);
+	    
+	    if($row_call_response->average_hours<10){$hours_res='0'.$row_call_response->average_hours;}else{$hours_res=$row_call_response->average_hours;}
+	    if($row_call_response->average_mins<10){$minutes_res='0'.$row_call_response->average_mins;}else{$minutes_res=$row_call_response->average_mins;}
+	    if($row_call_response->average_seconds<10){$seconds_res='0'.$row_call_response->average_seconds;}else{$seconds_res=$row_call_response->average_seconds;}
+	    
+	    $call_response = $hours_res.':'.$minutes_res.':'.$seconds_res.' Sec.';
+	    
 	    
 		echo json_encode(array("response"=>200,"status"=>"OK","crecords"=>array(
 			array("name"=>"Calls taken","population"=>(int)$calls_taken,"color"=>"#0D4B72","legendFontColor"=>"#0D4B72","legendFontSize"=>"14"),
@@ -150,7 +162,7 @@ if(!empty($data->user_token))
 			array("name"=>"Outbound Assists","population"=>(int)$outbound_calls,"color"=>"#A62A59","legendFontColor"=>"#A62A59","legendFontSize"=>"14"),
 			array("name"=>"Appointments Sch","population"=>(int)$apt_numbers,"color"=>"#602555","legendFontColor"=>"#602555","legendFontSize"=>"14")),
 			"other_records"=>array("outbound_calls"=>$outbound_calls,"popular_city"=>$city_name,"caller_name"=>$caller_name,
-			"spam_calls"=>$number_of_spam,"popular_day"=>$popular_day,"selected_filter"=>$data->filter,"average_res_time"=>"03:00 Sec.",
+			"spam_calls"=>$number_of_spam,"popular_day"=>$popular_day,"selected_filter"=>$data->filter,"average_res_time"=>$call_response,
 			"average_call_duration"=>$call_duration)));
 		exit;
 		

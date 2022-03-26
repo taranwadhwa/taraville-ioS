@@ -1,8 +1,0 @@
-[15-Mar-2022 12:25:10 America/New_York] PHP Notice:  Trying to get property 'isEnabled' of non-object in /home/zj14fot789gm/iosapi.taraville.com/api/v1/users/fetch-settings.php on line 39
-[15-Mar-2022 12:25:10 America/New_York] PHP Notice:  Trying to get property 'status_type' of non-object in /home/zj14fot789gm/iosapi.taraville.com/api/v1/users/fetch-settings.php on line 40
-[15-Mar-2022 18:55:35 America/New_York] PHP Notice:  Trying to get property 'isEnabled' of non-object in /home/zj14fot789gm/iosapi.taraville.com/api/v1/users/fetch-settings.php on line 39
-[15-Mar-2022 18:55:35 America/New_York] PHP Notice:  Trying to get property 'status_type' of non-object in /home/zj14fot789gm/iosapi.taraville.com/api/v1/users/fetch-settings.php on line 40
-[15-Mar-2022 18:55:53 America/New_York] PHP Notice:  Trying to get property 'isEnabled' of non-object in /home/zj14fot789gm/iosapi.taraville.com/api/v1/users/fetch-settings.php on line 39
-[15-Mar-2022 18:55:53 America/New_York] PHP Notice:  Trying to get property 'status_type' of non-object in /home/zj14fot789gm/iosapi.taraville.com/api/v1/users/fetch-settings.php on line 40
-[15-Mar-2022 19:03:18 America/New_York] PHP Notice:  Trying to get property 'isEnabled' of non-object in /home/zj14fot789gm/iosapi.taraville.com/api/v1/users/fetch-settings.php on line 39
-[15-Mar-2022 19:03:18 America/New_York] PHP Notice:  Trying to get property 'status_type' of non-object in /home/zj14fot789gm/iosapi.taraville.com/api/v1/users/fetch-settings.php on line 40
